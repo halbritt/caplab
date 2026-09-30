@@ -45,6 +45,8 @@ def build_parser() -> argparse.ArgumentParser:
     task.add_argument("--output", type=Path, required=True)
     task_report = commands.add_parser("report-task", help="verify retained native task evidence before reading it")
     task_report.add_argument("--run", type=Path, required=True)
+    task_report.add_argument("--trusted-parser-checkout", type=Path,
+                             help="replay delivery parsing with explicitly trusted, byte-matching Cairn source")
     return parser
 
 
@@ -91,15 +93,18 @@ def execute(args: argparse.Namespace) -> int:
     if args.command == "report-task":
         from .native_task import verify_task_run
 
-        emit(verify_task_run(args.run)["evidence"])
+        emit(verify_task_run(args.run, trusted_parser_checkout=args.trusted_parser_checkout)["evidence"])
         return 0
     if args.command == "run":
-        from .runner import AdapterError, run_experiment
+        from .runner import AdapterError, RunnerCleanupError, run_experiment
 
         try:
             report = run_experiment(read_spec(args.spec), args.output)["report"]
         except AdapterError as error:
             emit(error_document(error), stderr=True)
+            return 2
+        except RunnerCleanupError as error:
+            emit({**error_document(error), "output": str(error.output), "failures": error.failures}, stderr=True)
             return 2
         emit(report)
         return 1 if incomplete(report) else 0

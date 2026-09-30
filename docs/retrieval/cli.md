@@ -22,7 +22,7 @@ also provide `caplab retrieval ...`.
 | report | `--run DIRECTORY [--format json\|markdown]` | Verify retained artifacts before emitting a report; JSON is the default |
 | compare | `--left DIRECTORY --right DIRECTORY [--left-arm ID --right-arm ID]` | Verify both bundles and align compatible cases/seeds; select arms explicitly for within-run comparisons |
 | import-task | `--report FILE --plan FILE --corpus FILE --cairn-checkout DIRECTORY --output NEW_DIRECTORY` | Retain original native task evidence and apply the selected checkout's real evidence parser; no regrading or replay |
-| report-task | `--run DIRECTORY` | Verify retained task sources and ledger objects before emitting the registered evidence document |
+| report-task | `--run DIRECTORY [--trusted-parser-checkout DIRECTORY]` | Verify retained task sources and ledger objects; optionally replay delivery parsing with explicitly trusted, matching parser source |
 
 Specs reject unknown schema versions, duplicate identities, overlapping labels
 and unsupported configurations. CLI JSON parsing also rejects duplicate object
@@ -41,7 +41,8 @@ Exit statuses:
   not-started or missing assignments, or has not been finished. Inspect its
   coverage and errors; they remain part of the plan.
 - **2**: command arguments, input, filesystem access, artifact integrity or
-  comparison compatibility failed. No fabricated successful result is emitted.
+  comparison compatibility failed, or resource cleanup failed. No fabricated
+  successful result is emitted.
 - **130**: an interruption escaped the runner. Inspect retained evidence before
   deciding how to continue; the CLI does not automatically rerun work.
 
@@ -50,6 +51,12 @@ inspect its pairing/coverage counts. Comparison validity is separate from run
 completeness and quality. `report-task` emits the verified registered document;
 verification is conveyed by successful exit status, without adding fields to
 the retained evidence schema.
+
+A resource cleanup failure returns `cleanup_failed`, the retained `output`
+directory and per-arm `failures` on stderr. The run stays unfinished, without
+a final manifest. Its recorded attempts and cleanup diagnostics remain
+available through `report --run DIRECTORY`, which returns 1 for that unfinished
+run. Do not infer successful cleanup from successful query measurements.
 
 Never reuse an output directory. The runner and artifact store preserve a plan
 and attempt evidence across classified failures. `plan.json`, `attempts.jsonl`,
@@ -90,19 +97,24 @@ The adapter requires the executable's embedded VCS revision to match the clean
 checkout HEAD, with `vcs_modified: false`. It observes binary/source identities
 before provisioning anything. PostgreSQL requires `initdb`, `pg_ctl` and
 `createdb`, run as a normal user. `pg_config --bindir` locates them; alternatively
-set `CAPLAB_RETRIEVAL_PG_BIN` (or `CAIRN_PG_BIN`) explicitly. The current adapter
-creates a private `/tmp/caplab-rtv-*` cluster and Unix socket, disables TCP, seeds
-only the supplied corpus, creates a fresh temporary hosted identity, and stops
-and removes its own store after the arm. It uses no production profile or DSN.
-The cluster procedure follows Cairn's disposable task-evaluation setup.
+set `CAPLAB_RETRIEVAL_PG_BIN` (or `CAIRN_PG_BIN`) explicitly. The adapter calls
+the selected checkout's existing `scripts/trial-task-eval.sh -- COMMAND` mode.
+Cairn owns the private `/tmp/cairn-task-eval-pg.*` cluster, Unix socket and
+cleanup, with TCP disabled. CAPLAB uses a separate `/tmp/caplab-rtv-*` directory
+for its temporary identity, API and logs, seeds only the supplied corpus, and
+removes its scratch directory after the arm. Retrieval commands receive no
+database credentials or production profile. A checkout predating the wrapper's
+`-- COMMAND` mode needs `CAPLAB_RETRIEVAL_LIFECYCLE_WRAPPER` set to a reviewed
+wrapper that supports it; its exact bytes and override status are recorded.
 
-For a clean, reviewed Cairn checkout, build its executable there and prepare a
-new lexical spec. Replace the example paths with your actual clean checkout;
-do not build over unrelated owner changes:
+Build a reviewed Cairn revision with the supplied helper, which creates a fresh
+clone and verifies the executable's embedded revision. Replace the source path
+and commit below; use new output paths. This also avoids unstamped binaries
+from builds in worktrees with unsupported VCS discovery:
 
 ```sh
-make -C /absolute/clean/cairn build
-python3 examples/retrieval/prepare.py --output /tmp/cairn-lexical-spec.json --cairn-binary /absolute/clean/cairn/bin/cairn --cairn-checkout /absolute/clean/cairn
+python3 scripts/retrieval_pin_cairn.py --checkout /absolute/cairn --revision REVIEWED_COMMIT --output /tmp/cairn-retrieval-pin
+python3 examples/retrieval/prepare.py --output /tmp/cairn-lexical-spec.json --cairn-binary /tmp/cairn-retrieval-pin/cairn --cairn-checkout /tmp/cairn-retrieval-pin/src
 PYTHONPATH=src python3 -m caplab retrieval validate --spec /tmp/cairn-lexical-spec.json
 CAPLAB_RETRIEVAL_PG_BIN="$(pg_config --bindir)" PYTHONPATH=src python3 -m caplab retrieval run --spec /tmp/cairn-lexical-spec.json --output /tmp/cairn-lexical-run
 PYTHONPATH=src python3 -m caplab retrieval report --run /tmp/cairn-lexical-run --format markdown
@@ -128,12 +140,20 @@ bytes, original grades and available native streams in a new filesystem ledger.
 It does not launch an agent, call a model, rerun an episode or grade a task.
 `report-task` resolves verified registered bytes; it does not blindly read a
 mutable `evidence.json` copy.
+By default it checks retained source consistency and delivery hash bindings;
+it does not re-execute the delivery parser. Pass `--trusted-parser-checkout`
+to recompute deliveries. Only byte-matching parser code from that explicitly
+trusted checkout executes; code stored inside the evidence bundle never does.
+Import-environment paths and revision metadata remain reported observations,
+and coherent replacement requires an externally pinned evidence digest.
+See [the bridge contract](native-task-bridge.md) for the exact detection limits.
 
 For a newly constructed fixture or a currently authorized completed run:
 
 ```sh
 PYTHONPATH=src python3 -m caplab retrieval import-task --report /absolute/new-run/agent.json --plan /absolute/new-run/plan.json --corpus /absolute/new-run/corpus.json --cairn-checkout /absolute/clean/cairn --output /tmp/native-task-evidence
 PYTHONPATH=src python3 -m caplab retrieval report-task --run /tmp/native-task-evidence
+PYTHONPATH=src python3 -m caplab retrieval report-task --run /tmp/native-task-evidence --trusted-parser-checkout /absolute/clean/cairn
 ```
 
 Both task commands return 0 when import or verification succeeds. This is

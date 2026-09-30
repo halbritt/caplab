@@ -192,6 +192,41 @@ class CliTests(unittest.TestCase):
             self.assertEqual(result.stdout, "")
             self.assertFalse(output.exists())
 
+    def test_cleanup_failure_retains_readable_evidence_and_its_error_code(self):
+        from caplab.retrieval.artifacts import verify_run
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            spec = self.spec_for_fixture(root, ("good",))
+            output = root / "run"
+            code = """
+import sys
+from unittest.mock import patch
+from caplab.retrieval.runner import AdapterCleanupError, CommandAdapter
+from caplab.retrieval.__main__ import main
+def failed_close(self):
+    raise AdapterCleanupError('injected cleanup failure', {'cleanup.log': b'cleanup refused'})
+with patch.object(CommandAdapter, 'close', failed_close):
+    raise SystemExit(main(['run', '--spec', sys.argv[1], '--output', sys.argv[2]]))
+"""
+            result = subprocess.run([sys.executable, "-c", code, str(spec), str(output)], cwd=ROOT,
+                                    env=dict(os.environ, PYTHONPATH=str(ROOT / "src")),
+                                    text=True, capture_output=True, timeout=30)
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertEqual(result.stdout, "")
+            error = json.loads(result.stderr)
+            self.assertEqual(error["code"], "cleanup_failed")
+            self.assertEqual(error["output"], str(output))
+            self.assertIn("injected cleanup failure", error["failures"]["good"])
+            retained = verify_run(output, allow_unfinished=True)
+            self.assertFalse(retained["finished"])
+            self.assertEqual(len(retained["attempts"]), 7)
+            self.assertTrue(all(a["status"] == "ok" for a in retained["attempts"]))
+            self.assertFalse((output / "manifest.json").exists())
+            readback = self.cli("report", "--run", output)
+            self.assertEqual(readback.returncode, 1, readback.stderr)
+            self.assertFalse(json.loads(readback.stdout)["run"]["finished"])
+
 
 
     @unittest.skipUnless((Path(os.environ.get("CAIRN_CHECKOUT", Path.home() / "git/cairn"))
@@ -234,6 +269,19 @@ class CliTests(unittest.TestCase):
             verified = self.cli("report-task", "--run", output)
             self.assertEqual(verified.returncode, 0, verified.stderr)
             self.assertEqual(json.loads(verified.stdout), evidence)
+            replayed = self.cli("report-task", "--run", output, "--trusted-parser-checkout", checkout)
+            self.assertEqual(replayed.returncode, 0, replayed.stderr)
+            self.assertEqual(json.loads(replayed.stdout), evidence)
+            changed = root / "changed-parser/scripts"
+            changed.mkdir(parents=True)
+            marker = root / "parser-side-effect"
+            (changed / "trial_task_evidence.py").write_text(
+                f"open({str(marker)!r}, 'w').write('unexpected execution')\n")
+            refused = self.cli("report-task", "--run", output, "--trusted-parser-checkout", changed.parent)
+            self.assertEqual(refused.returncode, 2)
+            self.assertEqual(json.loads(refused.stderr)["code"], "PARSER_CONTRACT")
+            self.assertEqual(refused.stdout, "")
+            self.assertFalse(marker.exists())
             original_files = {f: f.read_bytes() for f in (report_path, plan, corpus)}
             (output / "evidence.json").chmod(0o600)
             (output / "evidence.json").write_text("{}")
