@@ -34,6 +34,11 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
      evaluator hash and observed corpus must match;
    - each record's `run_id` must equal `case.arm.sSEED`, and each record's model
      and harness must match the report;
+   - each plan position must be an integer arm slot (0 ≤ position < number of
+     arms), distinct within one case and seed, as `trial_task_eval.py` assigns
+     it. A record's `order`, and a `not_started` row's `order` and `run_id`, are
+     optional (older reports omit them), but when present they must agree with
+     the plan;
    - duplicate or unplanned runs, and invalid `not_started` rows, are errors;
    - run identities must be safe single path components.
 3. **Runs the selected checkout's own parser**
@@ -93,7 +98,10 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
 
 `verify_task_run` re-resolves every retained object through the ledger. It
 checks hashes and sizes, confirms `evidence.json` is byte-identical to the
-registered document, and returns counts.
+registered document, and returns `{schema_version, verified, objects, counts,
+evidence}`. `evidence` is the verified registered document itself, so a caller
+such as the CLI report can render retained task evidence with no second,
+unverified read.
 
 ## Limits
 

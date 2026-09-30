@@ -138,7 +138,10 @@ def import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path, ca
         raise TaskEvidenceError("MALFORMED", "report and plan must be JSON objects")
     identity = _check_identity(report, plan, _sha256(corpus_bytes))
 
-    planned, order = {}, []
+    # Native contract (trial_task_eval.py): position is the arm's slot in the
+    # shuffled arm order for one (case, seed), so 0 <= position < len(arms) and
+    # positions are distinct within that (case, seed).
+    planned, order, slots = {}, [], {}
     for entry in plan.get("runs") or []:
         if not isinstance(entry, list) or len(entry) != 4:
             raise TaskEvidenceError("MALFORMED", "plan runs must be [case, arm, seed, position]")
@@ -147,7 +150,14 @@ def import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path, ca
             raise TaskEvidenceError("DUPLICATE_RUN", f"plan repeats {key}")
         if key[1] not in plan["arms"]:
             raise TaskEvidenceError("IDENTITY_MISMATCH", f"plan run uses unknown arm {key[1]!r}")
-        planned[key] = entry[3]
+        position = entry[3]
+        if type(position) is not int or not 0 <= position < len(plan["arms"]):
+            raise TaskEvidenceError("MALFORMED", f"plan position {position!r} for {key} is not an arm slot")
+        taken = slots.setdefault((key[0], key[2]), set())
+        if position in taken:
+            raise TaskEvidenceError("IDENTITY_MISMATCH", f"plan position {position} repeats within {key[0]} seed {key[2]}")
+        taken.add(position)
+        planned[key] = position
         order.append(key)
     if not planned:
         raise TaskEvidenceError("MALFORMED", "plan has no runs")
@@ -166,10 +176,19 @@ def import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path, ca
         for field in ("model", "harness"):
             if field in record and record[field] != identity[field]:
                 raise TaskEvidenceError("IDENTITY_MISMATCH", f"{record['run_id']} {field} differs from the report")
+        # Older reports may omit order; a present order must match the plan.
+        if "order" in record and (type(record["order"]) is not int or record["order"] != planned[key]):
+            raise TaskEvidenceError("IDENTITY_MISMATCH", f"{record['run_id']} order {record['order']!r} differs from its plan position")
         recorded[key] = record
     not_started = set()
     for row in (report.get("admission") or {}).get("not_started") or []:
+        if not isinstance(row, dict):
+            raise TaskEvidenceError("MALFORMED", "not_started rows must be objects")
         key = _run_key(row.get("case"), row.get("arm"), row.get("seed"))
+        if "run_id" in row and row["run_id"] != "{}.{}.s{}".format(*key):
+            raise TaskEvidenceError("IDENTITY_MISMATCH", f"not_started run_id {row['run_id']!r} does not match its identity")
+        if key in planned and "order" in row and (type(row["order"]) is not int or row["order"] != planned[key]):
+            raise TaskEvidenceError("IDENTITY_MISMATCH", f"not_started order {row['order']!r} differs from its plan position")
         if key not in planned or key in recorded or key in not_started:
             raise TaskEvidenceError("IDENTITY_MISMATCH", f"not_started row {key} is unplanned, recorded or repeated")
         not_started.add(key)
@@ -288,4 +307,7 @@ def verify_task_run(output: Path) -> dict:
             raise TaskEvidenceError("INTEGRITY", f"retained {item['source']} failed verification: {exc}") from exc
         if _sha256(data) != item["sha256"] or len(data) != item["byte_count"]:
             raise TaskEvidenceError("INTEGRITY", f"retained {item['source']} does not match its recorded hash")
-    return {"schema_version": SCHEMA, "verified": True, "objects": len(retained) + 1, "counts": document["counts"]}
+    # The evidence returned here is the verified registered document itself, so
+    # callers (the CLI report) need no second, unverified read of evidence.json.
+    return {"schema_version": SCHEMA, "verified": True, "objects": len(retained) + 1, "counts": document["counts"],
+            "evidence": document}

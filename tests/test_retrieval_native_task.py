@@ -111,9 +111,18 @@ class NativeTaskBridge(unittest.TestCase):
         self.assertEqual(report_ref["sha256"], hashlib.sha256((self.run_dir / "agent.json").read_bytes()).hexdigest())
         verified = verify_task_run(self.root / "out")
         self.assertTrue(verified["verified"])
+        self.assertEqual(verified["evidence"], json.loads((self.root / "out/evidence.json").read_bytes()))
+        self.assertEqual(verified["evidence"]["counts"], verified["counts"])
         self.assertEqual(verified["objects"], 4 + 2 + 1)  # report, plan, corpus, parser, 2 streams, evidence
         manifest = json.loads((self.root / "out/manifest.json").read_bytes())
         self.assertEqual(manifest["evidence"]["media_type"], "application/vnd.caplab.retrieval-task-evidence+json")
+
+    def test_present_native_fields_agree_and_absent_ones_are_optional(self):
+        self.report["records"][0]["order"] = 0  # matches plan position
+        del self.report["admission"]["not_started"][0]["run_id"]
+        del self.report["admission"]["not_started"][0]["order"]
+        self.write()
+        self.assertEqual(self.run_import()["counts"]["not_started"], 1)
 
     def test_missing_planned_run_is_counted(self):
         self.report["records"] = [r for r in self.report["records"] if r["run_id"] != "boundary.candidate.s0"]
@@ -153,6 +162,16 @@ class NativeTaskBridge(unittest.TestCase):
             (lambda: self.report["admission"]["not_started"].append(dict(case="deploy", arm="baseline", seed=0)), "IDENTITY_MISMATCH"),
             (lambda: self.report.update(schema="cairn.task-eval.agent/2"), "UNKNOWN_SCHEMA"),
             (lambda: self.report["records"][0].update(case="../x", run_id="../x.baseline.s0"), "UNSAFE_PATH"),
+            # Native position semantics (agent-251 integration probes and neighbours).
+            (lambda: self.plan["runs"][0].__setitem__(3, "wrong"), "MALFORMED"),
+            (lambda: self.plan["runs"][0].__setitem__(3, True), "MALFORMED"),
+            (lambda: self.plan["runs"][0].__setitem__(3, 2), "MALFORMED"),
+            (lambda: self.plan["runs"][0].__setitem__(3, -1), "MALFORMED"),
+            (lambda: self.plan["runs"][1].__setitem__(3, 0), "IDENTITY_MISMATCH"),
+            (lambda: self.report["records"][0].update(order=999), "IDENTITY_MISMATCH"),
+            (lambda: self.report["records"][0].update(order=1), "IDENTITY_MISMATCH"),
+            (lambda: self.report["admission"]["not_started"][0].update(run_id="different.candidate.s0"), "IDENTITY_MISMATCH"),
+            (lambda: self.report["admission"]["not_started"][0].update(order=0), "IDENTITY_MISMATCH"),
         ]
         pristine_plan, pristine_report = json.dumps(self.plan), json.dumps(self.report)
         for mutate, code in mutations:
