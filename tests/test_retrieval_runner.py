@@ -315,6 +315,55 @@ class PinDriftTests(RunnerCase):
         self.assertEqual(set(pins["files"]), {"argv[0]", "argv[1]"})
         self.assertEqual(len(adapter._pinned), 2)  # Both are re-checked, not only recorded.
 
+    def test_path_changes_cannot_substitute_an_unpinned_executable(self):
+        directories = [self.tmp / name for name in ("original", "replacement")]
+        for directory in directories:
+            directory.mkdir()
+            executable = directory / "retriever"
+            executable.write_text(f"#!{sys.executable}\nimport json\nprint(json.dumps({{"
+                                  "'schema_version': 'caplab-retrieval-response/1', 'ranked_ids': [], "
+                                  f"'observation': {{'program': {directory.name!r}}}}}))\n")
+            executable.chmod(0o700)
+        arm = {"id": "command", "adapter": "command", "configuration": {"argv": ["retriever"]}}
+        spec = contracts.validate_spec(make_spec([arm]))
+        adapter = runner.CommandAdapter(arm, spec)
+        with mock.patch.dict(os.environ, {"PATH": str(directories[0])}):
+            pins = adapter.pin()
+            adapter.open()
+        with mock.patch.dict(os.environ, {"PATH": str(directories[1])}):
+            outcome = adapter.retrieve(spec["queries"][0], 0, 1, 5)
+        self.assertEqual(outcome.status, "ok", outcome.error)
+        self.assertEqual(outcome.observation["reported"]["program"], "original")
+        self.assertEqual(pins["argv"][0], str(directories[0] / "retriever"))
+
+    def test_same_size_edit_with_restored_mtime_is_refused(self):
+        script = write_retriever(self.scripts, "good")
+        script.write_text(script.read_text() + "\n# original\n")
+        arm = command_arm("good", script)
+        spec = contracts.validate_spec(make_spec([arm]))
+        adapter = runner.CommandAdapter(arm, spec)
+        adapter.pin()
+        adapter.open()
+        before = script.stat()
+        script.write_text(script.read_text().replace("# original", "# modified"))
+        os.utime(script, ns=(before.st_atime_ns, before.st_mtime_ns))
+        self.assertEqual(script.stat().st_size, before.st_size)
+        self.assertEqual(script.stat().st_mtime_ns, before.st_mtime_ns)
+        with self.assertRaises(runner.AdapterError) as caught:
+            adapter.retrieve(spec["queries"][0], 0, 1, 5)
+        self.assertEqual(caught.exception.code, "pin_changed")
+
+    def test_an_oversize_executable_is_refused_instead_of_running_unpinned(self):
+        executable = self.tmp / "oversize"
+        with executable.open("wb") as handle:
+            handle.truncate((256 << 20) + 1)
+        executable.chmod(0o700)
+        arm = {"id": "command", "adapter": "command", "configuration": {"argv": [str(executable)]}}
+        adapter = runner.CommandAdapter(arm, contracts.validate_spec(make_spec([arm])))
+        with self.assertRaises(runner.AdapterError) as caught:
+            adapter.pin()
+        self.assertEqual(caught.exception.code, "command_unpinnable")
+
 
 class CancellationScopeTests(RunnerCase):
     """Cancelling one retriever's process group must never touch unrelated processes."""

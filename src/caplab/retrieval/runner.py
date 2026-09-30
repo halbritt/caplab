@@ -228,12 +228,14 @@ class CommandAdapter(Adapter):
     exit, timeout, oversized output and malformed or contract-violating
     responses are classified failures.
 
-    Pinned files (the executable and every argv entry that is a file) are re-checked before
-    the arm opens (by hash) and before every call (by size, modification time and inode,
+    The executable is resolved once and that absolute path is executed. Pinned files
+    (the executable and argv files up to 256 MiB) are re-checked before the arm opens
+    (by hash) and before every call (by size, modification/change times, device and inode,
     re-hashed on any change); a file that differs from the sealed plan is a `pin_changed`
     failure, never a silent run of other bytes. Limits: this is detection, not custody. A file
     can still change between the check and the exec, and anything the program loads that is not
-    named in argv (libraries, imported modules, data files) is not pinned.
+    named in argv (libraries, imported modules, data files), or argv data files larger
+    than 256 MiB, is not pinned. An executable larger than that limit is refused.
     """
 
     def __init__(self, arm: dict, spec: dict):
@@ -245,7 +247,7 @@ class CommandAdapter(Adapter):
     @staticmethod
     def _signature(path: Path) -> tuple:
         info = Path(path).stat()
-        return info.st_size, info.st_mtime_ns, info.st_ino
+        return info.st_size, info.st_mtime_ns, info.st_ctime_ns, info.st_dev, info.st_ino
 
     def _verify_files(self, *, full: bool) -> None:
         for path, (digest, signature) in self._pinned.items():
@@ -266,10 +268,14 @@ class CommandAdapter(Adapter):
         executable = shutil.which(self.argv[0]) if not os.path.dirname(self.argv[0]) else self.argv[0]
         if not executable or not Path(executable).is_file() or not os.access(executable, os.X_OK):
             raise AdapterError("command_unavailable", f"{self.argv[0]!r} is not an executable file")
+        if Path(executable).stat().st_size > 256 << 20:
+            raise AdapterError("command_unpinnable", "the executable exceeds the 256 MiB pin limit")
+        # Keep interpreter symlinks: resolving a venv's Python symlink changes its environment.
+        self.argv[0] = os.path.abspath(executable)
         files = {}
         self._pinned = {}
         for index, part in enumerate(self.argv):
-            path = Path(executable if index == 0 else part)
+            path = Path(part)
             if path.is_file() and path.stat().st_size <= 256 << 20:
                 digest = file_sha256(path)
                 files[f"argv[{index}]"] = {"path": str(path.resolve()), "sha256": digest}
