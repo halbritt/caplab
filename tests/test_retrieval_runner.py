@@ -534,6 +534,36 @@ class RealArtifactsTests(RunnerCase):
         verified = self.artifacts.verify_run(self.out)
         self.assertEqual([a["status"] for a in verified["attempts"]], ["ok", "interrupted", "not_started", "not_started"])
 
+    def test_invalid_observations_keep_raw_evidence_and_do_not_abort_the_roster(self):
+        from caplab.qualification.ledger import FilesystemQualificationLedger
+
+        prefix = b'{"schema_version":"caplab-retrieval-response/1","ranked_ids":[],"observation":'
+        cases = {
+            "overflow": (prefix + b'{"n":1e400}}', "invalid_response"),
+            "deep-observation": (prefix + b'{"n":' + b'[' * 40 + b'0' + b']' * 40 + b'}}', "invalid_response"),
+            "parser-depth": (b'[' * 100000, "malformed_response"),
+        }
+        for name, (payload, code) in cases.items():
+            with self.subTest(name=name):
+                script = self.scripts / f"{name}.py"
+                script.write_text(f"import sys\nsys.stdin.buffer.read()\nsys.stdout.buffer.write({payload!r})\n")
+                spec = make_spec([command_arm("malformed", script), self.arm("good")], queries=QUERIES[:2])
+                output = self.tmp / name
+                result = runner.run_experiment(spec, output)
+                self.assertEqual(result["status"], "completed_with_failures")
+                verified = self.artifacts.verify_run(output)
+                self.assertEqual(verified["report"]["run"]["missing"], 0)
+                self.assertEqual([a["status"] for a in verified["attempts"]], ["error", "error", "ok", "ok"])
+                failures = [a for a in verified["attempts"] if a["arm"] == "malformed"]
+                self.assertEqual([a["error"]["code"] for a in failures], [code, code])
+                self.assertEqual(verified["report"]["summary"]["arms"]["malformed"]["coverage"]["scorable"], 0)
+                ledger = FilesystemQualificationLedger(output / "ledger")
+                entries = [json.loads(line) for line in (output / "evidence.jsonl").read_text().splitlines()]
+                malformed = [e for e in entries if e.get("assignment_id", "").startswith("malformed:")]
+                self.assertEqual(len(malformed), 2)
+                for entry in malformed:
+                    self.assertEqual(ledger.resolve(entry["raw"]["stdout"]), payload)
+
     def test_a_cleanup_failure_leaves_a_run_that_only_verifies_as_unfinished(self):
         stubs = {"a": self.Stub(close_raises=runner.AdapterCleanupError("postgres may still be running",
                                                                        {"postgres.log": b"log tail"})),

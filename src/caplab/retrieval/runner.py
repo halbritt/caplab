@@ -268,7 +268,7 @@ class CommandAdapter(Adapter):
                            stderr_tail=text_tail(done.stderr))
         try:
             response = _strict_json(done.stdout)
-        except (UnicodeDecodeError, ValueError) as exc:
+        except (UnicodeDecodeError, ValueError, RecursionError) as exc:
             return failure("error", "malformed_response", f"stdout is not one JSON document: {exc}",
                            stdout_head=text_tail(done.stdout[:ERROR_TEXT_BYTES]))
         if not isinstance(response, dict) or set(response) - _RESPONSE_KEYS:
@@ -359,8 +359,10 @@ def _finish_attempt(spec: dict, item: dict, outcome: Outcome, elapsed_ns: int) -
         # evidence as a failure; never repair or drop the response.
         error = {"code": "invalid_response", "message": exc.message[:ERROR_TEXT_BYTES],
                  "contract_code": exc.code, "path": exc.path}
+        # Rejected observations can themselves violate the contract (overflow or nesting).
+        # Keep their exact bytes in raw evidence, not in the replacement failure attempt.
         failed = _attempt_dict(item, "error", latency_ns=latency, error=error,
-                               observation=outcome.observation if isinstance(outcome.observation, dict) else {})
+                               observation={"response_rejected": True})
         return contracts.validate_attempt(failed, spec), outcome.raw
 
 
