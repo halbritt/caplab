@@ -137,7 +137,7 @@ in this process at import. Select only a checkout you trust.
    identity, `binding: null` and limits. A coherently forged document of that
    kind, re-registered with a rewritten manifest, is refused.
    - **Reported at import, not verifiable:** the source paths
-     (`sources.*.source`) and the parser pin's `checkout`, `commit` and
+     (`sources.*.source`) and the parser pin's `path`, `checkout`, `commit` and
      `parser_file_modified` record the import environment. They are copied
      into the rebuild, so a coherent forgery of them is not detected. The
      result lists them under `verification.reported_at_import`.
@@ -146,7 +146,8 @@ in this process at import. Select only a checkout you trust.
      and parser bytes;
    - each observed delivery carries the `source_sha256` of the stream it was
      parsed from, which must equal that same assignment's retained stream
-     hash, so swapping streams between assignments is refused;
+     hash, so an uncoordinated swap between assignments is refused. A swap
+     that also rewrites the delivery's source hash needs trusted replay;
    - every observed delivery must have a retained stream, and vice versa.
 
    Delivery contents are re-executed only with `trusted_parser_checkout`.

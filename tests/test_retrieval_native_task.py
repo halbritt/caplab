@@ -246,11 +246,40 @@ class NativeTaskBridge(unittest.TestCase):
 
     def test_provenance_fields_are_reported_not_verified(self):
         self.run_import()
-        self.forge(lambda d: d["sources"]["parser"]["pin"].update(commit="0" * 40, parser_file_modified=False))
+        self.forge(lambda d: d["sources"]["parser"]["pin"].update(
+            commit="0" * 40, parser_file_modified=False, path="reported-only.py"))
         result = verify_task_run(self.root / "out")  # not detectable from retained bytes; labelled as such
         self.assertIn("sources.parser.pin.commit", result["verification"]["reported_at_import"])
+        self.assertIn("sources.parser.pin.path", result["verification"]["reported_at_import"])
         self.assertTrue(result["verification"]["rederived"].startswith("all fields derived from the retained report"))
         self.assertTrue(any("reported at import" in limit for limit in result["evidence"]["limits"]))
+
+    def test_hostile_stream_parser_errors_are_typed_at_import_and_replay(self):
+        stream_path = self.run_dir / "runs/deploy.baseline.s0/stream.jsonl"
+        original = stream_path.read_bytes()
+        for index, payload in enumerate((b'{"message":"x"}\n', b'[' * 100000)):
+            with self.subTest(payload=index):
+                stream_path.write_bytes(payload)
+                with self.assertRaises(TaskEvidenceError) as caught:
+                    self.run_import(f"refused-{index}")
+                self.assertEqual(caught.exception.code, "PARSER_REFUSED")
+                self.assertFalse((self.root / f"refused-{index}").exists())
+
+                stream_path.write_bytes(original)
+                name = f"replay-{index}"
+                self.run_import(name)
+                ref = FilesystemQualificationLedger(self.root / name / "ledger").register_bytes(
+                    payload, kind="retrieval-task-stream", schema="native-stream/1")
+
+                def replace_stream(document):
+                    row = next(r for r in document["assignments"] if r["run_id"] == "deploy.baseline.s0")
+                    row["stream"].update(ref=ref, sha256=hashlib.sha256(payload).hexdigest(), byte_count=len(payload))
+                    row["delivery"]["source_sha256"] = hashlib.sha256(payload).hexdigest()
+
+                self.forge(replace_stream, name=name)
+                with self.assertRaises(TaskEvidenceError) as caught:
+                    verify_task_run(self.root / name, trusted_parser_checkout=CAIRN)
+                self.assertEqual(caught.exception.code, "PARSER_REFUSED")
 
     def test_stream_removal_detection_boundary(self):
         doc = self.run_import()

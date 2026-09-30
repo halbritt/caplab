@@ -17,12 +17,13 @@ process at import. Select only a checkout you trust; its exact hashed bytes are
 executed and retained.
 
 `verify_task_run` re-checks every retained byte and re-derives, from the
-retained report, plan and corpus bytes, every evidence field that does not come
-from the parser: identities, order, statuses, original grades and memory,
+retained report, plan and corpus bytes, the evidence fields derived from them:
+identities, order, statuses, original grades and memory,
 strata, counts, outcomes, admission and reported identity. Parser-derived
 delivery observations are bound by hash to the retained parser, report,
 corpus and stream bytes but are not re-executed, unless the caller passes an
 explicitly trusted checkout whose parser bytes match the retained parser.
+Import-environment paths and revision metadata remain reported observations.
 Verification establishes consistency with immutable retained sources, not
 cryptographic authorship.
 """
@@ -63,15 +64,15 @@ LIMITS = [
     "Configuration identity is copied as reported and is incomplete: no CAPLAB Binding, basis or Measurement "
     "record is created or implied.",
     "No model, provider or Cairn service was called while importing.",
-    "The selected checkout's parser code ran in-process at import; verification re-derives all non-parser fields "
+    "The selected checkout's parser code ran in-process at import; verification re-derives report/plan/corpus fields "
     "and binds parser output by hash, re-executing it only with an explicitly trusted matching checkout.",
-    "Source paths and the parser pin's checkout, commit and modified flag are reported at import; they are not "
+    "Source paths and the parser pin's path, checkout, commit and modified flag are reported at import; they are not "
     "verifiable from retained bytes.",
     "A coherent removal of a retained stream reference together with its delivery is not detected from this "
     "evidence alone; detecting wholesale coherent replacement needs an external pin of the evidence digest.",
 ]
 # Fields copied into the evidence from the import environment, not re-derivable from retained bytes.
-REPORTED_AT_IMPORT = ("sources.*.source", "sources.parser.pin.checkout", "sources.parser.pin.commit",
+REPORTED_AT_IMPORT = ("sources.*.source", "sources.parser.pin.path", "sources.parser.pin.checkout", "sources.parser.pin.commit",
                       "sources.parser.pin.parser_file_modified")
 
 
@@ -342,7 +343,7 @@ def _check_parser_analysis(analysis: dict, *, report_sha: str, corpus_sha: str, 
 def _analyze(parser, report_path: Path, corpus_path: Path) -> dict:
     try:
         analysis = parser.analyze_report(report_path, corpus_path)
-    except (ValueError, KeyError, TypeError, OSError) as exc:
+    except Exception as exc:  # external parser failures become explicit refusals; never substitute evidence
         raise TaskEvidenceError("PARSER_REFUSED", f"pinned Cairn parser refused the evidence: {exc}") from exc
     if not isinstance(analysis, dict) or not isinstance(analysis.get("records"), list):
         raise TaskEvidenceError("PARSER_CONTRACT", "parser returned no records list")
@@ -454,8 +455,9 @@ def _resolve_source(ledger, item: Any, label: str) -> bytes:
 def verify_task_run(output: Path, *, trusted_parser_checkout: Path | None = None) -> dict:
     """Verify retained bytes and re-derive the evidence document from them.
 
-    Every non-parser field is recomputed from the retained report, plan and
-    corpus and must reproduce evidence.json byte for byte. Parser-derived
+    Fields derived from the retained report, plan and corpus are recomputed
+    and must reproduce evidence.json byte for byte. Import-environment paths
+    and revision metadata are copied as reported. Parser-derived
     delivery observations are hash-bound to retained parser, report, corpus and
     stream bytes; they are re-executed only when `trusted_parser_checkout` is
     given and its parser bytes equal the retained parser. Retained code is never
