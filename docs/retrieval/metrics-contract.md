@@ -44,7 +44,9 @@ queries         [{id, text, relevant_ids, forbidden_ids=[], stratum="answerable"
 arms            [{id, adapter: "command"|"cairn", configuration}]
                   command: {argv: [nonempty str, ...]}
                   cairn:   {binary, checkout, semantic_worker?, semantic_mode: "off"|"on"}
-                           (semantic_mode "on" requires semantic_worker)
+                           ("on" without a worker is valid: the adapter must record the
+                            observed discovery state, e.g. labelled lexical fallback;
+                            "off" with a worker keeps semantic discovery off)
 cutoffs         sorted distinct ints in 1..1000 (at most 16)
 seeds           sorted distinct ints in 0..2^31-1 (at most 100)
 timeout_seconds int in 1..86400
@@ -147,7 +149,9 @@ Arms are never pooled. The output is `caplab-retrieval-summary/1`:
    cutoffs: {"k": {
      answerable: {
        conditional:     {precision, recall, mrr (Mean), ndcg (FloatMean), success (Rate over ok)},
-       all_assignments: {recall (Mean, non-ok counted as 0), success (Rate over planned)},
+       all_assignments: {unscored (count),
+                         recall_lower_bound_zero_imputed, recall_upper_bound_one_imputed (Mean),
+                         success_lower_bound, success_upper_bound (Rate over planned)},
        case_level:      {recall (Mean of per-query seed means), queries_scored (Rate)}},
      controls:  {false_positive_rate (Rate over ok controls),
                  clean_all_assignments (Rate: ok and not FP, over planned controls)},
@@ -162,7 +166,9 @@ Arms are never pooled. The output is `caplab-retrieval-summary/1`:
 Value shapes:
 - **Rate** is `{numerator, denominator, value}`. **Mean** is
   `{numerator, denominator, value, count}`, an exact reduced Fraction of the
-  mean. **FloatMean** is `{value, count}`.
+  mean. **FloatMean** is `{value, count}`. nDCG FloatMeans and every display
+  `value` are presentation only: keep them out of CAPLAB canonical metadata
+  and identities (raw report bytes may carry them).
 - `value` is a display float and is None when the denominator or count is 0,
   meaning undefined, never 0.
 - Identity and comparisons must use the exact integer fields, never `value`.
@@ -171,9 +177,12 @@ Value shapes:
 ## Guarantees
 
 - A failed, timed-out, interrupted, not-started or missing assignment is never
-  a successful abstention. It is excluded from conditional metrics, and it
-  lowers every all-assignment measure: success, recall, clean controls and
-  clean forbidden controls.
+  a successful abstention. It is excluded from conditional metrics. For
+  answerable queries it has no observed recall, so all-assignment figures are
+  reported as bounds: zero-imputed lower and one-imputed upper, with the
+  `unscored` count. Neither bound is observed recall, and a lower bound does
+  not mean retrieval failed. For controls and forbidden controls, it counts as
+  not clean.
 - Empty-gold controls cannot raise answerable quality. They have their own
   rates, and an empty retriever scores 0 all-assignment success.
 - Conditional metrics must be reported alongside `coverage` and the

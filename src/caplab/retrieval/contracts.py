@@ -146,8 +146,8 @@ def _arm_configuration(adapter, value, path):
         mode = config.get("semantic_mode", "off")
         if mode not in SEMANTIC_MODES:
             _fail("INVALID_VALUE", f"{path}/semantic_mode", f"must be one of {SEMANTIC_MODES}")
-        if mode == "on" and "semantic_worker" not in out:
-            _fail("MISSING_FIELD", f"{path}/semantic_worker", "semantic_mode on requires semantic_worker")
+        # "on" without a worker stays representable: a real baseline must be able
+        # to request semantic discovery and record labelled lexical fallback.
         out["semantic_mode"] = mode
     return out
 

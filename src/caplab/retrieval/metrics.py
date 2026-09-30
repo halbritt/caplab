@@ -142,9 +142,15 @@ def _arm_summary(spec, arm, attempts_by_id, queries):
                                 "mrr": mean(frac("reciprocal_rank", answer_ok)),
                                 "ndcg": float_mean(s["cutoffs"][k]["ndcg"] for s in answer_ok),
                                 "success": rate(success, len(answer_ok))},
+                # Unscorable assignments have no observed recall. Report the
+                # zero-imputed lower bound and one-imputed upper bound with the
+                # unscored count; neither bound is observed recall.
                 "all_assignments": {
-                    "recall": mean(frac("recall", answer_ok) + [Fraction(0)] * (answer_planned - len(answer_ok))),
-                    "success": rate(success, answer_planned)},
+                    "unscored": answer_planned - len(answer_ok),
+                    "recall_lower_bound_zero_imputed": mean(frac("recall", answer_ok) + [Fraction(0)] * (answer_planned - len(answer_ok))),
+                    "recall_upper_bound_one_imputed": mean(frac("recall", answer_ok) + [Fraction(1)] * (answer_planned - len(answer_ok))),
+                    "success_lower_bound": rate(success, answer_planned),
+                    "success_upper_bound": rate(success + answer_planned - len(answer_ok), answer_planned)},
                 "case_level": {
                     "recall": mean(sum(frac("recall", rows), Fraction(0)) / len(rows) for rows in by_query.values()),
                     "queries_scored": rate(len(by_query), len(answer_queries))},

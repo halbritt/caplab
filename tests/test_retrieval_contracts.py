@@ -46,6 +46,13 @@ class SpecValidation(unittest.TestCase):
         self.assertEqual(spec_digest(spec), spec_digest(validate_spec(base_spec())))
         self.assertTrue(canonical_json(spec).startswith(b'{"arms":'))
 
+    def test_semantic_modes_stay_explicit(self):
+        document = base_spec()
+        document["arms"][1]["configuration"]["semantic_mode"] = "on"  # requested, no worker: fallback must be observable
+        self.assertEqual(validate_spec(document)["arms"][1]["configuration"], {"binary": "/b/cairn", "checkout": "/c", "semantic_mode": "on"})
+        document["arms"][1]["configuration"].update(semantic_mode="off", semantic_worker="/w")
+        self.assertEqual(validate_spec(document)["arms"][1]["configuration"]["semantic_mode"], "off")
+
     def test_input_is_not_mutated(self):
         document = base_spec()
         before = copy.deepcopy(document)
@@ -75,7 +82,6 @@ class SpecValidation(unittest.TestCase):
             (lambda d: d["arms"][0]["configuration"].update(argv=[]), "EMPTY"),
             (lambda d: d["arms"][0]["configuration"].update(extra=True), "UNKNOWN_FIELD"),
             (lambda d: d["arms"][1]["configuration"].pop("checkout"), "MISSING_FIELD"),
-            (lambda d: d["arms"][1]["configuration"].update(semantic_mode="on"), "MISSING_FIELD"),
             (lambda d: d["arms"][1]["configuration"].update(semantic_mode="maybe"), "INVALID_VALUE"),
             (lambda d: d.update(cutoffs=[1, 1]), "DUPLICATE_ID"),
             (lambda d: d.update(cutoffs=[0]), "OUT_OF_RANGE"),

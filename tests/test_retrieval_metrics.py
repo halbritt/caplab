@@ -109,7 +109,7 @@ class Summarize(unittest.TestCase):
         self.assertEqual(frac(fhit["bad"]), (2, 2))
         self.assertEqual(frac(fhit["good"]), (0, 2))
         # The empty retriever is clean on controls but useless: controls cannot inflate quality.
-        self.assertEqual(arms["empty"]["cutoffs"]["3"]["answerable"]["all_assignments"]["success"]["value"], 0.0)
+        self.assertEqual(arms["empty"]["cutoffs"]["3"]["answerable"]["all_assignments"]["success_lower_bound"]["value"], 0.0)
 
     def test_failures_never_count_as_clean_or_successful(self):
         s = spec()
@@ -122,8 +122,12 @@ class Summarize(unittest.TestCase):
         # Conditional metrics cover the one successful answerable run...
         self.assertEqual(frac(k["answerable"]["conditional"]["success"]), (1, 1))
         # ...but all-assignment accounting keeps the interrupted answerable query.
-        self.assertEqual(frac(k["answerable"]["all_assignments"]["success"]), (1, 2))
-        self.assertEqual(frac(k["answerable"]["all_assignments"]["recall"]), (1, 2))
+        bounds = k["answerable"]["all_assignments"]
+        self.assertEqual(bounds["unscored"], 1)
+        self.assertEqual(frac(bounds["success_lower_bound"]), (1, 2))
+        self.assertEqual(frac(bounds["success_upper_bound"]), (2, 2))
+        self.assertEqual(frac(bounds["recall_lower_bound_zero_imputed"]), (1, 2))
+        self.assertEqual(frac(bounds["recall_upper_bound_one_imputed"]), (1, 1))
         # Failed controls are neither false positives nor clean abstentions.
         self.assertEqual(frac(k["controls"]["false_positive_rate"]), (0, 0))
         self.assertIsNone(k["controls"]["false_positive_rate"]["value"])
