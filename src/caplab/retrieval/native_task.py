@@ -101,10 +101,15 @@ def _evidence_bytes(document: dict) -> bytes:
                       allow_nan=False).encode("utf-8")
 
 
-def _load_parser(checkout: Path):
-    """Execute exactly the bytes that are hashed and retained (no second read)."""
+def _load_parser(checkout: Path, *, expected: bytes | None = None):
+    """Execute exactly the bytes that are hashed and retained (no second read).
+
+    With `expected`, bytes that differ are refused before anything executes.
+    """
     source = checkout / PARSER_PATH
     data = _read_file(source, "Cairn trial_task_evidence.py")
+    if expected is not None and data != expected:
+        raise TaskEvidenceError("PARSER_CONTRACT", "trusted checkout's parser differs from the retained parser")
     module = types.ModuleType("caplab_pinned_trial_task_evidence")
     module.__file__ = str(source)
     try:
@@ -478,10 +483,17 @@ def verify_task_run(output: Path, *, trusted_parser_checkout: Path | None = None
         raise TaskEvidenceError("INTEGRITY", "evidence lacks parser analysis hashes")
     _check_parser_analysis(parser_analysis, report_sha=_sha256(data["report"]), corpus_sha=_sha256(data["corpus"]),
                            observed_sha=None if observed is None else _sha256(observed), parser_sha=_sha256(data["parser"]))
+    # Every evidence row must be the re-derived roster entry at its position
+    # (identity, order and uniqueness) before any run ID is used as a path.
+    order = checked["order"]
+    if len(assignments) != len(order):
+        raise TaskEvidenceError("INTEGRITY", "evidence assignments do not match the retained plan roster")
     streams, deliveries, stream_data = {}, {}, {}
-    for row in assignments:
-        if not isinstance(row, dict) or not isinstance(row.get("run_id"), str):
-            raise TaskEvidenceError("INTEGRITY", "evidence assignment is malformed")
+    for row, key in zip(assignments, order):
+        expected = {"run_id": _run_id(key), "case": key[0], "arm": key[1], "seed": key[2],
+                    "order": checked["planned"][key]}
+        if not isinstance(row, dict) or any(row.get(field) != value for field, value in expected.items()):
+            raise TaskEvidenceError("INTEGRITY", f"evidence assignment differs from retained roster entry {_run_id(key)}")
         if "stream" in row:
             stream_data[row["run_id"]] = _resolve_source(ledger, row["stream"], f"stream {row['run_id']}")
             streams[row["run_id"]] = row["stream"]
@@ -490,19 +502,24 @@ def verify_task_run(output: Path, *, trusted_parser_checkout: Path | None = None
                 raise TaskEvidenceError("INTEGRITY", f"delivery for {row['run_id']} is malformed")
     parser_mode = "hash-bound; not re-executed"
     if trusted_parser_checkout is not None:
-        parser, trusted_bytes, _ = _load_parser(Path(trusted_parser_checkout).resolve())
-        if trusted_bytes != data["parser"]:
-            raise TaskEvidenceError("PARSER_CONTRACT", "trusted checkout's parser differs from the retained parser")
+        parser, _, _ = _load_parser(Path(trusted_parser_checkout).resolve(), expected=data["parser"])
         with tempfile.TemporaryDirectory(prefix="caplab-task-verify-") as scratch:
-            root = Path(scratch)
-            (root / "agent.json").write_bytes(data["report"])
-            (root / "corpus.json").write_bytes(data["corpus"])
+            root = Path(scratch).resolve()
+
+            def place(relative: str, payload: bytes) -> None:
+                # Independent containment check at the write boundary.
+                target = (root / relative).resolve()
+                if not target.is_relative_to(root) or target == root:
+                    raise TaskEvidenceError("UNSAFE_PATH", f"refusing to materialize {relative!r} outside the scratch root")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(payload)
+
+            place("agent.json", data["report"])
+            place("corpus.json", data["corpus"])
             if observed is not None:
-                (root / observed_rel).parent.mkdir(parents=True, exist_ok=True)
-                (root / observed_rel).write_bytes(observed)
+                place(observed_rel, observed)
             for run_id, stream in stream_data.items():
-                (root / "runs" / run_id).mkdir(parents=True)
-                (root / "runs" / run_id / "stream.jsonl").write_bytes(stream)
+                place(f"runs/{run_id}/stream.jsonl", stream)
             analysis = _analyze(parser, root / "agent.json", root / "corpus.json")
         fresh = {run_id: _delivery(row) for run_id, row in _deliveries_from(analysis, checked).items()}
         if fresh != deliveries:

@@ -31,8 +31,15 @@ in this process at import. Select only a checkout you trust.
   read the file a second time. A dirty check covers the parser file only, not
   modules it imports.
 - `verify_task_run` never executes retained code. It re-runs the parser only
-  from `trusted_parser_checkout`, when the caller passes one explicitly, and
-  only if that checkout's parser bytes equal the retained parser.
+  from `trusted_parser_checkout`, when the caller passes one explicitly. Those
+  bytes are compared with the retained parser **before** anything executes:
+  a mismatched parser is refused (`PARSER_CONTRACT`) without running.
+- Before any stream is collected or written to a scratch directory, every
+  evidence assignment must equal the re-derived roster entry at its position:
+  run ID, case, arm, seed and order, in plan order with none missing,
+  reordered or duplicated. Each scratch write is also checked to stay inside
+  the scratch root. A forged run ID, whether absolute or `../`, is refused
+  before any path is used.
 
 ## What import does
 

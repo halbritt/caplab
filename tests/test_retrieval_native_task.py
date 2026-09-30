@@ -199,6 +199,39 @@ class NativeTaskBridge(unittest.TestCase):
             verify_task_run(self.root / "out", trusted_parser_checkout=self.root / "other-checkout")
         self.assertEqual(caught.exception.code, "PARSER_CONTRACT")
 
+    def test_forged_run_id_cannot_write_outside_scratch(self):
+        self.run_import()
+        sentinel = self.root / "sentinel-outside"  # test-owned; never a real user path
+        for forged_id in (str(sentinel / "x"), "../../sentinel-traversal/x", "deploy.baseline.s0/../../escape"):
+            with self.subTest(forged_id=forged_id):
+                self.forge(lambda d: d["assignments"][0].update(run_id=forged_id))
+                for trusted in (None, CAIRN):
+                    with self.assertRaises(TaskEvidenceError) as caught:
+                        verify_task_run(self.root / "out", trusted_parser_checkout=trusted)
+                    self.assertEqual(caught.exception.code, "INTEGRITY")
+                self.assertFalse(sentinel.exists())
+                self.assertFalse((self.root / "sentinel-traversal").exists())
+                self.forge(lambda d: d["assignments"][0].update(run_id="deploy.baseline.s0"))
+        # Reordered, duplicated or dropped roster rows are refused before any path use.
+        for mutate in (lambda d: d["assignments"].reverse(),
+                       lambda d: d["assignments"].__setitem__(1, dict(d["assignments"][0])),
+                       lambda d: d["assignments"].pop()):
+            self.forge(mutate)
+            with self.assertRaises(TaskEvidenceError):
+                verify_task_run(self.root / "out", trusted_parser_checkout=CAIRN)
+
+    def test_mismatched_trusted_parser_never_executes(self):
+        self.run_import()
+        marker = self.root / "parser-executed-marker"  # test-owned side effect
+        other = self.root / "hostile-checkout/scripts"
+        other.mkdir(parents=True)
+        (other / "trial_task_evidence.py").write_text(
+            f"open({str(marker)!r}, 'w').write('ran')\n" + (CAIRN / "scripts/trial_task_evidence.py").read_text())
+        with self.assertRaises(TaskEvidenceError) as caught:
+            verify_task_run(self.root / "out", trusted_parser_checkout=self.root / "hostile-checkout")
+        self.assertEqual(caught.exception.code, "PARSER_CONTRACT")
+        self.assertFalse(marker.exists())
+
     def test_colliding_derived_run_ids_are_refused(self):
         # (a.b, c) and (a, b.c) both derive run_id a.b.c.s0 and would share one stream.
         self.plan.update(arms=["c", "b.c"], runs=[["a.b", "c", 0, 0], ["a", "b.c", 0, 1]])
