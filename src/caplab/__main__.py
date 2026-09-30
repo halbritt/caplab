@@ -17,7 +17,7 @@ def main(
     argv = list(sys.argv[1:] if arguments is None else arguments)
     if not argv:
         sys.stderr.buffer.write(
-            canonical_json({"error": "command_required:qualification_or_revbench"})
+            canonical_json({"error": "command_required:qualification_or_revbench_or_retrieval"})
             + b"\n"
         )
         return 2
@@ -28,6 +28,10 @@ def main(
         if clock is None:
             return qualification_main(remaining)
         return qualification_main(remaining, clock=clock)
+    if command == "retrieval":
+        from caplab.retrieval.__main__ import main as retrieval_main
+
+        return retrieval_main(remaining)
     if command == "revbench":
         try:
             from caplab.revbench.__main__ import main as revbench_main

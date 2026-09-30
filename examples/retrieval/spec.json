@@ -1,0 +1,178 @@
+{
+  "schema_version": "caplab-retrieval-spec/1",
+  "experiment_id": "retrieval-fixture-v1",
+  "corpus": [
+    {
+      "id": "recall-budget",
+      "body": "Cairn memory recall reserves expansion bytes before searching and counts UTF-8 receipt envelopes."
+    },
+    {
+      "id": "startup-pull",
+      "body": "Cairn native startup supplies a receipt index and a direct pull handle for the selected record."
+    },
+    {
+      "id": "version-check",
+      "body": "Cairn executable identity uses a reported binary version and SHA-256 digest before compatibility checks."
+    },
+    {
+      "id": "startup-current",
+      "body": "Cairn startup now uses the native receipt index; this is the current replacement procedure."
+    },
+    {
+      "id": "wrong-project",
+      "body": "Surveyor obsolete_scan_flag enables archive scanning for this project.",
+      "repo": "surveyor"
+    },
+    {
+      "id": "local-only",
+      "body": "Cairn synthetic private_garage_pin is 0000; the note is local-only and not hosted eligible.",
+      "shareable": false
+    },
+    {
+      "id": "superseded",
+      "body": "Cairn use obsolete_saved_query_flag to start a search automatically.",
+      "supersede_with": "startup-current"
+    }
+  ],
+  "queries": [
+    {
+      "id": "answerable-recall",
+      "text": "How does Cairn memory recall reserve expansion bytes?",
+      "relevant_ids": [
+        "recall-budget"
+      ],
+      "stratum": "answerable",
+      "forbidden_ids": [
+        "wrong-project",
+        "local-only",
+        "superseded"
+      ]
+    },
+    {
+      "id": "paraphrase-startup",
+      "text": "At opening, how do I fetch the selected Cairn record using its handle?",
+      "relevant_ids": [
+        "startup-pull"
+      ],
+      "stratum": "paraphrase",
+      "forbidden_ids": [
+        "wrong-project",
+        "local-only",
+        "superseded"
+      ]
+    },
+    {
+      "id": "answerable-version",
+      "text": "How is Cairn executable binary version and digest checked?",
+      "relevant_ids": [
+        "version-check"
+      ],
+      "stratum": "answerable",
+      "forbidden_ids": [
+        "wrong-project",
+        "local-only",
+        "superseded"
+      ]
+    },
+    {
+      "id": "no-answer",
+      "text": "Cairn ocean fishing tide forecast",
+      "relevant_ids": [],
+      "stratum": "no-answer",
+      "forbidden_ids": [
+        "wrong-project",
+        "local-only",
+        "superseded"
+      ]
+    },
+    {
+      "id": "wrong-project-control",
+      "text": "Cairn obsolete_scan_flag",
+      "relevant_ids": [],
+      "forbidden_ids": [
+        "wrong-project"
+      ],
+      "stratum": "wrong-project"
+    },
+    {
+      "id": "local-only-control",
+      "text": "Cairn private_garage_pin",
+      "relevant_ids": [],
+      "forbidden_ids": [
+        "local-only"
+      ],
+      "stratum": "local-only"
+    },
+    {
+      "id": "superseded-control",
+      "text": "Cairn obsolete_saved_query_flag",
+      "relevant_ids": [],
+      "forbidden_ids": [
+        "superseded"
+      ],
+      "stratum": "superseded"
+    }
+  ],
+  "arms": [
+    {
+      "id": "good",
+      "adapter": "command",
+      "configuration": {
+        "argv": [
+          "python3",
+          "examples/retrieval/fixture.py",
+          "good",
+          "--project",
+          "cairn"
+        ]
+      }
+    },
+    {
+      "id": "bad",
+      "adapter": "command",
+      "configuration": {
+        "argv": [
+          "python3",
+          "examples/retrieval/fixture.py",
+          "bad",
+          "--project",
+          "cairn"
+        ]
+      }
+    },
+    {
+      "id": "empty",
+      "adapter": "command",
+      "configuration": {
+        "argv": [
+          "python3",
+          "examples/retrieval/fixture.py",
+          "empty",
+          "--project",
+          "cairn"
+        ]
+      }
+    },
+    {
+      "id": "failing",
+      "adapter": "command",
+      "configuration": {
+        "argv": [
+          "python3",
+          "examples/retrieval/fixture.py",
+          "failing",
+          "--project",
+          "cairn"
+        ]
+      }
+    }
+  ],
+  "cutoffs": [
+    1,
+    3
+  ],
+  "seeds": [
+    0
+  ],
+  "timeout_seconds": 5
+}
