@@ -11,6 +11,14 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+from caplab.catalog import (
+    CatalogSelectionError,
+    load_projection,
+    retain_selection,
+    select_entry,
+    validate_against_spec,
+)
+from caplab.catalog.__main__ import add_catalog_arguments, quartermaster_argv
 from caplab.qualification.export import write_export_exclusive
 from caplab.qualification.ledger import FilesystemQualificationLedger
 from caplab.revbench import RevbenchContractError, execute, prepare, score
@@ -127,6 +135,29 @@ def _credential_sources(values: list[str] | None) -> dict[str, str]:
     return result
 
 
+def _catalog_selection(args: argparse.Namespace, *, live_source: bool = False) -> Any:
+    """Load the optional catalog entry; pure apart from a private temporary directory."""
+
+    required = (args.catalog_release, args.catalog_overlay, args.catalog_entry, args.quartermaster_argv)
+    if all(value is None for value in (*required, args.catalog_reference_output)):
+        return None
+    if live_source:
+        # The pinned live apparatus spawns nothing but its declared native processes.
+        raise RevbenchContractError("catalog_selection_unavailable_in_live_source_invocation")
+    if any(value is None for value in required):
+        raise RevbenchContractError("catalog_arguments_incomplete")
+    if not args.ledger.is_dir():
+        # Catalog selection needs the spec's artifacts already registered; do not create a ledger.
+        raise RevbenchContractError("catalog_ledger_missing")
+    try:
+        projection = load_projection(
+            args.catalog_release, args.catalog_overlay, quartermaster_argv(args.quartermaster_argv)
+        )
+        return select_entry(projection, args.catalog_entry)
+    except CatalogSelectionError as error:
+        raise RevbenchContractError(str(error)) from error
+
+
 def _paths_overlap(left: Path, right: Path) -> bool:
     try:
         left = left.resolve(strict=False)
@@ -153,6 +184,10 @@ def build_parser(*, live_source: bool = False) -> argparse.ArgumentParser:
     prepare_parser.add_argument("--ledger", type=Path, required=True)
     prepare_parser.add_argument("--output", type=Path, required=True)
     prepare_parser.add_argument("--reference-output", type=Path)
+    # Optional shared-catalog selection: validated and retained, never a Binding source.
+    add_catalog_arguments(prepare_parser, prefix="catalog-")
+    prepare_parser.add_argument("--catalog-entry")
+    prepare_parser.add_argument("--catalog-reference-output", type=Path)
     if live_source:
         live_runtime_parser = subparsers.add_parser(
             "prepare-live-runtime",
@@ -241,8 +276,18 @@ def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
             _write_exclusive(args.reference_output, authority_inputs_ref)
     elif args.command == "prepare":
         spec = _read_document(args.spec, role="spec")
+        selection = _catalog_selection(args, live_source=live_source)
         registrar = LedgerArtifactRegistrar(args.ledger)
         document = prepare(spec, registrar)
+        catalog_ref = None
+        if selection is not None:
+            # Every refusal above and here precedes the first registration; retention comes
+            # before the manifest so a registered manifest always has its catalog provenance.
+            try:
+                validated = validate_against_spec(selection, spec, registrar)
+                catalog_ref = retain_selection(selection, validated, document, registrar)
+            except CatalogSelectionError as error:
+                raise RevbenchContractError(str(error)) from error
         manifest_ref = registrar.register_document(
             document,
             kind="revbench-manifest",
@@ -251,6 +296,8 @@ def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
         )
         if args.reference_output is not None:
             _write_exclusive(args.reference_output, manifest_ref)
+        if catalog_ref is not None and args.catalog_reference_output is not None:
+            _write_exclusive(args.catalog_reference_output, catalog_ref)
     elif args.command == "execute":
         manifest = _read_document(args.manifest, role="manifest")
         binding = manifest.get("binding")
