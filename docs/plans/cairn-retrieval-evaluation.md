@@ -168,7 +168,7 @@ RunArtifacts.register_bytes(name: str, payload: bytes,
 RunArtifacts.record_attempt(attempt: dict,
                             *, raw: dict[str, bytes] | None = None) -> dict
 RunArtifacts.finish() -> dict
-verify_run(output: Path) -> dict  # spec, attempts, report, manifest
+verify_run(output: Path, *, allow_unfinished: bool = False) -> dict
 render_markdown(report: dict) -> str
 compare_runs(left: Path, right: Path,
              *, left_arm: str | None = None, right_arm: str | None = None) -> dict
@@ -182,6 +182,26 @@ has the original attempt contract. Raw artifact references belong in the
 manifest, not undeclared attempt fields. `finish` can report incomplete planned
 coverage; it cannot turn missing assignments into successes. `verify_run`
 checks source hashes and reconstructs metrics before returning retained output.
+
+`finish()` and `runner.run_experiment()` return an execution wrapper containing
+`status` (`complete`, `completed_with_failures`, or `incomplete`), `complete`,
+`run`, `report`, `manifest_sha256`, `output`, and `report_path`. The CLI prints
+the nested report and derives its exit status from the execution status.
+`verify_run` returns a verified bundle with `spec`, `plan`, `attempts`, `report`,
+`manifest`, `manifest_sha256`, and verification details. Reporting an unfinished
+run uses `allow_unfinished=True`; comparisons require finished inputs.
+
+Raw artifact roles are slugs such as `request`, `stdout`, `stderr`, `responses`,
+and `api_log`, namespaced by the artifact writer for each assignment. Register
+run-level artifacts before calling `finish` once. Preserve interrupted and
+not-started assignments and fsync each recorded attempt.
+
+The Cairn runner reuses Cairn's disposable PostgreSQL lifecycle. A minimal
+generic-command mode in `scripts/trial-task-eval.sh` may expose that existing
+lifecycle to CAPLAB while preserving the script's original default command.
+CAPLAB seeds every arm through the same stable CLI contract. Semantic backend
+and worker availability are explicit provenance; stream-backed tests do not
+establish the behavior of the production embedding backend.
 
 CLI contracts: `validate --spec PATH`; `run --spec PATH --output NEW_DIR`;
 `report --run DIR [--format json|markdown]`; `compare --left DIR --right DIR
