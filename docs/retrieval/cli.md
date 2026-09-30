@@ -33,6 +33,12 @@ message and contract path when available. Unexpected exceptions use
 as an incomplete report. Reports and validation JSON go to
 stdout, so they can be redirected without mixing diagnostics.
 
+Use absolute paths for file arguments in command specs; the example preparation
+helper supplies them. Each command runs in an empty temporary directory, so a
+relative data or script path from the invoking directory will not resolve there.
+The executable is selected once and pinned before execution. Other arguments
+remain literal values; the runner does not rewrite them as paths.
+
 Exit statuses:
 
 - **0**: validation/comparison succeeded, or a run/report is finished with every
