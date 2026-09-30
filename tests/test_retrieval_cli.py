@@ -235,6 +235,7 @@ class CliTests(unittest.TestCase):
             self.assertEqual(verified.returncode, 0, verified.stderr)
             self.assertEqual(json.loads(verified.stdout), evidence)
             original_files = {f: f.read_bytes() for f in (report_path, plan, corpus)}
+            (output / "evidence.json").chmod(0o600)
             (output / "evidence.json").write_text("{}")
             tampered = self.cli("report-task", "--run", output)
             self.assertEqual(tampered.returncode, 2)
