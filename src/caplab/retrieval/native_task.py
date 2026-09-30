@@ -65,7 +65,14 @@ LIMITS = [
     "No model, provider or Cairn service was called while importing.",
     "The selected checkout's parser code ran in-process at import; verification re-derives all non-parser fields "
     "and binds parser output by hash, re-executing it only with an explicitly trusted matching checkout.",
+    "Source paths and the parser pin's checkout, commit and modified flag are reported at import; they are not "
+    "verifiable from retained bytes.",
+    "A coherent removal of a retained stream reference together with its delivery is not detected from this "
+    "evidence alone; detecting wholesale coherent replacement needs an external pin of the evidence digest.",
 ]
+# Fields copied into the evidence from the import environment, not re-derivable from retained bytes.
+REPORTED_AT_IMPORT = ("sources.*.source", "sources.parser.pin.checkout", "sources.parser.pin.commit",
+                      "sources.parser.pin.parser_file_modified")
 
 
 class TaskEvidenceError(ValueError):
@@ -252,7 +259,9 @@ def _check_inputs(report: Any, plan: Any, corpus_digest: str) -> dict:
 
 
 def _delivery(evidence: dict) -> dict:
-    return {"observed": True, **{k: evidence[k] for k in ("preview_notes", "body_notes", "body_bytes",
+    # source_sha256 binds the observation to the exact stream bytes it was parsed from.
+    return {"observed": True, "source_sha256": evidence["source_sha256"],
+            **{k: evidence[k] for k in ("preview_notes", "body_notes", "body_bytes",
                                                            "unmapped_deliveries", "response_text_bytes")},
             "calls": [{k: c[k] for k in ("tool", "status", "response_text_bytes", "unparsed_blocks",
                                          "unrecognized_payloads")} for c in evidence["calls"]]}
@@ -295,6 +304,8 @@ def _assemble(report: dict, checked: dict, sources: dict, parser_analysis: dict,
         bucket = strata.setdefault(stratum, {})
         bucket[outcome] = bucket.get(outcome, 0) + 1
         if run_id in streams:
+            if deliveries[run_id].get("source_sha256") != streams[run_id].get("sha256"):
+                raise TaskEvidenceError("INTEGRITY", f"delivery for {run_id} was not parsed from its retained stream")
             counts["streams_retained"] += 1
             row["stream"] = streams[run_id]
             row["delivery"] = deliveries[run_id]
@@ -350,11 +361,10 @@ def _deliveries_from(analysis: dict, checked: dict) -> dict:
 
 def _write_new(path: Path, data: bytes) -> None:
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC, 0o440)
-    try:
-        os.write(descriptor, data)
-        os.fsync(descriptor)
-    finally:
-        os.close(descriptor)
+    with os.fdopen(descriptor, "wb") as handle:  # buffered: writes every byte or raises
+        handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
 
 
 def import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path, cairn_checkout: Path,
@@ -504,23 +514,34 @@ def verify_task_run(output: Path, *, trusted_parser_checkout: Path | None = None
     if trusted_parser_checkout is not None:
         parser, _, _ = _load_parser(Path(trusted_parser_checkout).resolve(), expected=data["parser"])
         with tempfile.TemporaryDirectory(prefix="caplab-task-verify-") as scratch:
+            # The frozen corpus lives outside the report directory, and the report
+            # file name cannot be chosen by the retained report, so the report's
+            # own observed-corpus and stream paths never overwrite control files.
             root = Path(scratch).resolve()
+            report_dir = root / "report"
+            report_name = "agent-" + _sha256(data["report"])[:16] + ".report.json"
+            written: dict = {}
 
-            def place(relative: str, payload: bytes) -> None:
-                # Independent containment check at the write boundary.
-                target = (root / relative).resolve()
-                if not target.is_relative_to(root) or target == root:
+            def place(base: Path, relative: str, payload: bytes) -> Path:
+                target = (base / relative).resolve()
+                if not target.is_relative_to(base) or target == base:  # containment at the write boundary
                     raise TaskEvidenceError("UNSAFE_PATH", f"refusing to materialize {relative!r} outside the scratch root")
+                if target in written:
+                    if written[target] != payload:
+                        raise TaskEvidenceError("UNSAFE_PATH", f"retained inputs collide on {relative!r}")
+                    return target
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(payload)
+                written[target] = payload
+                return target
 
-            place("agent.json", data["report"])
-            place("corpus.json", data["corpus"])
+            corpus_file = place(root / "frozen-corpus", "corpus.json", data["corpus"])
+            report_file = place(report_dir, report_name, data["report"])
             if observed is not None:
-                place(observed_rel, observed)
+                place(report_dir, observed_rel, observed)
             for run_id, stream in stream_data.items():
-                place(f"runs/{run_id}/stream.jsonl", stream)
-            analysis = _analyze(parser, root / "agent.json", root / "corpus.json")
+                place(report_dir, f"runs/{run_id}/stream.jsonl", stream)
+            analysis = _analyze(parser, report_file, corpus_file)
         fresh = {run_id: _delivery(row) for run_id, row in _deliveries_from(analysis, checked).items()}
         if fresh != deliveries:
             raise TaskEvidenceError("INTEGRITY", "re-executed parser observations differ from the retained evidence")
@@ -532,6 +553,11 @@ def verify_task_run(output: Path, *, trusted_parser_checkout: Path | None = None
     return {"schema_version": SCHEMA, "verified": True, "objects": retained, "counts": document["counts"],
             "evidence": document,
             "verification": {"bytes": "every retained object resolved and hashed",
-                             "rederived": "all non-parser fields reproduce evidence.json byte for byte",
-                             "parser_derived": parser_mode,
+                             "rederived": ("all fields derived from the retained report, plan and corpus reproduce "
+                                           "evidence.json byte for byte"),
+                             "reported_at_import": list(REPORTED_AT_IMPORT),
+                             "parser_derived": parser_mode + ("; each delivery is bound to its assignment's retained "
+                                                              "stream hash"),
+                             "not_detected": ("coherent removal of a stream reference with its delivery, and wholesale "
+                                              "coherent replacement, need an external pin of the evidence digest"),
                              "authorship": "not authenticated; consistency with retained sources only"}}

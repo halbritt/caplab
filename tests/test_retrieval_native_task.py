@@ -182,10 +182,10 @@ class NativeTaskBridge(unittest.TestCase):
     def test_forged_delivery_needs_trusted_parser_to_detect(self):
         self.run_import()
         result = verify_task_run(self.root / "out", trusted_parser_checkout=CAIRN)
-        self.assertEqual(result["verification"]["parser_derived"], "re-executed with trusted checkout; matched")
+        self.assertTrue(result["verification"]["parser_derived"].startswith("re-executed with trusted checkout; matched"))
         self.forge(lambda d: d["assignments"][0]["delivery"].update(body_notes=["D-other"]))
         hash_bound = verify_task_run(self.root / "out")  # honestly labelled: parser output is hash-bound only
-        self.assertEqual(hash_bound["verification"]["parser_derived"], "hash-bound; not re-executed")
+        self.assertTrue(hash_bound["verification"]["parser_derived"].startswith("hash-bound; not re-executed"))
         with self.assertRaises(TaskEvidenceError) as caught:
             verify_task_run(self.root / "out", trusted_parser_checkout=CAIRN)
         self.assertEqual(caught.exception.code, "INTEGRITY")
@@ -231,6 +231,78 @@ class NativeTaskBridge(unittest.TestCase):
             verify_task_run(self.root / "out", trusted_parser_checkout=self.root / "hostile-checkout")
         self.assertEqual(caught.exception.code, "PARSER_CONTRACT")
         self.assertFalse(marker.exists())
+
+    def test_swapped_streams_are_refused_without_parser_replay(self):
+        doc = self.run_import()
+        rows = {a["run_id"]: i for i, a in enumerate(doc["assignments"])}
+        a, b = rows["deploy.baseline.s0"], rows["boundary.baseline.s0"]
+
+        def swap(d):
+            d["assignments"][a]["stream"], d["assignments"][b]["stream"] = d["assignments"][b]["stream"], d["assignments"][a]["stream"]
+        self.forge(swap)
+        with self.assertRaises(TaskEvidenceError) as caught:
+            verify_task_run(self.root / "out")  # default mode: the per-assignment stream hash binding catches it
+        self.assertEqual(caught.exception.code, "INTEGRITY")
+
+    def test_provenance_fields_are_reported_not_verified(self):
+        self.run_import()
+        self.forge(lambda d: d["sources"]["parser"]["pin"].update(commit="0" * 40, parser_file_modified=False))
+        result = verify_task_run(self.root / "out")  # not detectable from retained bytes; labelled as such
+        self.assertIn("sources.parser.pin.commit", result["verification"]["reported_at_import"])
+        self.assertTrue(result["verification"]["rederived"].startswith("all fields derived from the retained report"))
+        self.assertTrue(any("reported at import" in limit for limit in result["evidence"]["limits"]))
+
+    def test_stream_removal_detection_boundary(self):
+        doc = self.run_import()
+        index = next(i for i, a in enumerate(doc["assignments"]) if a["run_id"] == "deploy.baseline.s0")
+        # Inconsistent loss: the stream reference is dropped but the observed delivery kept -> detected.
+        self.forge(lambda d: d["assignments"][index].pop("stream"))
+        with self.assertRaises(TaskEvidenceError):
+            verify_task_run(self.root / "out")
+        self.forge(lambda d: d["assignments"][index].update(stream=doc["assignments"][index]["stream"]))
+        self.assertTrue(verify_task_run(self.root / "out")["verified"])
+
+        # Coherent removal (stream reference, delivery and counts adjusted together) is NOT detected from the
+        # evidence alone; the result and limits say so rather than claiming otherwise.
+        def remove(d):
+            d["assignments"][index].pop("stream")
+            d["assignments"][index]["delivery"] = {"observed": False, "reason": "missing_stream"}
+            d["counts"]["streams_retained"] -= 1
+            d["counts"]["streams_missing"] += 1
+        self.forge(remove)
+        for trusted in (None, CAIRN):
+            result = verify_task_run(self.root / "out", trusted_parser_checkout=trusted)
+            self.assertIn("coherent removal of a stream reference", result["verification"]["not_detected"])
+        self.assertTrue(any("coherent removal" in limit for limit in result["evidence"]["limits"]))
+
+    def test_plan_only_run_id_collision_is_refused(self):
+        # No report record repeats the run ID; the plan alone derives a.b.c.s0 twice.
+        self.plan.update(arms=["c", "b.c"], runs=[["a.b", "c", 0, 0], ["a", "b.c", 0, 1]])
+        self.report.update(arms=["c", "b.c"], records=[], admission=dict(state="complete", planned=2, admitted=0, not_started=[]))
+        self.write()
+        self.assertRefused("DUPLICATE_RUN")
+
+    def test_trusted_replay_with_observed_corpus_named_like_control_files(self):
+        # SYNTHETIC: an observed corpus whose name matches the scratch control files must not overwrite them.
+        observed = json.dumps({"notes": NOTES}, indent=1).encode()
+        for name in ("corpus.json", "agent.json.observed", "agent.json"):
+            with self.subTest(name=name):
+                run_dir = self.root / f"obs-{name}"
+                shutil.copytree(self.run_dir, run_dir)
+                report_name = "report.json" if name == "agent.json" else "agent.json"
+                if name == "agent.json":
+                    (run_dir / "agent.json").rename(run_dir / "report.json")
+                (run_dir / name).write_bytes(observed)
+                meta = {"path": name, "sha256": hashlib.sha256(observed).hexdigest()}
+                for file in (report_name, "plan.json"):
+                    data = json.loads((run_dir / file).read_bytes())
+                    data["observed_corpus"] = meta
+                    (run_dir / file).write_text(json.dumps(data))
+                out = self.root / f"out-{name}"
+                import_task_run(run_dir / report_name, plan_path=run_dir / "plan.json", corpus_path=self.corpus,
+                                cairn_checkout=CAIRN, output=out)
+                result = verify_task_run(out, trusted_parser_checkout=CAIRN)
+                self.assertTrue(result["verification"]["parser_derived"].startswith("re-executed with trusted checkout; matched"))
 
     def test_colliding_derived_run_ids_are_refused(self):
         # (a.b, c) and (a, b.c) both derive run_id a.b.c.s0 and would share one stream.

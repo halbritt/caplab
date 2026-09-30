@@ -46,7 +46,9 @@ in this process at import. Select only a checkout you trust.
 1. **Refuses to overwrite, and fails before writing.** The output must not exist.
    A dangling symlink or a creation race also gives `OUTPUT_EXISTS`. Nothing is
    created until every content check has passed:
-   - strict JSON (NaN, Infinity and pathological nesting are `MALFORMED`);
+   - strict JSON: NaN, Infinity and pathological nesting are `MALFORMED`. A
+     report containing them is refused outright rather than retained, which is
+     acceptable because Cairn's evaluator does not emit non-finite JSON;
    - identity and position checks;
    - observed-corpus path containment and hash;
    - the parser run, and the parser's report, corpus, observed-corpus and
@@ -128,19 +130,47 @@ in this process at import. Select only a checkout you trust.
 `verify_task_run` works in three stages.
 1. **Bytes.** Every retained object is resolved through the ledger and checked
    by hash and size, and `evidence.json` must equal the registered document.
-2. **Re-derivation.** Everything that is not parser output is re-derived from
-   the retained report, plan and corpus bytes and must reproduce
-   `evidence.json` byte for byte. That covers identity checks, assignment
-   order and status, original grades and memory, stratum classes, counts,
-   outcomes, strata, admission, reported identity, `binding: null` and limits.
-   A coherently forged evidence document that is re-registered with a
-   rewritten manifest is therefore refused.
+2. **Re-derivation.** Every field derived from the retained report, plan and
+   corpus bytes is re-derived and must reproduce `evidence.json` byte for byte.
+   That covers identity checks, assignment order and status, original grades
+   and memory, stratum classes, counts, outcomes, strata, admission, reported
+   identity, `binding: null` and limits. A coherently forged document of that
+   kind, re-registered with a rewritten manifest, is refused.
+   - **Reported at import, not verifiable:** the source paths
+     (`sources.*.source`) and the parser pin's `checkout`, `commit` and
+     `parser_file_modified` record the import environment. They are copied
+     into the rebuild, so a coherent forgery of them is not detected. The
+     result lists them under `verification.reported_at_import`.
 3. **Parser output.** Parser-derived delivery observations are hash-bound:
-   `parser_analysis` must name the retained report, corpus, observed corpus and
-   parser bytes. Every observed delivery must correspond to a retained stream,
-   and vice versa. They are re-executed only with `trusted_parser_checkout`.
-   Otherwise a forged delivery list over genuine streams is not detected, and
-   the result says so honestly.
+   - `parser_analysis` must name the retained report, corpus, observed corpus
+     and parser bytes;
+   - each observed delivery carries the `source_sha256` of the stream it was
+     parsed from, which must equal that same assignment's retained stream
+     hash, so swapping streams between assignments is refused;
+   - every observed delivery must have a retained stream, and vice versa.
+
+   Delivery contents are re-executed only with `trusted_parser_checkout`.
+   Otherwise a forged delivery list over a genuine stream is not detected, and
+   the result says so.
+
+**Detected versus not detected, for stream references:**
+- **Detected:** an inconsistent loss, such as dropping a stream reference
+  while its delivery still says observed.
+- **Not detected:** a coherent removal, where a stream reference is dropped,
+  its delivery is turned into `missing_stream` and the counts are adjusted
+  together. It is not detected from the evidence alone, in either mode,
+  because it is internally consistent. The ledger still holds the stream
+  object, but identical streams may legitimately share one content object, so
+  "every object referenced exactly once" is not a valid invariant.
+- **Needs an external pin:** detecting coherent removal or wholesale coherent
+  replacement requires pinning the evidence digest outside this directory.
+  `verification.not_detected` and the evidence limits say so.
+
+**Trusted replay staging.** The frozen corpus is written outside the replay
+report directory, and the report file name is derived from its hash rather
+than chosen by the report. So an observed corpus named `corpus.json` or
+`agent.json` cannot overwrite control files. Every write is contained in the
+scratch root, and colliding retained paths with different bytes are refused.
 
 It returns `{schema_version, verified, objects, counts, evidence,
 verification}`. `verification.parser_derived` is either
