@@ -1,0 +1,112 @@
+{
+  "document": "caplab-local-installation/1",
+  "verified_at": "2026-09-30T23:20:30.791698+00:00",
+  "source_commit": "af6261218b41b74864f2a0a8fa979ebb84fc3030",
+  "base_main": "6a6fe72eeb838fac55bda86cc2ade27ff819440c",
+  "wheel": "/home/halbritt/.local/share/caplab/releases/af6261218b41b74864f2a0a8fa979ebb84fc3030/dist/agent_capability_lab-0.1.0-py3-none-any.whl",
+  "wheel_sha256": "56415b223456f4ec3335480c21f281f1810e5c7b965d7bd4f8ba3a4d6000083d",
+  "executable": "/home/halbritt/.local/bin/caplab",
+  "package_source_commit_stamp": "af6261218b41b74864f2a0a8fa979ebb84fc3030",
+  "installed_python_modules_match_exact_reviewed_source": 173,
+  "installed_wheel_files_verified": 174,
+  "runtime_dependencies": [],
+  "prior_installation": null,
+  "install_argv": [
+    "uv",
+    "tool",
+    "install",
+    "--python",
+    "/usr/bin/python3",
+    "--force",
+    "--offline",
+    "--no-index",
+    "/home/halbritt/.local/share/caplab/releases/af6261218b41b74864f2a0a8fa979ebb84fc3030/dist/agent_capability_lab-0.1.0-py3-none-any.whl"
+  ],
+  "quartermaster_source_commit": "7c3fea31a97cb91fdef6f6ebf1707a73f88feccb",
+  "reviewed_qm_prerequisite": "66d2444faecfa7b59996fc1c2941a0a12c9d4141",
+  "verification": {
+    "cwd": "/tmp",
+    "retained_release": "/home/halbritt/.local/share/quartermaster/catalog/releases/qcr-c0054a99dd070c90cd19654934cd1bae6e94aa491fe1dc6305e9e1339e463bf4.json",
+    "release_id": "qcr-c0054a99dd070c90cd19654934cd1bae6e94aa491fe1dc6305e9e1339e463bf4",
+    "release_file_sha256": "cc6d36346e3ce8942d9952330590d8055717d83c0a8b48786cde11696fae8072",
+    "source_sha256": "8900440a534acdf6e0246c71d6803e199588d16ddd683b98217912b6f95ce352",
+    "overlay_sha256": "98dc4c618b7a65748f1f23da8af728a7b87d11d2acb12e35d73e4e10d62c2162",
+    "projection_id": "qcx-699cf232a74a1f542699f0b341e116d5a8612c442498a5d5dab2de0087819b3b",
+    "native_null_profile_null": "13 eligible",
+    "negative_home_checks": {
+      "native_path_profile_null": "config_home_missing",
+      "native_null_profile_path": "config_home_not_canonical",
+      "native_path_profile_same_path": "13 eligible"
+    },
+    "admitted_tuples": [
+      "fable-5-claude-max",
+      "terra-codex-max"
+    ],
+    "population": {
+      "afk_eligible_runtimes": [
+        "agy",
+        "local",
+        "local-qwen",
+        "local-qwen-ft"
+      ],
+      "applied": false,
+      "supervised_only_runtimes": [
+        "claude-code",
+        "codex"
+      ]
+    },
+    "no_authority": {
+      "adoption": false,
+      "execution": false,
+      "preparation": false,
+      "qualification": false
+    },
+    "installed": {
+      "quartermaster": {
+        "module_root": "/home/halbritt/.local/share/uv/tools/quartermaster/lib/python3.12/site-packages/quartermaster",
+        "distributions": {
+          "quartermaster": "0.1.0",
+          "PyYAML": "6.0.3"
+        },
+        "exact_wheel_files": 9
+      },
+      "caplab": {
+        "module_root": "/home/halbritt/.local/share/uv/tools/agent-capability-lab/lib/python3.12/site-packages/caplab",
+        "distributions": {
+          "agent-capability-lab": "0.1.0"
+        },
+        "exact_wheel_files": 174
+      }
+    },
+    "native_policy_file_sha256": "1245d7ddda6045d0476a177cd937697be2ed5cd83438b647cdfeade39f70e5d9",
+    "sweep_config_file_sha256": "8cee5b1394fb7c73438f6decfa94834fa16045fd71cca20704d91e867c2167d5"
+  },
+  "synthetic_installed_prepare": {
+    "installed_cli_from_tmp": true,
+    "synthetic_local_fixture_only": true,
+    "prepared_manifest_exactly_equals_without_catalog": true,
+    "experiment_id": "revbench-f1e8ff5471d2a0e2645160dc9eb85ffb6c4726e197633688164317afb41a4c1e",
+    "profile_config_home": null,
+    "exact_provenance_references": [
+      "overlay_ref",
+      "projection_ref",
+      "release_ref"
+    ],
+    "no_model_or_live_harness_launch": true
+  },
+  "rollback": {
+    "argv": [
+      "uv",
+      "tool",
+      "uninstall",
+      "agent-capability-lab"
+    ],
+    "scope": "Restores prior absence of the installed Caplab tool. Leave ~/.local/share/caplab campaigns, custody/ledger data and retained wheel untouched; leave catalog releases and current symlink to parent252."
+  },
+  "evidence_dir": "/home/halbritt/.local/share/caplab/releases/af6261218b41b74864f2a0a8fa979ebb84fc3030/verification-agent260",
+  "catalog_enrollment_and_promotion_owner": "parent252",
+  "models_launched": false,
+  "credential_contents_read": false,
+  "native_live_pins_changed": false,
+  "limits": "Discovery admission is not a live Binding or execution authority. Fable live preparation remains refused; null home proves no credential account identity. Current host Bubblewrap does not match the existing pin."
+}
