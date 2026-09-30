@@ -51,8 +51,14 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
    - No custody claim is made: historical admission is a separate authorized
      path.
 5. **Writes** `caplab-retrieval-task-evidence/1` to `output/evidence.json`
-   (canonical JSON, also registered) and `output/manifest.json` (its ledger
-   reference).
+   and `output/manifest.json`.
+   - `evidence.json` is sorted, compact, finite JSON bytes, registered with
+     `register_bytes` as `application/vnd.caplab.retrieval-task-evidence+json`.
+   - Native reports carry floats (run seconds, memory timings and costs).
+     CAPLAB canonical JSON refuses floats for identities, so they are kept
+     untouched in these exact bytes rather than rounded or dropped.
+   - `manifest.json` holds only the float-free ledger reference, in canonical
+     JSON.
 
 ## Output
 
@@ -73,7 +79,11 @@ Both raise `TaskEvidenceError(code, message)` with these codes:
   - `original`: outcome, stratum, correct, mistake, check_outcome,
     execution_failure, error, reviewed, category, primary, provenance, exit and
     seconds, exactly as reported;
-  - `stratum_class`: completion, boundary_or_abstention or unknown;
+  - `stratum_class`: `completion` only for stratum `completion`, and
+    `boundary_or_abstention` only for the known strata `scope`, `control` and
+    `blocker`. Everything else is `unknown`: other labelled strata such as
+    `decision`, `component` and `excluded`, plus any absent or empty stratum.
+    The raw stratum is always kept in `original`;
   - `delivery`: either `{observed: false, reason: missing_stream}`, or the
     parser's preview and body notes, body bytes, unmapped deliveries and
     per-call status;

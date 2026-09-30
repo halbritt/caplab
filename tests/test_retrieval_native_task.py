@@ -49,11 +49,15 @@ class NativeTaskBridge(unittest.TestCase):
         self.plan = dict(frozen=frozen, arms=["baseline", "candidate"], runs=runs, **identity)
         records = [
             dict(run_id="deploy.baseline.s0", case="deploy", arm="baseline", seed=0, outcome="correct", stratum="completion",
-                 correct=["clean_clone"], mistake=[], model="synthetic-model", harness="claude"),
+                 correct=["clean_clone"], mistake=[], model="synthetic-model", harness="claude", seconds=41.37,
+                 memory={"delivered": ["T-rule"], "context_bytes": 812, "outcomes": [{"status": "ok", "seconds": 0.429}],
+                         "recall": [{"latency_s": 7.93, "selector_cost_usd": 0.0031}]}),
             dict(run_id="deploy.candidate.s0", case="deploy", arm="candidate", seed=0, outcome="mistake", stratum="completion",
                  correct=[], mistake=["dirty_build"], model="synthetic-model", harness="claude"),
             dict(run_id="boundary.baseline.s0", case="boundary", arm="baseline", seed=0, outcome="incomplete", stratum="scope",
-                 model="synthetic-model", harness="claude"),
+                 model="synthetic-model", harness="claude", seconds=12.5),
+            dict(run_id="boundary.candidate.s0", case="boundary", arm="candidate", seed=0, outcome="correct", stratum="decision",
+                 model="synthetic-model", harness="claude", seconds=9.25),
             dict(run_id="old.baseline.s0", case="old", arm="baseline", seed=0, outcome="harness_error",
                  error="synthetic provider stop", model="synthetic-model", harness="claude"),  # no stratum: unknown
         ]
@@ -82,8 +86,8 @@ class NativeTaskBridge(unittest.TestCase):
 
     def test_import_preserves_grades_streams_and_unknowns(self):
         doc = self.run_import()
-        self.assertEqual(doc["counts"], {"planned": 6, "recorded": 4, "not_started": 1, "missing": 1,
-                                         "streams_retained": 2, "streams_missing": 2})
+        self.assertEqual(doc["counts"], {"planned": 6, "recorded": 5, "not_started": 1, "missing": 0,
+                                         "streams_retained": 2, "streams_missing": 3})
         rows = {a["run_id"]: a for a in doc["assignments"]}
         self.assertEqual(rows["deploy.baseline.s0"]["original"]["outcome"], "correct")
         self.assertEqual(rows["deploy.baseline.s0"]["delivery"]["body_notes"], ["T-rule"])
@@ -92,7 +96,14 @@ class NativeTaskBridge(unittest.TestCase):
         self.assertEqual(rows["boundary.baseline.s0"]["stratum_class"], "boundary_or_abstention")
         self.assertEqual(rows["old.baseline.s0"]["stratum_class"], "unknown")
         self.assertEqual(rows["old.candidate.s0"]["status"], "not_started")
-        self.assertEqual(rows["boundary.candidate.s0"]["status"], "missing")
+        # A labelled stratum without a known boundary meaning stays unknown.
+        self.assertEqual(rows["boundary.candidate.s0"]["stratum_class"], "unknown")
+        self.assertEqual(rows["boundary.candidate.s0"]["original"]["stratum"], "decision")
+        # Native floats survive untouched in the retained evidence.
+        self.assertEqual(rows["deploy.baseline.s0"]["original"]["seconds"], 41.37)
+        self.assertEqual(rows["deploy.baseline.s0"]["original_memory"]["recall"][0]["latency_s"], 7.93)
+        retained = json.loads((self.root / "out/evidence.json").read_bytes())
+        self.assertEqual(retained["assignments"][0]["original_memory"]["outcomes"][0]["seconds"], 0.429)
         self.assertEqual(doc["strata"]["unknown"], {"harness_error": 1})
         self.assertIsNone(doc["identity"]["binding"])
         self.assertEqual(doc["sources"]["parser"]["pin"]["path"], "scripts/trial_task_evidence.py")
@@ -101,6 +112,15 @@ class NativeTaskBridge(unittest.TestCase):
         verified = verify_task_run(self.root / "out")
         self.assertTrue(verified["verified"])
         self.assertEqual(verified["objects"], 4 + 2 + 1)  # report, plan, corpus, parser, 2 streams, evidence
+        manifest = json.loads((self.root / "out/manifest.json").read_bytes())
+        self.assertEqual(manifest["evidence"]["media_type"], "application/vnd.caplab.retrieval-task-evidence+json")
+
+    def test_missing_planned_run_is_counted(self):
+        self.report["records"] = [r for r in self.report["records"] if r["run_id"] != "boundary.candidate.s0"]
+        self.write()
+        doc = self.run_import()
+        self.assertEqual((doc["counts"]["missing"], doc["counts"]["recorded"]), (1, 4))
+        self.assertEqual({a["run_id"]: a["status"] for a in doc["assignments"]}["boundary.candidate.s0"], "missing")
 
     def test_tampering_is_detected(self):
         self.run_import()

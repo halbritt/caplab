@@ -31,6 +31,12 @@ PARSER_PATH = "scripts/trial_task_evidence.py"
 _RUN_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,255}")
 _ORIGINAL_FIELDS = ("outcome", "stratum", "correct", "mistake", "check_outcome", "execution_failure", "error",
                     "reviewed", "category", "primary", "provenance", "exit", "seconds")
+# Only strata known to mean scope preservation, a no-change control or stopping
+# at a blocker count as boundary/abstention. Every other value, including other
+# labelled strata (decision, component, excluded) and absent strata, is unknown.
+STRATUM_CLASSES = {"completion": "completion", "scope": "boundary_or_abstention",
+                   "control": "boundary_or_abstention", "blocker": "boundary_or_abstention"}
+EVIDENCE_MEDIA_TYPE = "application/vnd.caplab.retrieval-task-evidence+json"
 _IDENTITY_FIELDS = ("model", "harness", "reasoning_effort", "wording", "harness_version", "evaluator_sha256")
 LIMITS = [
     "Original task grades and check outcomes are retained source observations; this import does not certify "
@@ -211,8 +217,8 @@ def import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path, ca
         original = {f: record[f] for f in _ORIGINAL_FIELDS if f in record}
         original.setdefault("stratum", None)  # absent in older reports: unknown, never assumed completion
         row["original"] = original
-        stratum = original["stratum"] if isinstance(original["stratum"], str) else "unknown"
-        row["stratum_class"] = "completion" if stratum == "completion" else ("unknown" if stratum == "unknown" else "boundary_or_abstention")
+        stratum = original["stratum"] if isinstance(original["stratum"], str) and original["stratum"] else "unknown"
+        row["stratum_class"] = STRATUM_CLASSES.get(stratum, "unknown")
         outcomes[str(record.get("outcome"))] = outcomes.get(str(record.get("outcome")), 0) + 1
         bucket = strata.setdefault(stratum, {})
         bucket[str(record.get("outcome"))] = bucket.get(str(record.get("outcome")), 0) + 1
@@ -248,8 +254,14 @@ def import_task_run(report_path: Path, *, plan_path: Path, corpus_path: Path, ca
     }
     if analysis["report_sha256"] != sources["report"]["sha256"] or analysis["analyzer_sha256"] != parser_pin["sha256"]:
         raise TaskEvidenceError("IDENTITY_MISMATCH", "parser analysed different bytes than were retained")
-    ref = ledger.register_document(document, kind="retrieval-task-evidence", schema=SCHEMA)
-    (output / "evidence.json").write_bytes(canonical_json(document))
+    # Native reports carry floats (seconds, memory timings) that CAPLAB canonical
+    # JSON rightly refuses for identities. Keep them untouched: register the
+    # evidence as exact sorted JSON bytes; only the float-free manifest is canonical.
+    evidence_bytes = json.dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+                                allow_nan=False).encode("utf-8")
+    ref = ledger.register_bytes(evidence_bytes, kind="retrieval-task-evidence", schema=SCHEMA,
+                                media_type=EVIDENCE_MEDIA_TYPE)
+    (output / "evidence.json").write_bytes(evidence_bytes)
     (output / "manifest.json").write_bytes(canonical_json({"schema_version": SCHEMA + "+manifest", "evidence": ref}))
     return document
 
