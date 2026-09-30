@@ -9,6 +9,7 @@ SIGTERM) and check what the adapter records. The real-Cairn integration test is 
 test_retrieval_cairn_real.py.
 """
 
+import hashlib
 import json
 import os
 import shutil
@@ -16,6 +17,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import types
 import unittest
@@ -29,6 +31,7 @@ from tests.retrieval_support import (CORPUS, QUERIES, StubArtifacts, command_arm
 
 ROOT = Path(__file__).resolve().parents[1]
 MANY = {"id": "q-many", "text": "the worker billing restart certificate ledger", "relevant_ids": ["n-restart"]}
+TIES = [{"id": f"n-tie-{i:02d}", "body": "shared tie token"} for i in range(12)]  # Equal scores: only write time orders them.
 
 
 class CairnCase(unittest.TestCase):
@@ -113,6 +116,21 @@ class CairnCase(unittest.TestCase):
     def assert_alive(self, processes):
         for proc in processes:
             self.assertIsNone(proc.poll(), f"unrelated process {proc.pid} was killed by cancellation")
+
+    def interrupt_during_provisioning(self):
+        """SIGINT this process once the host is inside `cairn migrate`, as Ctrl-C would."""
+        stop = threading.Event()
+
+        def watch():
+            while not stop.is_set():
+                if any(c["argv"] == ["migrate"] for c in read_invocations(self.log)):
+                    os.kill(os.getpid(), signal.SIGINT)
+                    return
+                time.sleep(0.05)
+
+        thread = threading.Thread(target=watch, daemon=True)
+        thread.start()
+        self.addCleanup(lambda: (stop.set(), thread.join(5)))
 
     def assert_released(self):
         """The wrapper's cluster directories and the adapters' store directories are gone."""
@@ -228,6 +246,17 @@ class PinTests(CairnCase):
         self.assert_wrapper_never_ran()
         self.assertTrue(all(adapter.root is None for adapter in self.adapters))
 
+    def test_a_semantic_worker_that_changes_after_the_seal_is_refused_at_open(self):
+        self.binary()
+        worker = self.worker()
+        adapter = self.pinned_adapter(self.arm(semantic_mode="on", worker=worker))
+        worker.write_text("#!/bin/sh\n# another worker, swapped in after the plan was sealed\n")
+        with self.assertRaises(runner.AdapterError) as caught:
+            adapter.open()
+        self.assertEqual(caught.exception.code, "pin_changed")
+        self.assertIn("semantic worker", caught.exception.message)
+        self.assert_wrapper_never_ran()
+
     def test_a_supplied_wrapper_that_changes_after_the_seal_is_refused(self):
         self.binary()
         supplied = self.tmp / "newer-wrapper.sh"
@@ -304,6 +333,32 @@ class MeasurementTests(CairnCase):
         self.assertEqual(sum(item[2] == "other-collection" for item in first["remember"]), 1)
         self.assertEqual((first["preview-retract"], first["supersede"]), (1, 1))
         self.assertEqual((second["preview-retract"], second["supersede"]), (1, 1))
+
+    def test_equal_scoring_notes_rank_identically_for_every_arm_because_seeding_is_sequential(self):
+        # Cairn breaks score ties by write time (newest first). Concurrent inserts would let completion
+        # order decide; the jitter in the fake makes that visible. Sequential, corpus-order seeding puts
+        # the last note in the corpus first, for every arm and every run.
+        self.binary(remember_jitter=0.12)
+        queries = [{"id": "q-tie", "text": "shared tie token", "relevant_ids": ["n-tie-00"]}]
+        _, art = self.run_arms([self.arm("arm-a"), self.arm("arm-b")], corpus=TIES, queries=queries, cutoffs=(12,))
+        expected = [note["id"] for note in reversed(TIES)]
+        for arm in ("arm-a", "arm-b"):
+            self.assertEqual(self.attempts(art, arm)[0]["ranked_ids"], expected, arm)
+
+    def test_the_seeding_policy_and_order_are_provenance(self):
+        self.binary()
+        _, art = self.run_arms([self.arm()], queries=QUERIES[:1])
+        seeding = art.provenance["arms"]["cairn"]["seeding"]
+        ids = [note["id"] for note in CORPUS]
+        self.assertEqual(seeding, {"policy": cairn.SEED_POLICY, "notes": len(CORPUS),
+                                   "note_order_sha256": "sha256:" + hashlib.sha256(contracts.canonical_json(ids)).hexdigest()})
+        retained = json.loads(art.registered["arm.cairn.seeding.json"])
+        self.assertEqual([entry["note_id"] for entry in retained["order"]], ids)  # The order actually used.
+        self.assertEqual(len({entry["record_id"] for entry in retained["order"]}), len(ids))
+        remembers = [c for c in read_invocations(self.log) if c["argv"][0] == "remember"]
+        order = [c["argv"][c["argv"].index("--request-id") + 1] for c in remembers]
+        self.assertEqual(len(order), len(CORPUS))
+        self.assertEqual(order, sorted(order, key=order.index))  # One call per note, none repeated.
 
     def test_paging_reaches_the_requested_depth_and_stops_there(self):
         self.binary(search={"page_size": 2})
@@ -453,6 +508,19 @@ class StoreFailureTests(CairnCase):
         _, art = self.run_with_fixture_arm()
         self.assert_arm_unavailable(art, "api_unavailable")
 
+    def test_a_store_that_fails_to_build_and_leaks_its_cluster_leaves_the_run_unfinished(self):
+        # open() failed, so the runner never calls close(); the leak still has to surface.
+        self.binary(migrate_fail=True)
+        self.wrapper_mode("leak_cluster")
+        with self.assertRaises(runner.RunnerCleanupError) as caught:
+            self.run_with_fixture_arm()
+        art = StubArtifacts.instances[-1]
+        self.assertIn(wrapper_roots(self.wrapper_runs)[0], caught.exception.failures["cairn"])
+        self.assertFalse(art.finished)
+        self.assertEqual({(a["status"], a["error"]["cause"]) for a in self.attempts(art)}, {("error", "store_failed")})
+        self.assertEqual({a["status"] for a in self.attempts(art, "good")}, {"ok"})  # Other arms still ran.
+        self.assertIn(b"still exists", art.registered["arm.cairn.close-error.txt"])
+
     def test_a_checkout_whose_wrapper_has_no_command_mode_says_so(self):
         self.binary()
         self.wrapper_mode("old")
@@ -534,20 +602,28 @@ class CleanupFailureTests(CairnCase):
         self.wrapper_mode("leak_cluster")
         spec = contracts.validate_spec(make_spec([self.arm()], queries=QUERIES[:2]))
         adapter = self.adapter(spec["arms"][0], spec)
-        adapter.pin()
-        original = adapter._await_ready
-
-        def interrupted():
-            while not any(c["argv"] == ["migrate"] for c in read_invocations(self.log)):
-                time.sleep(0.05)  # Wait until the host is inside provisioning.
-            raise KeyboardInterrupt
-
-        adapter._await_ready = interrupted
-        with self.assertRaises(KeyboardInterrupt):
-            adapter.open()
+        self.interrupt_during_provisioning()
+        with self.assertRaises(runner.RunnerCleanupError) as caught:
+            runner.run_experiment(make_spec([self.arm()], queries=QUERIES[:2]), self.out,
+                                  artifacts_factory=StubArtifacts, adapters={"cairn": adapter})
+        art = StubArtifacts.instances[-1]
+        self.assertEqual([a["status"] for a in art.attempts], ["not_started", "not_started"])  # The interruption stands.
+        self.assertIn(wrapper_roots(self.wrapper_runs)[0], caught.exception.failures["cairn"])
+        self.assertFalse(art.finished)
         self.assertIsNone(adapter.host)  # The host was stopped on the way out.
-        self.assertFalse(adapter.root.exists())
-        self.assertTrue(original)  # The real wait was replaced, not skipped by accident.
+        self.assertFalse(adapter.root.exists())  # CAPLAB's own directory is still removed.
+
+    def test_a_clean_interruption_during_provisioning_reports_no_leftovers(self):
+        self.binary(migrate_sleep=30)
+        spec = contracts.validate_spec(make_spec([self.arm()], queries=QUERIES[:2]))
+        adapter = self.adapter(spec["arms"][0], spec)
+        self.interrupt_during_provisioning()
+        result = runner.run_experiment(make_spec([self.arm()], queries=QUERIES[:2]), self.out,
+                                       artifacts_factory=StubArtifacts, adapters={"cairn": adapter})
+        self.assertEqual([a["status"] for a in StubArtifacts.instances[-1].attempts], ["not_started", "not_started"])
+        self.assertEqual(adapter.unreleased(), [])
+        self.assertEqual(result["status"], "completed_with_failures")
+        self.assert_released()
 
 
 class IsolationTests(CairnCase):
@@ -644,7 +720,38 @@ class IsolationTests(CairnCase):
         done = subprocess.run([sys.executable, "-m", "caplab.retrieval.cairn"], input=json.dumps(request) + "\n",
                               capture_output=True, text=True, env=env, cwd=self.tmp, timeout=60)
         self.assertEqual(done.returncode, 1)
-        self.assertEqual(json.loads(done.stdout.splitlines()[0])["error"]["code"], "store_unsafe")
+        messages = [json.loads(line) for line in done.stdout.splitlines()]
+        self.assertEqual(messages[-1]["error"]["code"], "store_unsafe")  # After the cluster line, nothing is provisioned.
+        self.assertFalse(any("ready" in message for message in messages))
+
+    def test_an_exception_while_the_host_cleans_up_is_a_nonzero_exit_not_a_silent_success(self):
+        self.binary()
+        cluster = Path(tempfile.mkdtemp(prefix="cairn-task-eval-pg.", dir="/tmp"))
+        root = Path(tempfile.mkdtemp(prefix=cairn.ROOT_PREFIX, dir="/tmp"))
+        self.addCleanup(shutil.rmtree, cluster, ignore_errors=True)
+        self.addCleanup(shutil.rmtree, root, ignore_errors=True)
+        self.addCleanup(subprocess.run, ["pkill", "-f", f"{self.fake}/cairn serve"])  # The fake API it never stopped.
+        (cluster / "socket").mkdir()
+        env = dict(os.environ, PYTHONPATH=str(ROOT / "src"), CAIRN_TASK_EVAL_PG=str(cluster / "socket"),
+                   CAIRN_TASK_EVAL_PG_BIN=str(self.tmp / "pgbin"))
+        code = ("import sys; from caplab.retrieval import cairn\n"
+                "def boom(self): raise RuntimeError('stop exploded')\n"
+                "cairn.CairnStore.stop = boom\nsys.exit(cairn.host_main())")
+        request = {"binary": str(self.binary_path), "collection": "c", "label": "x", "worker": None, "root": str(root),
+                   "corpus": CORPUS[:2]}
+        with subprocess.Popen([sys.executable, "-c", code], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE, env=env, cwd=self.tmp, text=True) as host:
+            host.stdin.write(json.dumps(request) + "\n")
+            host.stdin.flush()
+            first = json.loads(host.stdout.readline())
+            self.assertEqual(set(first), {"cluster"})  # The wrapper's cluster is reported before provisioning.
+            self.assertIn("ready", json.loads(host.stdout.readline()))
+            host.stdin.close()  # The adapter's clean stop.
+            host.wait(timeout=60)
+            stdout, stderr = host.stdout.read(), host.stderr.read()
+        self.assertNotEqual(host.returncode, 0)
+        self.assertIn("stop exploded", stderr)
+        self.assertNotIn("closed", stdout)  # The host never claims a clean close it did not make.
 
     def test_the_store_is_torn_down_after_an_interruption(self):
         self.binary()

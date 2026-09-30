@@ -267,6 +267,55 @@ class ClassifiedFailureTests(RunnerCase):
                             "a descendant of the timed-out retriever survived")
 
 
+class PinDriftTests(RunnerCase):
+    """A file that differs from the sealed plan is refused before it runs (detection, not custody)."""
+
+    def tampering(self, *, at):
+        script = write_retriever(self.scripts, "good")
+        arm = command_arm("good", script)
+
+        class Tamper(runner.CommandAdapter):
+            calls = 0
+
+            def open(self):
+                if at == "open":
+                    script.write_text(script.read_text() + "\n# changed after the plan was sealed\n")
+                super().open()
+
+            def retrieve(self, query, seed, cutoff, timeout):
+                type(self).calls += 1
+                if at == "second-call" and type(self).calls == 2:
+                    script.write_text(script.read_text() + "\n# changed mid-run\n")
+                if at == "touch" and type(self).calls == 2:
+                    os.utime(script, (time.time() + 5, time.time() + 5))  # Same bytes, new modification time.
+                return super().retrieve(query, seed, cutoff, timeout)
+
+        spec = contracts.validate_spec(make_spec([arm], queries=QUERIES[:3]))
+        return self.run_spec(spec, adapters={"good": Tamper(spec["arms"][0], spec)})[1]
+
+    def test_a_script_changed_after_the_seal_fails_the_arm_before_any_call(self):
+        art = self.tampering(at="open")
+        self.assertEqual({(a["status"], a["error"]["code"], a["error"]["cause"]) for a in art.attempts},
+                         {("error", "adapter_unavailable", "pin_changed")})
+
+    def test_a_script_changed_between_calls_fails_that_call_and_the_rest(self):
+        art = self.tampering(at="second-call")
+        self.assertEqual([(a["status"], (a["error"] or {}).get("code")) for a in art.attempts],
+                         [("ok", None), ("error", "pin_changed"), ("error", "pin_changed")])
+        self.assertEqual(art.attempts[1]["ranked_ids"], [])  # Nothing was run and nothing is substituted.
+
+    def test_identical_bytes_with_a_new_modification_time_are_accepted(self):
+        art = self.tampering(at="touch")
+        self.assertEqual({a["status"] for a in art.attempts}, {"ok"})
+
+    def test_the_interpreter_is_pinned_too(self):
+        adapter = runner.CommandAdapter(command_arm("good", write_retriever(self.scripts, "good")),
+                                        contracts.validate_spec(make_spec([self.arm("good")])))
+        pins = adapter.pin()
+        self.assertEqual(set(pins["files"]), {"argv[0]", "argv[1]"})
+        self.assertEqual(len(adapter._pinned), 2)  # Both are re-checked, not only recorded.
+
+
 class CancellationScopeTests(RunnerCase):
     """Cancelling one retriever's process group must never touch unrelated processes."""
 

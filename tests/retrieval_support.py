@@ -227,8 +227,11 @@ elif command == "migrate":
 elif command == "remember":
     body = sys.stdin.read()
     record_id = str(uuid.uuid5(uuid.NAMESPACE_URL, flag("--request-id")))
+    # Jitter scrambles the completion order of concurrent inserts; write time is taken afterwards, as
+    # Cairn's store does, so only a sequential loader produces write times in corpus order.
+    time.sleep(CONFIG.get("remember_jitter", 0) * (int(record_id[:6], 16) % 97) / 97)
     (notes_dir() / (record_id + ".json")).write_text(json.dumps(
-        dict(body=body, repo=flag("--repo"), shareable="--shareable" in ARGV, superseded=False)))
+        dict(body=body, repo=flag("--repo"), shareable="--shareable" in ARGV, superseded=False, written=time.time_ns())))
     out(dict(record_id=record_id, version=1))
 elif command == "preview-retract":
     out(dict(version=1, preview_id="preview-" + ARGV[1]))
@@ -273,8 +276,8 @@ elif command == "agent" and "search" in ARGV:
             continue
         score = len(tokens(query) & tokens(note["body"]))
         if score:
-            scored.append((-score, record_id))
-    ranked = [record_id for _, record_id in sorted(scored)]
+            scored.append((-score, -note["written"], record_id))  # Ties: newest write first, as Cairn does.
+    ranked = [record_id for *_, record_id in sorted(scored)]
     size = mode.get("page_size", 100)
     page = ranked[offset:offset + size]
     data = dict(index=[dict(record_id=r) for r in page], status="READY", ranking="binary-idf-scope-recency/1",

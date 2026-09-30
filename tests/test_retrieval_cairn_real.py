@@ -14,9 +14,9 @@ CAPLAB_RETRIEVAL_EVIDENCE_DIR to a directory to keep the main measured run there
 `run/`, with `verify.json` and `report.md`) for review.
 """
 
-import glob
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -25,20 +25,14 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
-
 from unittest import mock
 
 from caplab.qualification.ledger import FilesystemQualificationLedger
-from caplab.retrieval import artifacts, cairn, report as report_module, runner
+from caplab.retrieval import artifacts, cairn, contracts, report as report_module, runner
 from tests.retrieval_support import QUERIES, command_arm, make_spec, write_retriever
 
 ROOT = Path(__file__).resolve().parents[1]
 CHECKOUT = os.environ.get("CAPLAB_CAIRN_CHECKOUT", "")
-
-
-def store_roots():
-    """CAPLAB's store directories and the wrapper's disposable clusters."""
-    return set(glob.glob("/tmp/caplab-rtv-*")) | set(glob.glob("/tmp/cairn-task-eval-pg.*"))
 
 
 def retained(output):
@@ -55,9 +49,32 @@ def retained(output):
     return named, raw
 
 
-def postgres_left(roots):
-    done = subprocess.run(["pgrep", "-af", "caplab-rtv-|cairn-task-eval-pg"], capture_output=True, text=True)
-    return [line for line in done.stdout.splitlines() if any(root in line for root in roots) and "pgrep" not in line]
+def source_strings(checkout, pattern):
+    """Every string matching `pattern` in the non-test Go source of the pinned checkout.
+
+    Ranking and status labels are read from the source that was built, never assumed: a newer Cairn
+    may report another version of the same ranking family.
+    """
+    found = set()
+    for path in Path(checkout).rglob("*.go"):
+        if not path.name.endswith("_test.go"):
+            found |= set(re.findall(pattern, path.read_text(errors="replace")))
+    return found
+
+
+def processes_mentioning(paths):
+    """Running processes whose command line names one of `paths` (a cairn server, a postgres or a wrapper)."""
+    paths = [str(p) for p in paths if p]
+    if not paths:
+        return []
+    done = subprocess.run(["pgrep", "-af", "|".join(re.escape(p) for p in paths)], capture_output=True, text=True)
+    return [line for line in done.stdout.splitlines() if "pgrep" not in line]
+
+
+def spec_adapters(spec, arms):
+    """Explicit Cairn adapters, so a test knows exactly which store directories it created."""
+    normalized = contracts.validate_spec(spec)
+    return {arm["id"]: cairn.CairnAdapter(arm, normalized) for arm in normalized["arms"] if arm["id"] in arms}
 
 
 @unittest.skipUnless(CHECKOUT and Path(CHECKOUT).is_dir(), "set CAPLAB_CAIRN_CHECKOUT to run against real Cairn")
@@ -77,7 +94,6 @@ class RealCairnTests(unittest.TestCase):
 
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(dir=self.temp.name))
-        self.roots_before = store_roots()
 
     def tearDown(self):
         shutil.rmtree(self.tmp, ignore_errors=True)
@@ -86,13 +102,15 @@ class RealCairnTests(unittest.TestCase):
         return {"id": arm_id, "adapter": "cairn", "configuration": {
             "binary": self.pins["binary"], "checkout": self.pins["checkout"], "semantic_mode": semantic_mode}}
 
-    def assert_no_store_left(self):
-        leaked = store_roots() - self.roots_before
-        self.assertEqual(leaked, set(), "a disposable store directory was left behind")
+    def assert_released(self, *adapters):
+        """Exactly the directories and processes these adapters created are gone (other agents may run their own)."""
+        paths = [path for adapter in adapters for path in (adapter.root, adapter.pg_root) if path]
+        for path in paths:
+            self.assertFalse(Path(path).exists(), f"{path} was left behind")
         deadline = time.monotonic() + 10
-        while time.monotonic() < deadline and postgres_left(self.roots_before | store_roots()):
+        while time.monotonic() < deadline and processes_mentioning(paths):
             time.sleep(0.2)
-        self.assertEqual(postgres_left(self.roots_before | store_roots()), [], "a postgres or cairn process was left")
+        self.assertEqual(processes_mentioning(paths), [], "a postgres, cairn or wrapper process was left")
 
     def test_real_cairn_is_measured_against_controls_beside_fixture_retrievers(self):
         scripts = self.tmp / "scripts"
@@ -104,7 +122,8 @@ class RealCairnTests(unittest.TestCase):
                          queries=queries, seeds=(0, 1), cutoffs=(1, 3))
         evidence = os.environ.get("CAPLAB_RETRIEVAL_EVIDENCE_DIR")
         out = Path(evidence) / "run" if evidence else self.tmp / "run"
-        result = runner.run_experiment(spec, out)  # The actual artifact store.
+        adapters = spec_adapters(spec, {"cairn-lexical", "cairn-semantic"})
+        result = runner.run_experiment(spec, out, adapters=adapters)  # The actual artifact store.
         self.assertEqual((result["status"], result["complete"]), ("completed_with_failures", False))  # The failing fixture.
         verified = artifacts.verify_run(out)  # Re-hashes every file and ledger object and recomputes the report.
         self.assertTrue(verified["finished"])
@@ -152,13 +171,25 @@ class RealCairnTests(unittest.TestCase):
         empty = arms["empty"]["cutoffs"]["3"]["controls"]["false_positive_rate"]
         self.assertEqual((empty["numerator"], empty["denominator"]), (0, 4))
 
-        # Semantic requested with no worker: labelled lexical fallback, recorded truthfully.
+        # Semantic requested with no worker: labelled lexical fallback, recorded truthfully. The ranking
+        # versions are taken from the pinned source: the lexical arm uses the binary-idf family, the
+        # fallback its own lexical family, and each arm reports one consistent version.
+        idf_versions = source_strings(self.pins["checkout"], r"binary-idf-scope-recency/\d+")
+        fallback_versions = source_strings(self.pins["checkout"], r"lexical-scope-recency/\d+")
+        self.assertTrue(idf_versions and fallback_versions, "no ranking versions found in the pinned source")
+        self.assertIn("DEGRADED_NO_EMBEDDINGS", source_strings(self.pins["checkout"], r"DEGRADED_NO_EMBEDDINGS"))
         for attempt in attempts["cairn-semantic"]:
             semantic = attempt["observation"]["semantic"]
             self.assertEqual((semantic["requested"], semantic["state"], semantic["fallback"]), (True, "unavailable", True))
-            self.assertEqual(attempt["observation"]["rankings"], ["lexical-scope-recency/4"])
+            self.assertEqual(len(attempt["observation"]["rankings"]), 1)
+            self.assertLessEqual(set(attempt["observation"]["rankings"]), fallback_versions)
             self.assertEqual(attempt["observation"]["status"], ["DEGRADED_NO_EMBEDDINGS"])
-        self.assertEqual(lexical[0]["observation"]["rankings"], ["binary-idf-scope-recency/1"])
+        lexical_rankings = {tuple(a["observation"]["rankings"]) for a in lexical}
+        self.assertEqual(len(lexical_rankings), 1, lexical_rankings)
+        self.assertLessEqual(set(next(iter(lexical_rankings))), idf_versions)
+        self.assertEqual({r for a in attempts["cairn-semantic"] for r in a["observation"]["rankings"]} & idf_versions, set())
+        readiness_ranking = json.loads(named["arm.cairn-lexical.readiness.json"])["ranking"]
+        self.assertEqual([readiness_ranking], list(next(iter(lexical_rankings))))  # The probe saw the same ranker.
 
         # The fixtures are discriminated by the same metrics.
         def recall(arm):
@@ -168,18 +199,25 @@ class RealCairnTests(unittest.TestCase):
         self.assertEqual((recall("good"), recall("bad"), recall("empty"), recall("cairn-lexical")), (1, 0, 0, 1))
         self.assertEqual(arms["failing"]["coverage"]["scorable"], 0)
 
+        # Every arm's store was seeded identically and in corpus order; the order is recorded.
+        order = [note["id"] for note in spec["corpus"]]
+        for arm in ("cairn-lexical", "cairn-semantic"):
+            self.assertEqual([e["note_id"] for e in json.loads(named[f"arm.{arm}.seeding.json"])["order"]], order)
+            self.assertEqual(verified["plan"]["provenance"]["arms"][arm]["seeding"]["notes"], len(order))
+
         # Evidence from the isolated stores is retained in the run's ledger, and nothing is left running.
         for arm in ("cairn-lexical", "cairn-semantic"):
             self.assertTrue(named[f"arm.{arm}.postgres.log"])
             self.assertTrue(named[f"arm.{arm}.api.log"])
             readiness = json.loads(named[f"arm.{arm}.readiness.json"])
             self.assertEqual(readiness["semantic_requested"], arm == "cairn-semantic")
+            self.assertTrue(adapters[arm].pg_root and adapters[arm].root)  # What the release check inspects.
         # The exact bytes Cairn returned are retained and agree with the recorded ranking.
         restart = next(a for a in lexical if (a["query_id"], a["seed"]) == ("q-restart", 0))
         entries = json.loads(raw[("cairn-lexical:q-restart:0", "search-page-001.json")])["data"]["index"]
         self.assertGreaterEqual(len(entries), len(restart["ranked_ids"]))
         self.assertTrue(all(entry["record_id"] for entry in entries))
-        self.assert_no_store_left()
+        self.assert_released(*adapters.values())
         if evidence:
             (Path(evidence) / "verify.json").write_text(json.dumps({
                 "manifest_sha256": verified["manifest_sha256"], "finished": verified["finished"],
@@ -194,9 +232,11 @@ class RealCairnTests(unittest.TestCase):
                             'exit $(( status == 0 ? 1 : status ))\n')
         override.chmod(0o755)
         out = self.tmp / "run"
+        spec = make_spec([self.arm("cairn", "off")], queries=QUERIES[:2])
         with mock.patch.dict(os.environ, {cairn.WRAPPER_ENV: str(override)}):
+            adapters = spec_adapters(spec, {"cairn"})
             with self.assertRaises(runner.RunnerCleanupError) as caught:
-                runner.run_experiment(make_spec([self.arm("cairn", "off")], queries=QUERIES[:2]), out)
+                runner.run_experiment(spec, out, adapters=adapters)
         self.assertIn("exited with status 1 after a clean stop", caught.exception.failures["cairn"])
         with self.assertRaises(artifacts.ArtifactIntegrityError) as refused:
             artifacts.verify_run(out)
@@ -208,52 +248,69 @@ class RealCairnTests(unittest.TestCase):
         self.assertIn(b"cleanup failed: injected", named["arm.cairn.host.stderr"])
         self.assertTrue(named["arm.cairn.postgres.log"])
         self.assertFalse((out / "report.json").exists())
-        self.assert_no_store_left()  # The real wrapper did remove its cluster; the failure is what it reported.
+        self.assert_released(*adapters.values())  # The real wrapper did remove its cluster; the failure is its status.
 
     def test_a_modified_checkout_is_refused_before_any_store_exists(self):
         marker = Path(self.pins["checkout"]) / "UNCOMMITTED"
         marker.write_text("change\n")
+        spec = make_spec([self.arm("cairn", "off")])
+        adapters = spec_adapters(spec, {"cairn"})
         try:
             with self.assertRaises(runner.AdapterError) as caught:
-                runner.run_experiment(make_spec([self.arm("cairn", "off")]), self.tmp / "run")
+                runner.run_experiment(spec, self.tmp / "run", adapters=adapters)
         finally:
             marker.unlink()
         self.assertEqual(caught.exception.code, "pin_mismatch")
         self.assertFalse((self.tmp / "run").exists())
-        self.assertEqual(store_roots() - self.roots_before, set())
+        self.assertIsNone(adapters["cairn"].root)  # No store directory was ever created.
+        self.assertEqual(processes_mentioning([Path(self.pins["checkout"]) / cairn.WRAPPER]), [])  # No wrapper ran.
 
     def test_sigterm_during_a_real_run_leaves_evidence_and_no_orphans(self):
         code = """
 import json, sys
 from pathlib import Path
-from caplab.retrieval import runner
+from caplab.retrieval import cairn, contracts, runner
 from tests.retrieval_support import make_spec
 arm = dict(id="cairn", adapter="cairn", configuration=json.loads(sys.argv[1]))
-result = runner.run_experiment(make_spec([arm]), Path(sys.argv[2]))
+spec = make_spec([arm])
+adapter = cairn.CairnAdapter(contracts.validate_spec(spec)["arms"][0], contracts.validate_spec(spec))
+result = runner.run_experiment(spec, Path(sys.argv[2]), adapters={"cairn": adapter})
 print("finished", result["status"], result["report"]["summary"]["arms"]["cairn"]["coverage"]["by_status"])
+print("stores", json.dumps([str(adapter.root), adapter.pg_root]))
 """
         configuration = {"binary": self.pins["binary"], "checkout": self.pins["checkout"], "semantic_mode": "off"}
         out = self.tmp / "sigterm-run"
+        wrapper = Path(self.pins["checkout"]) / cairn.WRAPPER  # Unique to this test class: only our wrapper matches.
         env = dict(os.environ, PYTHONPATH=f"{ROOT / 'src'}:{ROOT}")
         proc = subprocess.Popen([sys.executable, "-c", code, json.dumps(configuration), str(out)], cwd=ROOT, env=env,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
             deadline = time.monotonic() + 60
-            while time.monotonic() < deadline and not (out / "plan.json").exists():
-                time.sleep(0.05)
-            time.sleep(0.6)  # Inside provisioning: the cluster is being built.
+            while time.monotonic() < deadline and not processes_mentioning([wrapper]):
+                time.sleep(0.05)  # The wrapper is running: the cluster is being built.
+            self.assertTrue(processes_mentioning([wrapper]), "the wrapper never started")
+            time.sleep(0.6)
             proc.send_signal(signal.SIGTERM)
             stdout, stderr = proc.communicate(timeout=90)
         finally:
             if proc.poll() is None:
                 proc.kill()
+                proc.communicate()
         self.assertEqual(proc.returncode, 0, stderr)
         verified = artifacts.verify_run(out)  # The interrupted run was still finished and verifies.
         self.assertEqual(len(verified["attempts"]), len(QUERIES))
         self.assertEqual({a["status"] for a in verified["attempts"]}, {"not_started"})  # Before any assignment ran.
         self.assertIn("finished completed_with_failures", stdout)
         self.assertIn("'not_started': 4", stdout)
-        self.assert_no_store_left()
+        root, pg_root = json.loads(stdout.splitlines()[-1].split(" ", 1)[1])
+        self.assertTrue(root != "None", "the store directory was never created")
+        self.assertFalse(Path(root).exists())
+        if pg_root:
+            self.assertFalse(Path(pg_root).exists())
+        deadline = time.monotonic() + 10
+        while time.monotonic() < deadline and processes_mentioning([root, pg_root, wrapper]):
+            time.sleep(0.2)
+        self.assertEqual(processes_mentioning([root, pg_root, wrapper]), [], "a postgres, cairn or wrapper process was left")
 
 
 if __name__ == "__main__":

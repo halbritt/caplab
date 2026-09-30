@@ -107,6 +107,13 @@ class Adapter:
         """
         return {}
 
+    def unreleased(self) -> list:
+        """What an `open` that failed or was interrupted could not release; empty when nothing is held.
+
+        `close` is not called for an arm that never opened, so this is how such a leak reaches the runner.
+        """
+        return []
+
 
 # ---------------------------------------------------------------- subprocess
 
@@ -220,22 +227,53 @@ class CommandAdapter(Adapter):
     Each call gets an empty working directory and a minimal environment. Nonzero
     exit, timeout, oversized output and malformed or contract-violating
     responses are classified failures.
+
+    Pinned files (the executable and every argv entry that is a file) are re-checked before
+    the arm opens (by hash) and before every call (by size, modification time and inode,
+    re-hashed on any change); a file that differs from the sealed plan is a `pin_changed`
+    failure, never a silent run of other bytes. Limits: this is detection, not custody. A file
+    can still change between the check and the exec, and anything the program loads that is not
+    named in argv (libraries, imported modules, data files) is not pinned.
     """
 
     def __init__(self, arm: dict, spec: dict):
         self.arm = arm["id"]
         self.argv = list(arm["configuration"]["argv"])
         self.corpus = spec["corpus"]
+        self._pinned: dict = {}  # path -> (sha256, stat signature) at pin time
+
+    @staticmethod
+    def _signature(path: Path) -> tuple:
+        info = Path(path).stat()
+        return info.st_size, info.st_mtime_ns, info.st_ino
+
+    def _verify_files(self, *, full: bool) -> None:
+        for path, (digest, signature) in self._pinned.items():
+            try:
+                current = self._signature(path)
+                changed = (full or current != signature) and file_sha256(path) != digest
+            except OSError as exc:
+                raise AdapterError("pin_changed", f"pinned file {path} can no longer be read: {exc}") from None
+            if changed:
+                raise AdapterError("pin_changed", f"pinned file {path} no longer matches the sealed plan",
+                                   {"path": str(path)})
+            self._pinned[path] = (digest, current)  # Same bytes (for example touched): keep the new signature.
+
+    def open(self) -> None:
+        self._verify_files(full=True)
 
     def pin(self) -> dict:
         executable = shutil.which(self.argv[0]) if not os.path.dirname(self.argv[0]) else self.argv[0]
         if not executable or not Path(executable).is_file() or not os.access(executable, os.X_OK):
             raise AdapterError("command_unavailable", f"{self.argv[0]!r} is not an executable file")
         files = {}
+        self._pinned = {}
         for index, part in enumerate(self.argv):
             path = Path(executable if index == 0 else part)
             if path.is_file() and path.stat().st_size <= 256 << 20:
-                files[f"argv[{index}]"] = {"path": str(path.resolve()), "sha256": file_sha256(path)}
+                digest = file_sha256(path)
+                files[f"argv[{index}]"] = {"path": str(path.resolve()), "sha256": digest}
+                self._pinned[path] = (digest, self._signature(path))
         return {"adapter": "command", "argv": self.argv, "files": files}
 
     def request(self, query: dict, seed: int, cutoff: int) -> bytes:
@@ -245,6 +283,7 @@ class CommandAdapter(Adapter):
                                          "cutoff": cutoff})
 
     def retrieve(self, query: dict, seed: int, cutoff: int, timeout: float) -> Outcome:
+        self._verify_files(full=False)
         request = self.request(query, seed, cutoff)
         with tempfile.TemporaryDirectory(prefix="caplab-cmd-") as scratch:
             done = bounded_run(self.argv, stdin=request, cwd=Path(scratch), env=scrubbed_env(Path(scratch)),
@@ -480,6 +519,12 @@ def run_experiment(spec: dict, output: Path, *, adapters: Mapping[str, Adapter] 
         for attempt in _stop_attempts(spec, pending, started, f"run interrupted ({state['reason']})"):
             artifacts.record_attempt(attempt)
             recorded.add(attempt["assignment_id"])
+    for arm_id, adapter in arms.items():
+        problems = adapter.unreleased()  # For an arm whose open failed or was interrupted.
+        if problems and arm_id not in cleanup_failures:
+            cleanup_failures[arm_id] = "; ".join(problems)
+            artifacts.register_bytes(f"arm.{arm_id}.close-error.txt", cleanup_failures[arm_id].encode(),
+                                     media_type="text/plain")
     if cleanup_failures:
         # A run that leaked resources is not a successful run: leave it unfinished (no manifest), with
         # every attempt and the close evidence retained, and say so.

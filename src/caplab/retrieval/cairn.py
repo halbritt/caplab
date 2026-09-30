@@ -19,13 +19,13 @@ host run with a rebuilt environment, and every path they use lies under the
 store's own temporary directory or the wrapper's private cluster.
 
 Host protocol (JSON lines): the adapter writes one request on the host's stdin;
-the host answers `{"ready": ...}` or `{"error": ...}`, then runs until its stdin
-closes or it receives SIGTERM, stops the API and exits.
+the host first reports `{"cluster": {"pg_root": ...}}` (the wrapper's cluster, so a leak
+is detectable even when provisioning fails), then `{"ready": ...}` or `{"error": ...}`,
+then runs until its stdin closes or it receives SIGTERM, stops the API and exits.
 """
 
 from __future__ import annotations
 
-import concurrent.futures
 import contextlib
 import hashlib
 import json
@@ -56,6 +56,8 @@ HOST_TERM_TIMEOUT = 60  # After SIGTERM to the host's process group, before SIGK
 LOG_LIMIT = 1 << 20
 WRAPPER = "scripts/trial-task-eval.sh"
 WRAPPER_ENV = "CAPLAB_RETRIEVAL_LIFECYCLE_WRAPPER"
+SEED_POLICY = ("one `cairn remember` per note, sequentially in corpus order; supersessions afterwards, "
+               "in corpus order")  # Cairn breaks score ties by write time, so the order is part of the treatment.
 ROOT_PREFIX = "caplab-rtv-"
 CLUSTER_PREFIX = "/tmp/cairn-task-eval-pg."  # The wrapper's cluster root; its `socket` directory is exported.
 SRC_ROOT = Path(__file__).resolve().parents[2]
@@ -174,9 +176,15 @@ class CairnStore:
         self.ids[note["id"]] = record_id
         self.names[record_id] = note["id"]
 
-    def seed(self, corpus: list, workers: int = 8) -> None:
-        with concurrent.futures.ThreadPoolExecutor(workers) as pool:
-            list(pool.map(self.remember, corpus))  # Re-raises the first failure.
+    def seed(self, corpus: list) -> None:
+        """Load the corpus in spec order, one note at a time, identically for every arm.
+
+        Cairn orders equal-scoring candidates by write time, so concurrent inserts would let
+        completion order (not the treatment) decide ties. Write times and record IDs stay
+        store-owned; only the insertion order is fixed (and recorded in `seed_order`).
+        """
+        for note in corpus:
+            self.remember(note)
         for note in corpus:
             if note.get("supersede_with"):
                 self.supersede(note["id"], note["supersede_with"])
@@ -240,6 +248,7 @@ def host_main() -> int:
     store = None
     try:
         cluster = ExternalCluster()
+        _emit({"cluster": {"pg_root": str(cluster.root)}})
         request = json.loads(sys.stdin.readline())
         store = CairnStore(Path(request["binary"]), collection=request["collection"], label=request["label"],
                            worker=Path(request["worker"]) if request.get("worker") else None,
@@ -249,7 +258,8 @@ def host_main() -> int:
         store.provision(request["corpus"])
         store.start()
         _emit({"ready": {"socket": str(store.socket), "token_file": str(store.token_file), "home": str(store.home),
-                         "names": store.names, "pg_root": str(cluster.root), "pg_version": cluster.version()}})
+                         "names": store.names, "seed_order": list(store.ids.items()),
+                         "pg_root": str(cluster.root), "pg_version": cluster.version()}})
     except AdapterError as exc:
         _emit({"error": exc.as_error()})
         code = 1
@@ -306,6 +316,8 @@ class CairnAdapter(Adapter):
         self.host = None
         self.root: Path | None = None
         self.ready: dict = {}
+        self.pg_root: str | None = None  # The wrapper's cluster, reported by the host before provisioning.
+        self.leftovers: list = []  # What a failed or interrupted open could not release.
         self.readiness: dict = {}
         self.agent_env: dict = {}
         self._lines: queue.Queue = queue.Queue()
@@ -352,14 +364,20 @@ class CairnAdapter(Adapter):
                 "semantic": {"mode": "on" if self.semantic else "off",
                              "worker": None if self.worker is None else {
                                  "path": str(self.worker.resolve()), "sha256": file_sha256(self.worker)}}}
-        self.pinned = {"binary": pins["binary"]["sha256"], "head": head, "wrapper": pins["lifecycle_wrapper"]["sha256"]}
+        ids = [note["id"] for note in self.spec["corpus"]]
+        pins["seeding"] = {"policy": SEED_POLICY, "notes": len(ids),
+                           "note_order_sha256": "sha256:" + hashlib.sha256(contracts.canonical_json(ids)).hexdigest()}
+        self.pinned = {"binary": pins["binary"]["sha256"], "head": head, "wrapper": pins["lifecycle_wrapper"]["sha256"],
+                       "worker": None if self.worker is None else pins["semantic"]["worker"]["sha256"]}
         return pins
 
     def _verify_unchanged(self) -> None:
         """The plan sealed these pins earlier; refuse if any input moved since."""
         if (file_sha256(self.binary) != self.pinned["binary"] or file_sha256(self.wrapper) != self.pinned["wrapper"]
+                or (self.worker is not None and file_sha256(self.worker) != self.pinned["worker"])
                 or _git(self.checkout, "rev-parse", "HEAD") != self.pinned["head"]):
-            raise AdapterError("pin_changed", "the binary, wrapper or checkout changed after the plan was sealed")
+            raise AdapterError("pin_changed", "the binary, wrapper, semantic worker or checkout changed after the "
+                                              "plan was sealed")
 
     # -- lifecycle
 
@@ -377,6 +395,7 @@ class CairnAdapter(Adapter):
             tails = {"host_stderr_tail": self._tail("host.stderr"), "api_log_tail": self._tail("api.log")}
             if problems:
                 tails["cleanup_problems"] = problems
+                self.leftovers = problems  # The runner turns this into a cleanup failure, even for an interruption.
             self._remove_root()
             if isinstance(exc, AdapterError):
                 raise AdapterError(exc.code, exc.message, {**exc.detail, **tails}) from None
@@ -433,6 +452,9 @@ class CairnAdapter(Adapter):
                 error = message["error"]
                 raise AdapterError(error.get("code", "host_failed"), error.get("message", "the store host failed"),
                                    {k: v for k, v in error.items() if k not in ("code", "message")})
+            if "cluster" in message:
+                self.pg_root = message["cluster"].get("pg_root")
+                continue
             if "ready" in message:
                 self.ready = message["ready"]
                 return
@@ -488,11 +510,14 @@ class CairnAdapter(Adapter):
                 host.wait()
         with contextlib.suppress(OSError, ValueError):
             host.stdout.close()
-        pg_root = self.ready.get("pg_root")
+        pg_root = self.pg_root or self.ready.get("pg_root")
         if pg_root and Path(pg_root).exists():
             problems.append(f"the wrapper's cluster directory {pg_root} still exists; a postgres process may remain")
         self.host = None
         return problems
+
+    def unreleased(self) -> list:
+        return list(self.leftovers)
 
     def _remove_root(self) -> None:
         if self.root is not None and str(self.root).startswith("/tmp/" + ROOT_PREFIX):
@@ -506,6 +531,10 @@ class CairnAdapter(Adapter):
             if path is not None and path.is_file():
                 evidence[name] = path.read_bytes()[-LOG_LIMIT:]
         evidence["readiness.json"] = contracts.canonical_json(self.readiness)
+        if self.ready.get("seed_order") is not None:
+            evidence["seeding.json"] = contracts.canonical_json(
+                {"policy": SEED_POLICY, "order": [{"note_id": note, "record_id": record}
+                                                  for note, record in self.ready["seed_order"]]})
         self._remove_root()
         if problems:
             raise AdapterCleanupError("; ".join(problems), evidence)
