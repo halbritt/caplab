@@ -323,6 +323,7 @@ status=0
 wait "$child" || status=$?
 while kill -0 "$child" 2>/dev/null; do wait "$child" || status=$?; done
 if [[ "$mode" == "stubborn" ]]; then trap '' TERM; while :; do sleep 1; done; fi  # Ignores SIGTERM: needs SIGKILL.
+if [[ "$mode" == "cleanup_status" ]]; then echo "cleanup failed: fake wrapper status" >&2; status=1; fi  # As Cairn's does.
 exit "$status"
 """
 

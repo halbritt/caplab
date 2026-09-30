@@ -100,6 +100,20 @@ class CairnCase(unittest.TestCase):
         path.chmod(0o755)
         return path
 
+    def bystanders(self):
+        """Two unrelated processes: one in this test's own process group, one in another session."""
+        found = []
+        for new_session in (False, True):
+            proc = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(300)", f"cairn-bystander-{os.getpid()}"],
+                                    start_new_session=new_session)
+            self.addCleanup(lambda proc=proc: (proc.kill(), proc.wait()))
+            found.append(proc)
+        return found
+
+    def assert_alive(self, processes):
+        for proc in processes:
+            self.assertIsNone(proc.poll(), f"unrelated process {proc.pid} was killed by cancellation")
+
     def assert_released(self):
         """The wrapper's cluster directories and the adapters' store directories are gone."""
         for root in wrapper_roots(self.wrapper_runs):
@@ -482,9 +496,25 @@ class CleanupFailureTests(CairnCase):
             self.assertTrue(art.registered[f"arm.cairn.{name}"], name)
         self.assertFalse(self.adapters[0].root.exists())  # CAPLAB's own directory is still removed.
 
+    def test_a_wrapper_that_reports_its_own_cleanup_failure_fails_the_run(self):
+        # Cairn's wrapper exits nonzero when it could not stop or remove its cluster; the host itself exited 0.
+        self.binary()
+        self.wrapper_mode("cleanup_status")
+        with self.assertRaises(runner.RunnerCleanupError) as caught:
+            self.run_arms([self.arm()], queries=QUERIES[:2])
+        art = StubArtifacts.instances[-1]
+        message = caught.exception.failures["cairn"]
+        self.assertIn("exited with status 1 after a clean stop", message)
+        self.assertIn("cleanup failed: fake wrapper status", message)
+        self.assertFalse(art.finished)
+        self.assertEqual([a["status"] for a in art.attempts], ["ok", "ok"])  # The measurements are not altered.
+        self.assertIn(b"cleanup failed: fake wrapper status", art.registered["arm.cairn.host.stderr"])
+        self.assert_released()  # The fake removed the cluster; the failure is the reported status.
+
     def test_a_wrapper_that_ignores_sigterm_is_killed_and_reported(self):
         self.binary()
         self.wrapper_mode("stubborn")
+        bystanders = self.bystanders()
         with mock.patch.object(cairn, "HOST_EXIT_TIMEOUT", 1), mock.patch.object(cairn, "HOST_TERM_TIMEOUT", 1):
             started = time.monotonic()
             with self.assertRaises(runner.RunnerCleanupError) as caught:
@@ -497,6 +527,7 @@ class CleanupFailureTests(CairnCase):
         time.sleep(0.3)
         survivors = subprocess.run(["pgrep", "-f", str(self.checkout / cairn.WRAPPER)], capture_output=True)
         self.assertNotEqual(survivors.returncode, 0, "the wrapper survived SIGKILL")
+        self.assert_alive(bystanders)  # Escalation reached only the wrapper's own group.
 
     def test_an_interruption_during_provisioning_with_a_leak_is_not_hidden(self):
         self.binary(migrate_sleep=30)
@@ -629,7 +660,9 @@ class IsolationTests(CairnCase):
             return original(query, seed, cutoff, timeout)
 
         adapter.retrieve = interrupted
+        bystanders = self.bystanders()
         result = runner.run_experiment(spec, self.out, artifacts_factory=StubArtifacts, adapters={"cairn": adapter})
+        self.assert_alive(bystanders)
         statuses = [a["status"] for a in StubArtifacts.instances[-1].attempts]
         self.assertEqual(statuses, ["ok", "interrupted", "not_started"])
         self.assert_released()
@@ -647,6 +680,7 @@ result = runner.run_experiment(make_spec([arm]), Path(sys.argv[2]), artifacts_fa
 print("finished", result["report"]["summary"]["arms"]["cairn"]["coverage"]["by_status"])
 """
         configuration = self.arm()["configuration"]
+        bystanders = self.bystanders()
         out = self.tmp / "sigterm-run"
         env = dict(os.environ, PYTHONPATH=f"{ROOT / 'src'}:{ROOT}")
         proc = subprocess.Popen([sys.executable, "-c", code, json.dumps(configuration), str(out)], cwd=ROOT, env=env,
@@ -666,6 +700,7 @@ print("finished", result["report"]["summary"]["arms"]["cairn"]["coverage"]["by_s
         attempts = [json.loads(line) for line in (out / "attempts.jsonl").read_text().splitlines()]
         self.assertEqual(len(attempts), len(QUERIES))
         self.assertEqual({a["status"] for a in attempts}, {"not_started"})  # Interrupted before any assignment ran.
+        self.assert_alive(bystanders)
         self.assertTrue((out / "report.json").is_file())
         self.assertIn("'not_started': 4", stdout)
         for root in wrapper_roots(self.wrapper_runs):

@@ -267,6 +267,40 @@ class ClassifiedFailureTests(RunnerCase):
                             "a descendant of the timed-out retriever survived")
 
 
+class CancellationScopeTests(RunnerCase):
+    """Cancelling one retriever's process group must never touch unrelated processes."""
+
+    def bystander(self, *, new_session):
+        proc = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(120)", f"bystander-{os.getpid()}-{new_session}"],
+                                start_new_session=new_session)
+        self.addCleanup(lambda: (proc.kill(), proc.wait()))
+        return proc
+
+    def test_a_timeout_and_an_interruption_leave_unrelated_processes_alone(self):
+        own_group, other_group = self.bystander(new_session=False), self.bystander(new_session=True)
+        self.assertEqual(os.getpgid(own_group.pid), os.getpgrp())  # Shares this test process's own group.
+        arm = {"id": "hang", "adapter": "command",
+               "configuration": {"argv": [sys.executable, str(write_retriever(self.scripts, "grandchild"))]}}
+        _, art = self.run_spec(make_spec([arm], timeout_seconds=1, queries=QUERIES[:1]))
+        self.assertEqual(art.attempts[0]["status"], "timeout")
+        stubs = {"a": AdapterFailureTests.Stub(interrupt_at=1)}
+        runner.run_experiment(make_spec([dict(self.arm("good"), id="a")], queries=QUERIES[:2]), self.tmp / "second",
+                              artifacts_factory=StubArtifacts, adapters=stubs)
+        time.sleep(0.3)
+        self.assertIsNone(own_group.poll(), "a process in the runner's own group was killed")
+        self.assertIsNone(other_group.poll(), "an unrelated process was killed")
+
+    def test_each_call_runs_in_its_own_session_so_a_group_kill_cannot_reach_the_runner(self):
+        script = self.scripts / "group.py"
+        script.write_text("import json, os, sys\njson.load(sys.stdin)\n"
+                          "print(json.dumps(dict(schema_version='caplab-retrieval-response/1', ranked_ids=[],"
+                          " observation=dict(pid=os.getpid(), pgid=os.getpgrp(), sid=os.getsid(0)))))\n")
+        _, art = self.run_spec(make_spec([command_arm("g", script)], queries=QUERIES[:1]))
+        seen = art.attempts[0]["observation"]["reported"]
+        self.assertEqual((seen["pgid"], seen["sid"]), (seen["pid"], seen["pid"]))  # Its own group and session.
+        self.assertNotEqual(seen["pgid"], os.getpgrp())
+
+
 class IsolationTests(RunnerCase):
     def test_labels_never_reach_the_retriever(self):
         _, _, art = self.run_arms(["echo_request"], queries=QUERIES)

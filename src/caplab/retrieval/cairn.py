@@ -469,6 +469,11 @@ class CairnAdapter(Adapter):
             if not graceful:
                 raise subprocess.TimeoutExpired("host", 0)  # Do not wait politely after an interruption.
             host.wait(timeout=HOST_EXIT_TIMEOUT)
+            if host.returncode != 0:
+                # The host exits 0 after a clean stop, so the wrapper's own failure (for example a
+                # cluster it could not stop or remove) is the only way to get here.
+                problems.append(f"the lifecycle wrapper exited with status {host.returncode} after a clean stop: "
+                                f"{self._tail('host.stderr')[-500:].strip()}")
         except subprocess.TimeoutExpired:
             if graceful:
                 problems.append(f"the store host did not exit within {HOST_EXIT_TIMEOUT} seconds of stdin closing")
