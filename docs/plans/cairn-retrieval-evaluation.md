@@ -155,3 +155,37 @@ CAPLAB ADR0065 supplies methodological guidance, not study execution authority.
 The retired reviewer admission gate supplies neither scoring nor thresholds.
 Revisit an interface if a real Cairn run cannot express its observations
 honestly; report the mismatch before papering over it with a synthetic result.
+
+## Integration API clarification (coordinator, 2026-09-30)
+
+To let CLI and runner implementation proceed independently, use these concrete
+artifact/report interfaces. Any necessary change must be sent to all consumers:
+
+```python
+RunArtifacts(output: Path, spec: dict, *, provenance: dict | None = None)
+RunArtifacts.register_bytes(name: str, payload: bytes,
+                            *, media_type: str = "application/octet-stream") -> dict
+RunArtifacts.record_attempt(attempt: dict,
+                            *, raw: dict[str, bytes] | None = None) -> dict
+RunArtifacts.finish() -> dict
+verify_run(output: Path) -> dict  # spec, attempts, report, manifest
+render_markdown(report: dict) -> str
+compare_runs(left: Path, right: Path,
+             *, left_arm: str | None = None, right_arm: str | None = None) -> dict
+```
+
+The report schema is `caplab-retrieval-report/1`, with its metrics under
+`summary = metrics.summarize(spec, attempts)`. Other fields supply reviewer
+context, references, provenance and limitations. `record_attempt` stores the
+validated attempt plus separately registered raw artifacts; returned attempt
+has the original attempt contract. Raw artifact references belong in the
+manifest, not undeclared attempt fields. `finish` can report incomplete planned
+coverage; it cannot turn missing assignments into successes. `verify_run`
+checks source hashes and reconstructs metrics before returning retained output.
+
+CLI contracts: `validate --spec PATH`; `run --spec PATH --output NEW_DIR`;
+`report --run DIR [--format json|markdown]`; `compare --left DIR --right DIR
+[--left-arm ID --right-arm ID]`. Run returns nonzero for failed or incomplete
+execution while retaining its report. Quality scores have no invented pass
+threshold. Omitting comparison arm selectors is valid only for unambiguous
+single-arm inputs or a clearly documented matching-arm report.
