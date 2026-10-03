@@ -2441,6 +2441,154 @@ class CodexCredentialTests(unittest.TestCase):
             "identity_token_audience": ["https://api.openai.com/v1"],
         }
 
+    def test_native_nanosecond_refresh_preserves_source_and_sealed_bytes(self):
+        subject = "acct_0123456789abcdef0123456789abcdef"
+        account_id = "workspace_0123456789abcdef0123456789abcdef"
+        document = json.loads(self._credential(subject, account_id))
+        document["last_refresh"] = "2026-09-09T00:00:00.123456789Z"
+        payload = (json.dumps(document, indent=2) + "\n").encode()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            root.chmod(0o700)
+            source = root / "synthetic-auth.json"
+            source.write_bytes(payload)
+            source.chmod(0o600)
+            with credential_memfd(
+                source, self._profile(subject, account_id), credential_root=root
+            ) as credential:
+                self.assertEqual(
+                    os.read(credential.descriptor, len(payload) + 1), payload
+                )
+                self.assertEqual(source.read_bytes(), payload)
+                with self.assertRaises(OSError):
+                    os.write(credential.descriptor, b"rewrite")
+                with self.assertRaisesRegex(
+                    CodexAdapterError, "^credential_secret_quarantine$"
+                ):
+                    credential.assert_streams_safe(
+                        document["last_refresh"].encode(), b""
+                    )
+            self.assertEqual(source.read_bytes(), payload)
+
+    def test_refresh_accepts_whole_seconds_and_one_through_nine_fraction_digits(self):
+        subject = "acct_0123456789abcdef0123456789abcdef"
+        account_id = "workspace_0123456789abcdef0123456789abcdef"
+        timestamps = ["2024-02-29T23:59:59Z"] + [
+            f"2024-02-29T23:59:59.{'123456789'[:digits]}Z"
+            for digits in range(1, 10)
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            root.chmod(0o700)
+            source = root / "synthetic-auth.json"
+            for refresh in timestamps:
+                with self.subTest(refresh=refresh):
+                    document = json.loads(self._credential(subject, account_id))
+                    document["last_refresh"] = refresh
+                    payload = canonical_json(document)
+                    source.write_bytes(payload)
+                    source.chmod(0o600)
+                    with credential_memfd(
+                        source, self._profile(subject, account_id), credential_root=root
+                    ) as credential:
+                        self.assertEqual(
+                            os.read(credential.descriptor, len(payload) + 1), payload
+                        )
+                    self.assertEqual(source.read_bytes(), payload)
+
+    def test_refresh_refuses_malformed_impossible_and_non_utc_metadata(self):
+        subject = "acct_0123456789abcdef0123456789abcdef"
+        account_id = "workspace_0123456789abcdef0123456789abcdef"
+        timestamps = [
+            None, True, 123, [], {}, "",
+            "2026-09-09T00:00:00.Z",
+            "2026-09-09T00:00:00.1234567890Z",
+            "2026-09-09T00:00:00,123Z",
+            "2026-09-09T00:00:00.１２３Z",
+            "2026-09-09T00:00:00",
+            "2026-09-09T00:00:00.123+00:00",
+            "2026-09-09T00:00:00+01:00",
+            "2026-09-09T00:00:00-07:00",
+            "2026-09-09t00:00:00.123z",
+            "2026-09-09 00:00:00Z",
+            "2026-9-9T00:00:00Z",
+            "2026-09-09T0:00:00Z",
+            "2026-09-09T00:00:00Z\n",
+            " 2026-09-09T00:00:00Z",
+            "0000-09-09T00:00:00.123Z",
+            "2026-00-09T00:00:00.123Z",
+            "2026-13-09T00:00:00.123Z",
+            "2026-09-00T00:00:00.123Z",
+            "2026-02-29T00:00:00.123456789Z",
+            "2026-02-30T00:00:00Z",
+            "2026-09-09T24:00:00.123Z",
+            "2026-09-09T00:60:00.123Z",
+            "2026-09-09T00:00:60.123Z",
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            root.chmod(0o700)
+            source = root / "synthetic-auth.json"
+            for refresh in timestamps:
+                with self.subTest(refresh=refresh):
+                    document = json.loads(self._credential(subject, account_id))
+                    document["last_refresh"] = refresh
+                    payload = canonical_json(document)
+                    source.write_bytes(payload)
+                    source.chmod(0o600)
+                    with self.assertRaisesRegex(
+                        CodexAdapterError, "^credential_last_refresh_invalid$"
+                    ):
+                        with credential_memfd(
+                            source, self._profile(subject, account_id), credential_root=root
+                        ):
+                            self.fail("invalid refresh metadata reached delivery")
+                    self.assertEqual(source.read_bytes(), payload)
+
+    def test_fractional_refresh_preserves_identity_expiry_auth_and_claim_refusals(self):
+        subject = "acct_0123456789abcdef0123456789abcdef"
+        account_id = "workspace_0123456789abcdef0123456789abcdef"
+        profile = self._profile(subject, account_id)
+        cases = [
+            ({}, {"provider_account_id_sha256": "0" * 64}, {},
+             "credential_provider_account_mismatch"),
+            ({}, {"provider_subject_sha256": "0" * 64}, {},
+             "credential_provider_subject_mismatch"),
+            ({"iss": "https://fabricated-issuer.invalid"}, {}, {},
+             "credential_identity_token_issuer_mismatch"),
+            ({"aud": ["fabricated-other-audience"]}, {}, {},
+             "credential_identity_token_audience_mismatch"),
+            ({"iat": 0, "exp": 1}, {}, {},
+             "credential_identity_token_expiry_invalid"),
+            ({}, {}, {"auth_mode": "chatgptAuthTokens"},
+             "credential_auth_method_mismatch"),
+            ({}, {}, {"OPENAI_API_KEY": "fabricated-api-key"},
+             "credential_auth_method_mismatch"),
+            ({LIVE_SHORT_TOP_LEVEL_KEY: "fabricated-private-value"}, {}, {},
+             "credential_custom_claim_key_invalid"),
+            ({"organization": {LIVE_SHORT_NESTED_KEY: "fabricated-private-value"}},
+             {}, {}, "credential_nested_claim_key_invalid"),
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            root.chmod(0o700)
+            source = root / "synthetic-auth.json"
+            for claims, profile_changes, document_changes, code in cases:
+                with self.subTest(code=code, document_changes=document_changes):
+                    document = json.loads(
+                        self._credential(subject, account_id, extra_claims=claims)
+                    )
+                    document["last_refresh"] = "2026-09-09T00:00:00.123456789Z"
+                    payload = canonical_json(document | document_changes)
+                    source.write_bytes(payload)
+                    source.chmod(0o600)
+                    with self.assertRaisesRegex(CodexAdapterError, f"^{code}$"):
+                        with credential_memfd(
+                            source, profile | profile_changes, credential_root=root
+                        ):
+                            self.fail("invalid identity, auth or private claim reached delivery")
+                    self.assertEqual(source.read_bytes(), payload)
+
     def test_credential_is_validated_once_and_exposed_only_by_sealed_memfd(self):
         with tempfile.TemporaryDirectory() as temporary:
             source = Path(temporary) / "dedicated-auth.json"

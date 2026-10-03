@@ -1900,11 +1900,16 @@ def _validate_credential_payload(
         raise CodexAdapterError("credential_document_shape_invalid")
     if document.get("auth_mode") != "chatgpt" or document["OPENAI_API_KEY"] is not None:
         raise CodexAdapterError("credential_auth_method_mismatch")
+    refresh = document["last_refresh"]
+    if not isinstance(refresh, str) or re.fullmatch(
+        r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,9})?Z",
+        refresh,
+    ) is None:
+        raise CodexAdapterError("credential_last_refresh_invalid")
     try:
-        datetime.strptime(document["last_refresh"], "%Y-%m-%dT%H:%M:%SZ").replace(
-            tzinfo=UTC
-        )
-    except (TypeError, ValueError) as error:
+        # Validate the calendar without rounding native nanosecond metadata.
+        datetime.strptime(refresh[:19], "%Y-%m-%dT%H:%M:%S")
+    except ValueError as error:
         raise CodexAdapterError("credential_last_refresh_invalid") from error
     tokens = document.get("tokens")
     if not isinstance(tokens, dict) or set(tokens) != {

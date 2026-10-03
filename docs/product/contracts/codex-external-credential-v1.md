@@ -59,7 +59,11 @@ or quarantined capture is unavailable, never an empty successful result. This
 is not general PII redaction, transformed-secret detection, memory zeroization
 or hostile-exfiltration certification.
 
-The historical Revbench credential profile and guard are unchanged. This API
+Revbench now accepts the same whole-second or 1–9-digit fractional UTC-Z
+refresh metadata, without rewriting source or sealed-copy bytes, under the
+[scoped timestamp administration decision](../../records/decision-2026-10-03-revbench-credential-refresh-timestamp.md).
+Its identity, expiry and private-claim/quarantine rules remain distinct:
+Revbench still refuses an expired ID token. This external-token API
 has synthetic file/descriptor/process verification; it has not delivered the
 owner's real credential or executed an authenticated native repair. A new
 prospective native profile, private identity selection and exact execution
