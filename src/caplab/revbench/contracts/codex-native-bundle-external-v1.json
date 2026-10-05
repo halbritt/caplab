@@ -141,6 +141,8 @@
     "/work",
     "--dir",
     "/codex-home",
+    "--dir",
+    "/tmp",
     "--perms",
     "0700",
     "--file",

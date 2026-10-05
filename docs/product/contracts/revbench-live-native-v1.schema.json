@@ -1484,6 +1484,8 @@
               "/work",
               "--dir",
               "/codex-home",
+              "--dir",
+              "/tmp",
               "--perms",
               "0700",
               "--file",
@@ -2560,7 +2562,7 @@
                   "const": "codex-jsonl-final-agent-message/1"
                 },
                 "external_token_bundle_policy_source_sha256": {
-                  "const": "03681f9256fd79190b0ca05a9d90475143e272db8809e74f24c56c0fc531d771"
+                  "const": "3f27c8361ce805689675987bad4451718baa3bb01600f605b50c038e67dfa32a"
                 },
                 "host_closure_trust": {
                   "const": "privileged-host-maintainers-do-not-change-the-pinned-closure-during-an-authorized-administration"

@@ -133,7 +133,7 @@ CODEX_NATIVE_BUNDLE_POLICY_ID = "codex-terra-max-revbench-live-v1"
 # apparatus receipt keeps pinning only the original digest: the external document is a
 # tracked package member, so the package tree identity already binds its exact bytes.
 CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_SHA256 = (
-    "03681f9256fd79190b0ca05a9d90475143e272db8809e74f24c56c0fc531d771"
+    "3f27c8361ce805689675987bad4451718baa3bb01600f605b50c038e67dfa32a"
 )
 CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_ID = (
     "codex-terra-max-revbench-live-external-token-direct-bwrap-v1"

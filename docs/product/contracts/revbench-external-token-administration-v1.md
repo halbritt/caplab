@@ -130,6 +130,19 @@ non-root-owned, setuid, file-capability-bearing or ambiguously resolved member w
 a fixed code `host_closure_<category>:<member id>`. Runtime code reads and checks
 the protected host files; it never writes, publishes, overwrites or deletes them.
 
+### Review layout: `/tmp` is created before the root goes read-only
+
+The review template creates every mountpoint it will later cover, then runs `--remount-ro /`, then
+mounts tmpfs over `/work`, `/codex-home` and `/tmp`. An offline diagnostic (D04) showed that the
+template as first selected omitted `--dir /tmp`: after the remount Bubblewrap could not create the
+mountpoint (`Can't mkdir /tmp: Read-only file system`) and stopped before Codex started. The external
+template now has `--dir /tmp` with the other directory creations, before `--remount-ro /`; the later
+`--tmpfs /tmp`, the empty root and every other containment operation are unchanged. A regression
+replays the template's filesystem operations in order and refuses any mountpoint requested on the
+read-only root that does not already exist. The original policy's review template has the same
+ordering and is intentionally left as it was: it is the historical bundle, and this repair does not
+extend to it.
+
 ### Retained evidence of the check
 
 Both outcomes are written to custody before any process can start, as

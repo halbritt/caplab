@@ -193,9 +193,87 @@ class ExternalPolicyTests(unittest.TestCase):
         for name in ("version_containment_argv_template", "review_containment_argv_template"):
             self.assertEqual(v1[name][:4], ["{adapter_loader}", "--library-path", "{adapter_library_directory}", "{adapter_executable}"])
             self.assertEqual(external[name][0], "/usr/bin/bwrap")
-            self.assertEqual(external[name][1:], v1[name][4:])
+            # The one selected template difference besides the host path: the review layout creates /tmp
+            # (see test_every_mountpoint_...); everything else is the original template.
+            remainder = list(external[name][1:])
+            if name == "review_containment_argv_template":
+                created = [i for i in range(len(remainder) - 1) if remainder[i : i + 2] == ["--dir", "/tmp"]]
+                self.assertEqual(len(created), 1)
+                del remainder[created[0] : created[0] + 2]
+            self.assertEqual(remainder, v1[name][4:])
             self.assertFalse([t for t in external[name] if t in ("{adapter_loader}", "{adapter_library_directory}", "{adapter_executable}")])
         self.assertEqual(external["containment"]["adapter_path"], "/usr/bin/bwrap")
+
+    @staticmethod
+    def mountpoint_violations(template):
+        """Replay a containment template's filesystem operations in order; list what cannot succeed.
+
+        Bubblewrap performs its operations in argument order. After ``--remount-ro /`` the root is
+        read-only, so a later ``--tmpfs``/``--dir``/``--file`` can only land on a directory that
+        already exists or inside a tmpfs mounted since. The model knows only the options this
+        template uses; an unknown option fails the replay so the model must be extended with it.
+        """
+
+        arity = {"--unshare-all": 0, "--share-net": 0, "--die-with-parent": 0, "--new-session": 0,
+                 "--clearenv": 0, "--hostname": 1, "--proc": 1, "--dev": 1, "--perms": 1, "--file": 2,
+                 "--ro-bind-data": 2, "--setenv": 2, "--chdir": 1, "--dir": 1, "--tmpfs": 1, "--remount-ro": 1}
+        def parents(path):
+            return [str(p) for p in Path(path).parents if str(p) != "/"]
+
+        exists, writable_mounts, read_only, violations = {"/"}, set(), False, []
+
+        def writable(path):
+            return not read_only or any(path == m or path.startswith(m + "/") for m in writable_mounts)
+
+        index = 1  # token 0 is the adapter path
+        while index < len(template) and template[index] != "--":
+            option = template[index]
+            if option not in arity:
+                return [(option, "option unknown to the replay model")]
+            operands = template[index + 1 : index + 1 + arity[option]]
+            index += 1 + arity[option]
+            if option in ("--dir", "--tmpfs"):
+                path = operands[0]
+                if option == "--tmpfs" and read_only:
+                    if path not in exists and not writable(path):
+                        violations.append((option, path))
+                    writable_mounts.add(path)
+                elif not writable(path) and path not in exists:
+                    violations.append((option, path))
+                exists.update([path, *parents(path)])
+            elif option in ("--file", "--ro-bind-data"):
+                path = operands[1]
+                if not writable(str(Path(path).parent)) and str(Path(path).parent) not in exists:
+                    violations.append((option, path))
+                exists.update([path, *parents(path)])
+            elif option == "--remount-ro" and operands == ["/"]:
+                read_only = True
+        return violations
+
+    def test_every_mountpoint_requested_after_the_root_goes_read_only_already_exists(self):
+        external = codex_native_external_bundle_policy()
+        for name in ("version_containment_argv_template", "review_containment_argv_template"):
+            with self.subTest(name):
+                self.assertEqual(self.mountpoint_violations(external[name]), [])
+        review = external["review_containment_argv_template"]
+        # The later tmpfs is kept; /tmp is created exactly once, with the other directories, before the remount.
+        self.assertEqual(review.count("/tmp"), 2)  # the new --dir and the kept --tmpfs
+        directory_at = next(i for i in range(len(review) - 1) if review[i : i + 2] == ["--dir", "/tmp"])
+        tmpfs_at = next(i for i in range(len(review) - 1) if review[i : i + 2] == ["--tmpfs", "/tmp"])
+        self.assertLess(directory_at, review.index("--remount-ro"))
+        self.assertLess(review.index("--remount-ro"), tmpfs_at)
+        self.assertLess(review.index("/work"), directory_at)  # beside the other directory creations
+        # The replay is a real check: the template as selected before this repair fails it exactly as the
+        # offline diagnostic observed (mkdir /tmp on a read-only root), and so does any other missing mountpoint.
+        before = copy.deepcopy(review)
+        del before[directory_at : directory_at + 2]
+        self.assertEqual(self.mountpoint_violations(before), [("--tmpfs", "/tmp")])
+        no_work = copy.deepcopy(review)
+        no_work_at = next(i for i in range(len(no_work) - 1) if no_work[i : i + 2] == ["--dir", "/work"])
+        del no_work[no_work_at : no_work_at + 2]
+        self.assertEqual(self.mountpoint_violations(no_work), [("--tmpfs", "/work")])
+        self.assertEqual(self.mountpoint_violations(["/usr/bin/bwrap", "--bind", "/", "/"]),
+                         [("--bind", "option unknown to the replay model")])
 
     def test_pinned_members_and_closure_description_agree(self):
         policy = codex_native_external_bundle_policy()
