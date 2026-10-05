@@ -1478,51 +1478,22 @@ def _run_owned_process(
         raise CodexAdapterError("live_launch_plan_actual_mismatch")
     if not popen_argv or any(not isinstance(token, str) for token in popen_argv):
         raise CodexAdapterError("live_containment_argv_invalid")
-    now_utc = datetime.now(UTC)
-    remaining_authority = (
-        datetime.strptime(plan["execution_deadline_at"], "%Y-%m-%dT%H:%M:%SZ").replace(
-            tzinfo=UTC
-        )
-        - now_utc
-    ).total_seconds()
-    remaining_monotonic = monotonic_deadline - time.monotonic()
-    if remaining_authority <= 0 or remaining_monotonic <= 0:
-        observation = CodexProcessObservation(
-            None,
-            None,
-            None,
-            _timestamp(),
-            b"",
-            True,
-            b"",
-            True,
-            None,
-            "authorization-expired",
-            "not-invoked",
-        )
-        capture.complete(_completion(capture, observation))
-        return observation
-    timeout_seconds = min(
-        float(plan["timeout_seconds"]),
-        remaining_authority,
-        remaining_monotonic,
+    read_at, remaining_authority, remaining_total = _launch_budget(
+        plan, monotonic_deadline
     )
-    if host_closure is not None and not _host_closure_verified(capture, host_closure):
-        observation = CodexProcessObservation(
-            None,
-            None,
-            None,
-            _timestamp(),
-            b"",
-            True,
-            b"",
-            True,
-            None,
-            "preflight-refused",
-            "not-invoked",
+    if remaining_authority <= 0 or remaining_total <= 0:
+        return _complete_before_launch(capture, "authorization-expired")
+    if host_closure is not None:
+        if not _host_closure_verified(capture, host_closure):
+            return _complete_before_launch(capture, "preflight-refused")
+        # The inspection and its durable record took time that belongs to the same
+        # authorization.  Read both budgets again: if either ran out, the retained check stays
+        # and the slot is consumed without a launch.
+        read_at, remaining_authority, remaining_total = _launch_budget(
+            plan, monotonic_deadline
         )
-        capture.complete(_completion(capture, observation))
-        return observation
+        if remaining_authority <= 0 or remaining_total <= 0:
+            return _complete_before_launch(capture, "authorization-expired")
     launch_attempted_at = _timestamp()
     process: subprocess.Popen[bytes] | None = None
     try:
@@ -1594,7 +1565,14 @@ def _run_owned_process(
         }
         termination = "exited"
         killed = False
-        deadline = time.monotonic() + timeout_seconds
+        # Absolute stop bound: the retained UTC authority (as of the reading above) and the
+        # absolute total deadline are never restarted by inspection, process startup or polling;
+        # only the per-process timeout counts from the launch.
+        deadline = min(
+            time.monotonic() + float(plan["timeout_seconds"]),
+            read_at + remaining_authority,
+            monotonic_deadline,
+        )
         while selector.get_map():
             remaining = deadline - time.monotonic()
             if remaining <= 0 and not killed:
@@ -1716,6 +1694,47 @@ def _retain_safe_chunk(
     else:
         capture.write_stderr(payload)
     buffer.extend(payload)
+
+
+def _launch_budget(
+    plan: Mapping[str, Any], monotonic_deadline: float
+) -> tuple[float, float, float]:
+    """One reading of both budgets: (monotonic time read, UTC authority left, total left).
+
+    The monotonic clock and the UTC clock are read together so the UTC remainder can be
+    turned into an absolute monotonic stop; elapsed time never creates extra budget.
+    """
+
+    read_at = time.monotonic()
+    authority = (
+        datetime.strptime(plan["execution_deadline_at"], "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=UTC
+        )
+        - datetime.now(UTC)
+    ).total_seconds()
+    return read_at, authority, monotonic_deadline - read_at
+
+
+def _complete_before_launch(
+    capture: FreshProcessCapture, termination: str
+) -> CodexProcessObservation:
+    """Consume the slot as not invoked; no process exists and nothing is signalled."""
+
+    observation = CodexProcessObservation(
+        None,
+        None,
+        None,
+        _timestamp(),
+        b"",
+        True,
+        b"",
+        True,
+        None,
+        termination,
+        "not-invoked",
+    )
+    capture.complete(_completion(capture, observation))
+    return observation
 
 
 def _host_closure_verified(

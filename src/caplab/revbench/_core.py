@@ -50,7 +50,12 @@ from .codex import (
     validate_credential_profile,
     validate_execution_apparatus_receipt,
 )
-from .custody import live_effect_id, live_process_id
+from .custody import (
+    LiveExecutionCustodyError,
+    live_effect_id,
+    live_process_id,
+    validate_host_closure_check,
+)
 from .host_closure import CHECK_SCHEMA as HOST_CLOSURE_CHECK_SCHEMA
 from .host_closure import closure_sha256 as host_closure_sha256
 
@@ -3037,6 +3042,14 @@ def _validate_host_closure_check_evidence(
         HOST_CLOSURE_CHECK_SCHEMA,
         f"{path} host_closure_check_ref document.schema_version",
     )
+    try:
+        # The same closed value contract custody enforces when writing and the published schema
+        # states: non-boolean member_count in 0..64, fixed refusal grammar, digest and time forms.
+        validate_host_closure_check(check, receipt["process_id"])
+    except LiveExecutionCustodyError as error:
+        _fail(
+            f"{path} host_closure_check_ref", f"violates its closed contract ({error})"
+        )
     if check["process_id"] != receipt["process_id"]:
         _fail(f"{path} host_closure_check_ref", "belongs to another process")
     if check["closure_sha256"] != host_closure_sha256(host_closure):

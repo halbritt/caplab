@@ -917,7 +917,7 @@ def process_claim(runtime, logical_argv, *, kind="version-probe"):
 
 
 def run_claimed(capture, logical_argv, **kwargs):
-    options = {"credential": None, **kwargs}
+    options = {"credential": None, "monotonic_deadline": float("inf"), **kwargs}
     return codex._run_owned_process(
         logical_argv,
         logical_argv,
@@ -931,7 +931,6 @@ def run_claimed(capture, logical_argv, **kwargs):
         credential_profile_sha256="f" * 64,
         pass_fds=(),
         capture=capture,
-        monotonic_deadline=float("inf"),
         **options,
     )
 
@@ -1688,6 +1687,173 @@ class ExternalLiveFlowTests(PrivateRuntimeCase):
         with self.subTest("private anchor in public profile"), self.assertRaises(ValidationError):
             live.validate(profile)
 
+
+
+    def score_with_check_edit(self, edit, *, mode="valid"):
+        """Run a flow whose retained check records are freshly registered with ``edit`` applied.
+
+        The edit happens before the registrar hashes the document, so every returned reference and
+        derived receipt identity is valid for the malformed content: the scorer has to look at the
+        values themselves, not just at integrity.
+        """
+
+        from caplab.revbench import RevbenchContractError
+
+        original = self.registrar.register_document
+
+        def register(document, **kwargs):
+            if edit is not None and kwargs.get("kind") == "native-host-closure-check":
+                edit(document)
+            return original(document, **kwargs)
+
+        self.registrar.register_document = register
+        try:
+            reviews = self.execute(self.runner(mode))
+        finally:
+            self.registrar.register_document = original
+        try:
+            return self.score(reviews), None
+        except RevbenchContractError as error:
+            return None, str(error)
+
+    def test_public_scoring_refuses_a_freshly_registered_check_whose_values_break_the_closed_contract(self):
+        malformed = {
+            "boolean member count": lambda d: d.update(member_count=True),
+            "negative member count": lambda d: d.update(member_count=-1),
+            "member count above 64": lambda d: d.update(member_count=65),
+            "string member count": lambda d: d.update(member_count="6"),
+            "object member count": lambda d: d.update(member_count={"fabricated": "count"}),
+        }
+        measurement, error = self.score_with_check_edit(None)
+        self.assertEqual((error, measurement["disposition"]), (None, "complete"))  # the valid positive control
+        for name, edit in malformed.items():
+            with self.subTest(name):
+                self.setUp()
+                measurement, error = self.score_with_check_edit(edit)
+                self.assertIsNone(measurement)
+                self.assertRegex(error, r"host_closure_check_ref.*violates its closed contract")
+        for name, edit in {
+            "free-text refusal": lambda d: d.update(refusal_code="private-looking/path or arbitrary text"),
+            "refusal naming a path": lambda d: d.update(refusal_code="host_closure_member_changed:/etc/passwd"),
+        }.items():
+            with self.subTest(name):
+                self.setUp()
+                measurement, error = self.score_with_check_edit(edit, mode="drift")
+                self.assertIsNone(measurement)
+                self.assertRegex(error, r"host_closure_check_ref.*violates its closed contract")
+        self.setUp()
+        measurement, error = self.score_with_check_edit(None, mode="drift")  # a valid refusal still scores
+        self.assertEqual((error, measurement["disposition"]), (None, "infrastructure-failure"))
+
+
+class OfflineHostClosureEvidenceTests(unittest.TestCase):
+    """One value contract for the retained check: custody writes it, the schema states it, the scorer reads it."""
+
+    PROCESS = "process-" + "a" * 64
+
+    def document(self, *, refused=True, **changes):
+        document = {
+            "schema_version": "caplab-revbench-host-closure-check/1",
+            "process_id": self.PROCESS,
+            "closure_sha256": host_closure.closure_sha256(codex_native_external_bundle_policy()["host_closure"]),
+            "member_count": 0 if refused else 6,
+            "checked_at": "2026-10-05T00:00:00Z",
+            "result": "refused" if refused else "verified",
+            "refusal_code": "host_closure_member_missing:executable" if refused else None,
+        }
+        document.update(changes)
+        return document
+
+    def receipt(self, *, refused=True):
+        return {
+            "outer_launch_state": "not-invoked" if refused else "invoked",
+            "termination": "preflight-refused" if refused else "exited",
+            "process_id": self.PROCESS,
+            "intent_recorded_at": "2026-10-05T00:00:00Z",
+            "launch_attempted_at": None if refused else "2026-10-05T00:00:02Z",
+            "completion_recorded_at": "2026-10-05T00:00:03Z",
+        }
+
+    def verdicts(self, document, *, refused=True):
+        """(schema rejects, custody rejects, scorer rejects) for one registered record."""
+
+        from jsonschema import Draft202012Validator
+        from referencing import Registry, Resource
+        from caplab.revbench import RevbenchContractError, _core
+        from caplab.revbench.custody import validate_host_closure_check
+        from tests.test_revbench import MemoryRegistrar, registered
+
+        contracts = Path(__file__).resolve().parents[1] / "docs" / "product" / "contracts"
+        live = json.loads((contracts / "revbench-live-native-v1.schema.json").read_bytes())
+        claim = json.loads((contracts / "qualification-claim-v1.schema.json").read_bytes())
+        registry = Registry().with_resources(
+            [(live["$id"], Resource.from_contents(live)), (claim["$id"], Resource.from_contents(claim))])
+        schema_rejects = not Draft202012Validator(live, registry=registry).is_valid(document)
+        try:
+            validate_host_closure_check(document, self.PROCESS)
+            custody_rejects = False
+        except LiveExecutionCustodyError:
+            custody_rejects = True
+        registrar = MemoryRegistrar()
+        ref = registered(registrar, "check", document, kind="native-host-closure-check", schema=document["schema_version"])
+        try:
+            _core._validate_host_closure_check_evidence(
+                ref, self.receipt(refused=refused), host_closure=codex_native_external_bundle_policy()["host_closure"],
+                registrar=registrar, path="probe")
+            scorer_rejects = False
+        except RevbenchContractError:
+            scorer_rejects = True
+        return schema_rejects, custody_rejects, scorer_rejects
+
+    def test_valid_records_are_accepted_by_all_three_including_the_count_boundaries(self):
+        for name, document, refused in (
+            ("refusal", self.document(), True),
+            ("verified", self.document(refused=False), False),
+            ("count zero", self.document(refused=False, member_count=0), False),
+            ("count 64", self.document(refused=False, member_count=64), False),
+            ("category and member at their limits", self.document(
+                refusal_code="host_closure_" + "a" * 36 + ":" + "b" * 64), True),
+        ):
+            with self.subTest(name):
+                self.assertEqual(self.verdicts(document, refused=refused), (False, False, False))
+
+    def test_values_outside_the_contract_are_refused_by_the_schema_custody_and_the_scorer_alike(self):
+        cases = {
+            "boolean count": dict(member_count=True),
+            "false count": dict(member_count=False),
+            "negative count": dict(member_count=-1),
+            "count above 64": dict(member_count=65),
+            "string count": dict(member_count="6"),
+            "null count": dict(member_count=None),
+            "object count": dict(member_count={"fabricated": "count"}),
+            "list count": dict(member_count=[6]),
+            "free text refusal": dict(refusal_code="private-looking/path or arbitrary text"),
+            "path in refusal": dict(refusal_code="host_closure_member_changed:/etc/passwd"),
+            "uppercase refusal": dict(refusal_code="HOST_CLOSURE_MEMBER_CHANGED:libc"),
+            "empty member id": dict(refusal_code="host_closure_member_changed:"),
+            "member id too long": dict(refusal_code="host_closure_member_changed:" + "a" * 65),
+            "category too long": dict(refusal_code="host_closure_" + "a" * 49),
+            "other prefix": dict(refusal_code="drift:libc"),
+            "short digest": dict(closure_sha256="abc"),
+            "uppercase digest": dict(closure_sha256="A" * 64),
+            "malformed time": dict(checked_at="now"),
+            "other schema": dict(schema_version="caplab-revbench-host-closure-check/2"),
+        }
+        for name, changes in cases.items():
+            with self.subTest(name):
+                self.assertEqual(self.verdicts(self.document(**changes)), (True, True, True))
+
+    def test_custody_and_the_scorer_also_refuse_what_json_schema_semantics_would_let_through(self):
+        # Python's JSON Schema `$` and `integer` are looser than the closed contract; the code must not be.
+        cases = {
+            "newline after the refusal code": (dict(refusal_code="host_closure_member_changed:libc\n"), True),
+            "verified with a refusal code": (dict(result="verified", member_count=6, refusal_code="host_closure_x"), True),
+            "refused without a code": (dict(refusal_code=None), True),
+        }
+        for name, (changes, refused) in cases.items():
+            with self.subTest(name):
+                _schema, custody, scorer = self.verdicts(self.document(**changes), refused=refused)
+                self.assertEqual((custody, scorer), (True, True))
 
 
 class ExternalAdapterApparatusTests(unittest.TestCase):

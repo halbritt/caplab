@@ -112,7 +112,7 @@ class FreshProcessCapture:
 
         if self._closed or self._completed or self._host_closure_check is not None:
             raise LiveExecutionCustodyError("process_capture_closed")
-        document = _validate_host_closure_check(check, self.intent["process_id"])
+        document = validate_host_closure_check(check, self.intent["process_id"])
         _write_exclusive(self._root, _HOST_CLOSURE_CHECK_FILE, canonical_json(document))
         self._host_closure_check = document
 
@@ -1512,7 +1512,7 @@ def _recover_uncertain(root: Path, intent: dict[str, Any]) -> RecoveredProcessCa
     )
 
 
-def _validate_host_closure_check(
+def validate_host_closure_check(
     check: Mapping[str, Any], process_id: str
 ) -> dict[str, Any]:
     """The closed retained record of one pre-launch host-closure check."""
@@ -1558,7 +1558,7 @@ def _read_host_closure_check(root: Path, process_id: str) -> dict[str, Any] | No
         document = _read_canonical_document(root / _HOST_CLOSURE_CHECK_FILE)
     except FileNotFoundError:
         return None
-    return _validate_host_closure_check(document, process_id)
+    return validate_host_closure_check(document, process_id)
 
 
 def _direct_child_names(
