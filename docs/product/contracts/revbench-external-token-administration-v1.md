@@ -143,6 +143,25 @@ read-only root that does not already exist. The original policy's review templat
 ordering and is intentionally left as it was: it is the historical bundle, and this repair does not
 extend to it.
 
+### Version layout: an isolated home for the probe
+
+The offline diagnostic's version and help launches each printed `WARNING: proceeding, even though we could
+not create PATH aliases: Could not find home directory` (97 bytes) on stderr, which is consistent with a layout
+that sets no home directory. The retained version expectation, and the core validator, require that stderr to be
+exactly empty, so a live version probe in that layout would be refused before the paired review (independent
+review finding C1). The external version template therefore gets the same isolated writable mountpoints as the
+review layout: fresh `/work` and `/codex-home` are created with the other directories before `--remount-ro /`, an
+empty tmpfs is mounted at each afterwards, and `HOME=/work` and `CODEX_HOME=/codex-home` are set explicitly after
+`--clearenv`. The network stays unshared, the root stays an empty tmpfs, and nothing else is mounted: no
+credential, host home, configuration or additional executable. The review template is unchanged by this repair.
+
+The expected version stdout and stderr, their digests and the exact comparison are unchanged: the warning is not
+filtered, stderr is not ignored, and no preparation fixture is altered to fit. Because the template now sets two
+variables, the version-probe launch plan records that environment (`version_contained_environment`, the template's
+own `--setenv` pairs) instead of an empty one, in the live runner, the executor and scoring alike; the original
+policy's version template sets none, so its plan identity is unchanged. Whether the probe now prints exactly the
+expected bytes is not established here and needs a new bounded native diagnostic.
+
 ### Retained evidence of the check
 
 Both outcomes are written to custody before any process can start, as
@@ -185,7 +204,8 @@ and closes every owned pipe and the capture even when signalling or closing fail
 the primary exception reachable. Its regressions and the mutation checks run with every
 signal primitive intercepted.
 
-Not verified and not claimed: that the pinned Codex binary parses the delivered
+Not verified and not claimed: that the version probe in its isolated home layout prints
+exactly the expected (empty) stderr, that the pinned Codex binary parses the delivered
 document or honors `cli_auth_credentials_store=file`, read-only delivery in a live
 mount, usability of a real credential's capture under the v2 marker policy, any
 provider behavior, and the host namespace permission itself (separate work; this

@@ -49,6 +49,7 @@ from .codex import (
     response_derivation_document,
     validate_credential_profile,
     validate_execution_apparatus_receipt,
+    version_contained_environment,
 )
 from .custody import (
     LiveExecutionCustodyError,
@@ -2680,7 +2681,7 @@ def _validate_live_execution_intent_evidence(
                     "version-probe",
                     version_command["argv"],
                     b"",
-                    {},
+                    version_contained_environment(argv_policy_for(policy)),
                     probe["command_ref"],
                 ),
                 (

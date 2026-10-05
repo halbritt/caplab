@@ -190,16 +190,25 @@ class ExternalPolicyTests(unittest.TestCase):
 
     def test_external_templates_run_the_pinned_host_path_directly_with_the_same_flags(self):
         v1, external = codex_native_bundle_policy(), codex_native_external_bundle_policy()
+        # The selected template differences besides the host path, each removed exactly once below:
+        # the review layout creates /tmp (see test_every_mountpoint_...), and the version layout gets
+        # its isolated writable /work and /codex-home (see test_version_template_...).
+        selected = {
+            "version_containment_argv_template": [
+                ["--dir", "/work", "--dir", "/codex-home"],
+                ["--tmpfs", "/work", "--tmpfs", "/codex-home",
+                 "--setenv", "CODEX_HOME", "/codex-home", "--setenv", "HOME", "/work"],
+            ],
+            "review_containment_argv_template": [["--dir", "/tmp"]],
+        }
         for name in ("version_containment_argv_template", "review_containment_argv_template"):
             self.assertEqual(v1[name][:4], ["{adapter_loader}", "--library-path", "{adapter_library_directory}", "{adapter_executable}"])
             self.assertEqual(external[name][0], "/usr/bin/bwrap")
-            # The one selected template difference besides the host path: the review layout creates /tmp
-            # (see test_every_mountpoint_...); everything else is the original template.
             remainder = list(external[name][1:])
-            if name == "review_containment_argv_template":
-                created = [i for i in range(len(remainder) - 1) if remainder[i : i + 2] == ["--dir", "/tmp"]]
-                self.assertEqual(len(created), 1)
-                del remainder[created[0] : created[0] + 2]
+            for chunk in selected[name]:
+                found = [i for i in range(len(remainder) - len(chunk) + 1) if remainder[i : i + len(chunk)] == chunk]
+                self.assertEqual(len(found), 1, (name, chunk))
+                del remainder[found[0] : found[0] + len(chunk)]
             self.assertEqual(remainder, v1[name][4:])
             self.assertFalse([t for t in external[name] if t in ("{adapter_loader}", "{adapter_library_directory}", "{adapter_executable}")])
         self.assertEqual(external["containment"]["adapter_path"], "/usr/bin/bwrap")
@@ -272,8 +281,58 @@ class ExternalPolicyTests(unittest.TestCase):
         no_work_at = next(i for i in range(len(no_work) - 1) if no_work[i : i + 2] == ["--dir", "/work"])
         del no_work[no_work_at : no_work_at + 2]
         self.assertEqual(self.mountpoint_violations(no_work), [("--tmpfs", "/work")])
+        # The version layout (C1) asks for /work and /codex-home tmpfs after the remount: both must be created before.
+        version = external["version_containment_argv_template"]
+        for path in ("/work", "/codex-home"):
+            without = copy.deepcopy(version)
+            at = next(i for i in range(len(without) - 1) if without[i : i + 2] == ["--dir", path])
+            del without[at : at + 2]
+            self.assertEqual(self.mountpoint_violations(without), [("--tmpfs", path)])
         self.assertEqual(self.mountpoint_violations(["/usr/bin/bwrap", "--bind", "/", "/"]),
                          [("--bind", "option unknown to the replay model")])
+
+    def test_version_template_gives_the_probe_isolated_writable_home_and_codex_home_and_nothing_else(self):
+        # C1 (offline compatibility review, Sol256 af66701f): the version probe printed a home-directory
+        # warning on stderr because it had no HOME; the retained expectation is exactly empty stderr.
+        external, v1 = codex_native_external_bundle_policy(), codex_native_bundle_policy()
+        version = external["version_containment_argv_template"]
+        pairs = [(version[i], version[i + 1]) for i in range(len(version) - 1)]
+        tail = version.index("--", 1)  # the bare separator before the contained command
+        self.assertEqual(version[tail + 1 :], ["/opt/caplab/codex/bin/codex", "--version"])
+        before_separator = version[:tail]
+        # Fresh writable mountpoints are created with the other directories, before the root goes read-only,
+        # and an empty tmpfs is mounted at each afterwards.
+        remount = version.index("--remount-ro")
+        for path in ("/work", "/codex-home"):
+            self.assertEqual(pairs.count(("--dir", path)), 1)
+            self.assertEqual(pairs.count(("--tmpfs", path)), 1)
+            self.assertLess(version.index(path, version.index("--dir")), remount)
+            self.assertLess(remount, pairs.index(("--tmpfs", path)))
+        # The two explicit variables, and only them, after the environment was cleared.
+        setenv = [(before_separator[i + 1], before_separator[i + 2]) for i, t in enumerate(before_separator) if t == "--setenv"]
+        self.assertEqual(dict(setenv), {"CODEX_HOME": "/codex-home", "HOME": "/work"})
+        self.assertEqual(len(setenv), 2)
+        self.assertLess(version.index("--clearenv"), version.index("--setenv"))
+        self.assertEqual(codex.version_contained_environment(external), {"CODEX_HOME": "/codex-home", "HOME": "/work"})
+        self.assertEqual(codex.version_contained_environment(v1), {})  # the historical plan identity is unchanged
+        self.assertEqual(codex.version_contained_environment(), {})
+        for key, value in setenv:  # the same values the review layout uses
+            self.assertEqual(external["environment"][key], value)
+        # Nothing else is mounted: no credentials, host home, configuration or extra executable; the
+        # network stays unshared and the root stays an empty tmpfs.
+        self.assertEqual(sorted(path for flag, path in pairs if flag == "--tmpfs"), ["/", "/codex-home", "/work"])
+        self.assertEqual([t for t in version if t in ("--bind", "--ro-bind", "--bind-try", "--ro-bind-try", "--ro-bind-data", "--bind-data", "--symlink", "--share-net")], [])
+        self.assertEqual([t for t in version if t.startswith("{")], ["{codex_executable_fd}"])
+        self.assertEqual(sum(1 for t in version if t == "--file"), 1)
+        self.assertFalse([t for t in version if "auth" in t or "credential" in t or "config" in t])
+        self.assertIn("--unshare-all", version)
+        self.assertEqual(version[version.index("--tmpfs") : version.index("--tmpfs") + 2], ["--tmpfs", "/"])
+
+    def test_review_template_environment_is_exactly_the_policy_environment(self):
+        external = codex_native_external_bundle_policy()
+        review = external["review_containment_argv_template"]
+        setenv = {review[i + 1]: review[i + 2] for i, t in enumerate(review) if t == "--setenv"}
+        self.assertEqual(setenv, external["environment"])
 
     def test_pinned_members_and_closure_description_agree(self):
         policy = codex_native_external_bundle_policy()
@@ -1230,7 +1289,7 @@ class DirectLaunchWiringTests(unittest.TestCase):
             logical_argv=logical,
             normalized_containment_argv=normalized_codex_containment_argv(logical, policy=policy),
             stdin=b"",
-            contained_environment={},
+            contained_environment=codex.version_contained_environment(policy),
             runtime_ref_sha256=bundle.runtime_ref_sha256,
             apparatus_sha256=bundle.apparatus_sha256,
             command_ref_sha256=bundle.version_command_ref_sha256,

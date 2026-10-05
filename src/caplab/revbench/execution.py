@@ -37,6 +37,7 @@ from .codex import (
     response_derivation_document,
     run_codex_process,
     validate_execution_apparatus_receipt,
+    version_contained_environment,
 )
 from .custody import (
     FilesystemLiveExecutionRuntime,
@@ -1302,7 +1303,9 @@ def _execute_live_codex(
                     probe["command"]["argv"], policy=_plan_policy(bundle)
                 ),
                 stdin=b"",
-                contained_environment={},
+                contained_environment=version_contained_environment(
+                    _plan_policy(bundle)
+                ),
                 runtime_ref_sha256=bundle.runtime_ref_sha256,
                 apparatus_sha256=bundle.apparatus_sha256,
                 command_ref_sha256=bundle.version_command_ref_sha256,

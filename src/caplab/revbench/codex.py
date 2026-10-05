@@ -133,7 +133,7 @@ CODEX_NATIVE_BUNDLE_POLICY_ID = "codex-terra-max-revbench-live-v1"
 # apparatus receipt keeps pinning only the original digest: the external document is a
 # tracked package member, so the package tree identity already binds its exact bytes.
 CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_SHA256 = (
-    "3f27c8361ce805689675987bad4451718baa3bb01600f605b50c038e67dfa32a"
+    "ab14ee57af24a0fbb3d0b6b722434564d7dd560e80b17cc8eb25bd9901fed37f"
 )
 CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_ID = (
     "codex-terra-max-revbench-live-external-token-direct-bwrap-v1"
@@ -1106,6 +1106,26 @@ def normalized_codex_containment_argv(
     return result
 
 
+def version_contained_environment(
+    policy: Mapping[str, Any] | None = None,
+) -> dict[str, str]:
+    """The environment the pinned version template gives the contained process.
+
+    Exactly its ``--setenv`` pairs (the outer launch environment is empty and the template
+    clears the rest), so the recorded plan cannot disagree with the template.  The original
+    policy's template sets none.
+    """
+
+    policy = codex_native_bundle_policy() if policy is None else policy
+    template = list(policy["version_containment_argv_template"])
+    separator = template.index("--")
+    return {
+        template[index + 1]: template[index + 2]
+        for index in range(separator)
+        if template[index] == "--setenv"
+    }
+
+
 def run_codex_process(
     logical_argv: Sequence[str],
     stdin: bytes,
@@ -1186,7 +1206,11 @@ def run_codex_process(
                 normalized,
                 logical_argv,
                 stdin,
-                contained_environment=bundle.environment if is_review else {},
+                contained_environment=(
+                    bundle.environment
+                    if is_review
+                    else version_contained_environment(policy)
+                ),
                 runtime_ref_sha256=bundle.runtime_ref_sha256,
                 apparatus_sha256=bundle.apparatus_sha256,
                 command_ref_sha256=command_ref_sha256,
