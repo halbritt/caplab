@@ -559,8 +559,15 @@ cd REPOSITORY_ROOT
   --execution-authorization-ref AUTHORIZATION_REF --ledger LEDGER \
   --output REVIEWS --live-custody-root CUSTODY_ROOT \
   --credential-root CREDENTIAL_ROOT \
-  --credential-profile-source PROFILE=FILENAME
+  --credential-profile-source PROFILE=FILENAME \
+  [--credential-anchor PROFILE=FILENAME]
 ```
+
+`--credential-anchor` applies only to a Binding that selects the separately
+named [external-token administration](revbench-external-token-administration-v1.md);
+it maps that profile to a second direct child of the credential root holding the
+independently supplied private anchors. The original profile takes no anchors and
+behaves as described below.
 
 The entrypoint accepts the absolute or repository-relative script path but
 requires the exact interpreter options and rejects additional `-X` or `-W`

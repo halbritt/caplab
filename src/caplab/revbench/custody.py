@@ -36,6 +36,13 @@ _PROCESS_ID = re.compile(r"^process-[0-9a-f]{64}$")
 _CUSTODY_DOMAIN_ID = re.compile(r"^custody-domain-[0-9a-f]{64}$")
 _IDENTIFIER = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _TIMESTAMP = "%Y-%m-%dT%H:%M:%SZ"
+_HOST_CLOSURE_CHECK_FILE = "host-closure-check.json"
+_HOST_CLOSURE_CHECK_SCHEMA = "caplab-revbench-host-closure-check/1"
+_HOST_CLOSURE_REFUSAL = re.compile(
+    r"^host_closure_[a-z_]{1,48}(?::[a-z0-9._-]{1,64})?$"
+)
+_EXTERNAL_ANCHOR_SCHEMA = "caplab-revbench-external-credential-anchors/1"
+_MAX_EXTERNAL_ANCHOR_BYTES = 4096
 _PROCESS_KINDS = {"version-probe", "native-review"}
 _COMPLETED_INVOCATIONS = {"not-invoked", "invoked"}
 _TERMINATIONS = {
@@ -61,6 +68,7 @@ class RecoveredProcessCapture:
     termination: str
     completion: dict[str, Any] | None
     recovery: dict[str, Any] | None
+    host_closure_check: dict[str, Any] | None = None
 
 
 def live_effect_id(effect_scope: Mapping[str, Any]) -> str:
@@ -93,6 +101,20 @@ class FreshProcessCapture:
         self._stderr_descriptor = stderr_descriptor
         self._closed = False
         self._completed = False
+        self._host_closure_check: dict[str, Any] | None = None
+
+    def record_host_closure_check(self, check: Mapping[str, Any]) -> None:
+        """Retain the pre-launch host-closure check before any process can start.
+
+        Written once, durably, beside the process's streams; recovery reads it back so
+        a later report cannot omit a detected drift or a passed check.
+        """
+
+        if self._closed or self._completed or self._host_closure_check is not None:
+            raise LiveExecutionCustodyError("process_capture_closed")
+        document = _validate_host_closure_check(check, self.intent["process_id"])
+        _write_exclusive(self._root, _HOST_CLOSURE_CHECK_FILE, canonical_json(document))
+        self._host_closure_check = document
 
     def write_stdout(self, payload: bytes) -> None:
         self._write(self._stdout_descriptor, payload)
@@ -152,6 +174,7 @@ class FreshProcessCapture:
             termination=document["termination"],
             completion=sealed,
             recovery=None,
+            host_closure_check=self._host_closure_check,
         )
 
     def close(self) -> None:
@@ -520,6 +543,7 @@ class FilesystemLiveExecutionRuntime:
         *,
         credential_root: Path | None = None,
         credential_sources: Mapping[str, str | Path] | None = None,
+        credential_anchor_sources: Mapping[str, str | Path] | None = None,
     ) -> None:
         parent = Path(ledger_root)
         if not parent.is_absolute():
@@ -556,7 +580,8 @@ class FilesystemLiveExecutionRuntime:
         finally:
             _unlock_close(global_lock)
         sources = credential_sources or {}
-        if sources and credential_root is None:
+        anchor_sources = credential_anchor_sources or {}
+        if (sources or anchor_sources) and credential_root is None:
             raise LiveExecutionCustodyError("credential_root_required")
         self.credential_root = (
             None if credential_root is None else Path(credential_root)
@@ -591,21 +616,12 @@ class FilesystemLiveExecutionRuntime:
                 raise LiveExecutionCustodyError(
                     "credential_root_must_be_disjoint_from_evidence_and_package"
                 )
-        retained_sources: dict[str, str] = {}
-        for profile, source in sources.items():
-            if not isinstance(profile, str) or _IDENTIFIER.fullmatch(profile) is None:
-                raise LiveExecutionCustodyError("credential_profile_id_invalid")
-            source_name = os.fspath(source)
-            candidate = Path(source_name)
-            if (
-                not source_name
-                or candidate.is_absolute()
-                or candidate.parent != Path(".")
-                or candidate.name in {"", ".", ".."}
-            ):
-                raise LiveExecutionCustodyError("credential_source_name_invalid")
-            retained_sources[profile] = candidate.name
-        self._credential_sources = retained_sources
+        self._credential_sources = _direct_child_names(
+            sources, "credential_source_name_invalid"
+        )
+        self._credential_anchor_sources = _direct_child_names(
+            anchor_sources, "credential_anchors_name_invalid"
+        )
 
     @property
     def custody_domain_id(self) -> str:
@@ -630,6 +646,88 @@ class FilesystemLiveExecutionRuntime:
         if self.credential_root is None:
             raise LiveExecutionCustodyError("credential_root_required")
         return self.credential_root / source_name
+
+    def credential_anchors(self, profile_id: str) -> dict[str, str]:
+        """Read the separately supplied private anchors bound to one public profile.
+
+        The anchors file is a second direct child of the credential root, never the
+        credential source itself, so the expected hashes cannot be derived from the
+        file they check.  Values are returned to the caller only; every refusal is a
+        fixed code carrying no path, hash or file content.  A second name for the source
+        cannot pass as the anchors: the anchors file must be a single-link regular file
+        opened without following links, so only the same configured name could alias it.
+        """
+
+        if not isinstance(profile_id, str) or _IDENTIFIER.fullmatch(profile_id) is None:
+            raise LiveExecutionCustodyError("credential_profile_id_invalid")
+        try:
+            anchors_name = self._credential_anchor_sources[profile_id]
+        except KeyError as error:
+            raise LiveExecutionCustodyError(
+                "credential_anchors_not_provisioned"
+            ) from error
+        if self.credential_root is None:
+            raise LiveExecutionCustodyError("credential_root_required")
+        source_name = self._credential_sources.get(profile_id)
+        if anchors_name == source_name:
+            raise LiveExecutionCustodyError("credential_anchors_not_independent")
+        root_flags = os.O_RDONLY | os.O_CLOEXEC | os.O_DIRECTORY | os.O_NOFOLLOW
+        file_flags = os.O_RDONLY | os.O_CLOEXEC | os.O_NONBLOCK | os.O_NOFOLLOW
+        root_descriptor: int | None = None
+        anchors_descriptor: int | None = None
+        try:
+            try:
+                root_descriptor = os.open(self.credential_root, root_flags)
+            except OSError as error:
+                raise LiveExecutionCustodyError(
+                    "credential_root_open_failed"
+                ) from error
+            root_metadata = os.fstat(root_descriptor)
+            if (
+                not stat.S_ISDIR(root_metadata.st_mode)
+                or root_metadata.st_uid != os.geteuid()
+                or stat.S_IMODE(root_metadata.st_mode) != 0o700
+            ):
+                raise LiveExecutionCustodyError("credential_root_owner_or_mode_invalid")
+            try:
+                anchors_descriptor = os.open(
+                    anchors_name, file_flags, dir_fd=root_descriptor
+                )
+            except OSError as error:
+                raise LiveExecutionCustodyError(
+                    "credential_anchors_open_failed"
+                ) from error
+            metadata = os.fstat(anchors_descriptor)
+            if (
+                not stat.S_ISREG(metadata.st_mode)
+                or metadata.st_uid != os.geteuid()
+                or stat.S_IMODE(metadata.st_mode) != 0o600
+                or metadata.st_nlink != 1
+                or not 0 < metadata.st_size <= _MAX_EXTERNAL_ANCHOR_BYTES
+            ):
+                raise LiveExecutionCustodyError("credential_anchors_metadata_invalid")
+            payload = os.read(anchors_descriptor, _MAX_EXTERNAL_ANCHOR_BYTES + 1)
+            retained = os.fstat(anchors_descriptor)
+            if len(payload) != metadata.st_size or any(
+                getattr(retained, field) != getattr(metadata, field)
+                for field in (
+                    "st_dev",
+                    "st_ino",
+                    "st_mode",
+                    "st_nlink",
+                    "st_size",
+                    "st_mtime_ns",
+                    "st_ctime_ns",
+                )
+            ):
+                raise LiveExecutionCustodyError(
+                    "credential_anchors_changed_during_read"
+                )
+        finally:
+            for descriptor in (anchors_descriptor, root_descriptor):
+                if descriptor is not None:
+                    os.close(descriptor)
+        return _external_anchor_values(payload, profile_id)
 
     def claim_execution(self, intent: Mapping[str, Any]) -> LiveExecutionSession:
         """Compatibility wrapper for a fresh claim or exact retained resume."""
@@ -1365,6 +1463,7 @@ def _recover_process(root: Path, intent: dict[str, Any]) -> RecoveredProcessCapt
         termination=completion["termination"],
         completion=completion,
         recovery=None,
+        host_closure_check=_read_host_closure_check(root, intent["process_id"]),
     )
 
 
@@ -1409,7 +1508,120 @@ def _recover_uncertain(root: Path, intent: dict[str, Any]) -> RecoveredProcessCa
         termination="executor-interrupted",
         completion=None,
         recovery=recovery,
+        host_closure_check=_read_host_closure_check(root, intent["process_id"]),
     )
+
+
+def _validate_host_closure_check(
+    check: Mapping[str, Any], process_id: str
+) -> dict[str, Any]:
+    """The closed retained record of one pre-launch host-closure check."""
+
+    document = _canonical_copy(check)
+    if set(document) != {
+        "schema_version",
+        "process_id",
+        "closure_sha256",
+        "member_count",
+        "checked_at",
+        "result",
+        "refusal_code",
+    }:
+        raise LiveExecutionCustodyError("host_closure_check_shape_invalid")
+    if (
+        document["schema_version"] != _HOST_CLOSURE_CHECK_SCHEMA
+        or document["process_id"] != process_id
+    ):
+        raise LiveExecutionCustodyError("host_closure_check_identity_invalid")
+    _digest(document["closure_sha256"], "host_closure_check_digest_invalid")
+    count = document["member_count"]
+    if isinstance(count, bool) or not isinstance(count, int) or not 0 <= count <= 64:
+        raise LiveExecutionCustodyError("host_closure_check_count_invalid")
+    _parse_timestamp(document["checked_at"], "host_closure_check_time_invalid")
+    refusal = document["refusal_code"]
+    if document["result"] == "verified":
+        valid = refusal is None
+    elif document["result"] == "refused":
+        valid = (
+            isinstance(refusal, str)
+            and _HOST_CLOSURE_REFUSAL.fullmatch(refusal) is not None
+        )
+    else:
+        valid = False
+    if not valid:
+        raise LiveExecutionCustodyError("host_closure_check_result_invalid")
+    return document
+
+
+def _read_host_closure_check(root: Path, process_id: str) -> dict[str, Any] | None:
+    try:
+        document = _read_canonical_document(root / _HOST_CLOSURE_CHECK_FILE)
+    except FileNotFoundError:
+        return None
+    return _validate_host_closure_check(document, process_id)
+
+
+def _direct_child_names(
+    sources: Mapping[str, str | Path], name_error: str
+) -> dict[str, str]:
+    """Validate a profile-to-filename map; every filename is one direct child name."""
+
+    retained: dict[str, str] = {}
+    for profile, source in sources.items():
+        if not isinstance(profile, str) or _IDENTIFIER.fullmatch(profile) is None:
+            raise LiveExecutionCustodyError("credential_profile_id_invalid")
+        source_name = os.fspath(source)
+        candidate = Path(source_name)
+        if (
+            not source_name
+            or candidate.is_absolute()
+            or candidate.parent != Path(".")
+            or candidate.name in {"", ".", ".."}
+        ):
+            raise LiveExecutionCustodyError(name_error)
+        retained[profile] = candidate.name
+    return retained
+
+
+def _unique_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate key")
+        result[key] = value
+    return result
+
+
+def _external_anchor_values(payload: bytes, profile_id: str) -> dict[str, str]:
+    """Parse the closed private-anchor document; nothing from it appears in errors."""
+
+    try:
+        document = json.loads(payload.decode("utf-8"), object_pairs_hook=_unique_pairs)
+    except (UnicodeError, ValueError, RecursionError):
+        raise LiveExecutionCustodyError("credential_anchors_invalid") from None
+    if not isinstance(document, dict) or set(document) != {
+        "schema_version",
+        "profile_id",
+        "source_sha256",
+        "provider_account_id_sha256",
+        "provider_subject_sha256",
+    }:
+        raise LiveExecutionCustodyError("credential_anchors_invalid")
+    if document["schema_version"] != _EXTERNAL_ANCHOR_SCHEMA:
+        raise LiveExecutionCustodyError("credential_anchors_invalid")
+    if document["profile_id"] != profile_id:
+        raise LiveExecutionCustodyError("credential_anchors_profile_mismatch")
+    for field in (
+        "source_sha256",
+        "provider_account_id_sha256",
+        "provider_subject_sha256",
+    ):
+        _digest(document[field], "credential_anchors_invalid")
+    return {
+        "source_sha256": document["source_sha256"],
+        "account_sha256": document["provider_account_id_sha256"],
+        "subject_sha256": document["provider_subject_sha256"],
+    }
 
 
 def _canonical_copy(value: Mapping[str, Any]) -> dict[str, Any]:

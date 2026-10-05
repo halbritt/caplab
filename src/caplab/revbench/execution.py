@@ -23,6 +23,7 @@ from caplab.runtime.canonical import canonical_json, sha256_hex
 
 from . import _core
 from .codex import (
+    CODEX_NATIVE_BUNDLE_POLICY_ID,
     CodexAdapterError,
     CodexExecutionBundle,
     CodexJSONLTransportError,
@@ -811,6 +812,21 @@ def _live_bundle(
         registrar,
         "binding.configuration.runtime_ref document.credential_profile_ref",
     )
+    policy = _core.selected_bundle_policy(
+        _core._parse_canonical_json_ref(
+            runtime["bundle_policy_ref"],
+            registrar,
+            "binding.configuration.runtime_ref document.bundle_policy_ref",
+        )
+    )
+    if policy is None:
+        raise _core.RevbenchContractError(
+            "live runtime bundle policy is not an installed pinned policy"
+        )
+    if profile.get("schema_version") != policy["credential_profile_schema"]:
+        raise _core.RevbenchContractError(
+            "live runtime credential profile does not match its bundle policy"
+        )
     command = _core._parse_canonical_json_ref(
         binding["harness"]["command_ref"], registrar, "binding.harness.command_ref"
     )
@@ -873,8 +889,46 @@ def _live_bundle(
             "live runtime response_schema_ref",
         ),
         environment=dict(runtime["environment"]),
+        bundle_policy_id=policy["policy_id"],
     )
     return bundle, profile, command, {**dict(probe), "command": version_command}
+
+
+def _plan_policy(bundle: CodexExecutionBundle) -> Mapping[str, Any] | None:
+    """Explicit pinned policy for launch-plan argv; None keeps the original default path."""
+
+    if bundle.bundle_policy_id == CODEX_NATIVE_BUNDLE_POLICY_ID:
+        return None
+    external = _core.codex_native_external_bundle_policy()
+    if external["policy_id"] == bundle.bundle_policy_id:
+        return external
+    raise _core.RevbenchContractError("live runtime bundle policy is not pinned")
+
+
+def _open_credential(
+    runtime: FilesystemLiveExecutionRuntime,
+    bundle: CodexExecutionBundle,
+    profile: Mapping[str, Any],
+    execution_deadline_at: str,
+) -> contextlib.AbstractContextManager[Any]:
+    """Open the lease the bundle's credential method selects; refusals are fixed codes."""
+
+    if bundle.bundle_policy_id == CODEX_NATIVE_BUNDLE_POLICY_ID:
+        source = runtime.credential_source(bundle.credential_profile_id)
+        if runtime.credential_root is None:
+            raise LiveExecutionCustodyError("credential_root_required")
+        return credential_memfd(
+            source, profile, credential_root=runtime.credential_root
+        )
+    # Imported at this dispatch seam: the external adapter's delivery API imports
+    # ``codex`` at top level, so a top-level import here would be circular.
+    from .external_credential import open_external_revbench_credential
+
+    return open_external_revbench_credential(
+        runtime=runtime,
+        profile=profile,
+        execution_deadline_at=execution_deadline_at,
+    )
 
 
 def _live_effect_scope(
@@ -1045,6 +1099,17 @@ def _registered_process_receipt(
             raise LiveExecutionCustodyError("process_stream_reference_missing")
     elif stdout_ref is not None or stderr_ref is not None:
         raise LiveExecutionCustodyError("quarantined_process_stream_published")
+    check_ref = None
+    if capture.host_closure_check is not None:
+        # Retained before launch in custody; registered with the receipt so a reader sees
+        # both a passed check and a detected drift.
+        check_ref = _registered_document(
+            registrar,
+            capture.host_closure_check,
+            kind="native-host-closure-check",
+            schema="caplab-revbench-host-closure-check/1",
+            registration_id="live-host-closure-check-" + capture.intent["process_id"],
+        )
     receipt: dict[str, Any] = {
         "schema_version": "caplab-revbench-live-process-receipt/1",
         "receipt_id": "",
@@ -1075,6 +1140,8 @@ def _registered_process_receipt(
         if recovery_ref is None
         else copy.deepcopy(dict(recovery_ref)),
     }
+    if check_ref is not None:
+        receipt["host_closure_check_ref"] = check_ref
     receipt["receipt_id"] = _content_id(receipt, "receipt_id", "live-process-receipt-")
     return _registered_document(
         registrar,
@@ -1232,7 +1299,7 @@ def _execute_live_codex(
                 version_scope,
                 logical_argv=probe["command"]["argv"],
                 normalized_containment_argv=normalized_codex_containment_argv(
-                    probe["command"]["argv"]
+                    probe["command"]["argv"], policy=_plan_policy(bundle)
                 ),
                 stdin=b"",
                 contained_environment={},
@@ -1258,7 +1325,7 @@ def _execute_live_codex(
                 native_scope,
                 logical_argv=command["argv"],
                 normalized_containment_argv=normalized_codex_containment_argv(
-                    command["argv"]
+                    command["argv"], policy=_plan_policy(bundle)
                 ),
                 stdin=stdin,
                 contained_environment=bundle.environment,
@@ -1358,14 +1425,12 @@ def _execute_live_codex(
         credential = None
         if not session.resumed:
             try:
-                source = runtime.credential_source(bundle.credential_profile_id)
-                if runtime.credential_root is None:
-                    raise LiveExecutionCustodyError("credential_root_required")
                 credential = credential_stack.enter_context(
-                    credential_memfd(
-                        source,
+                    _open_credential(
+                        runtime,
+                        bundle,
                         credential_profile,
-                        credential_root=runtime.credential_root,
+                        session.intent["execution_deadline_at"],
                     )
                 )
             except (CodexAdapterError, LiveExecutionCustodyError):

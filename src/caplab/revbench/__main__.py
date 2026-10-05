@@ -123,14 +123,16 @@ def _emit(document: dict[str, Any], *, stream: Any = sys.stdout) -> None:
     stream.flush()
 
 
-def _credential_sources(values: list[str] | None) -> dict[str, str]:
+def _credential_sources(
+    values: list[str] | None, *, error: str = "credential_profile_source_invalid"
+) -> dict[str, str]:
     result: dict[str, str] = {}
     for value in values or []:
         if value.count("=") != 1:
-            raise RevbenchContractError("credential_profile_source_invalid")
+            raise RevbenchContractError(error)
         profile, source = value.split("=", 1)
         if not profile or not source or profile in result:
-            raise RevbenchContractError("credential_profile_source_invalid")
+            raise RevbenchContractError(error)
         result[profile] = source
     return result
 
@@ -230,6 +232,15 @@ def build_parser(*, live_source: bool = False) -> argparse.ArgumentParser:
             metavar="PROFILE=FILENAME",
             help="map a registered nonsecret profile ID to one direct-child secret file",
         )
+        execute_parser.add_argument(
+            "--credential-anchor",
+            action="append",
+            metavar="PROFILE=FILENAME",
+            help=(
+                "map an external-token profile ID to a separate direct-child file of "
+                "independently supplied private anchors"
+            ),
+        )
     score_parser = subparsers.add_parser(
         "score", help="score registered native-harness reviews offline"
     )
@@ -311,6 +322,7 @@ def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
             getattr(args, "credential_root", None),
             getattr(args, "credential_profile_source", None),
         )
+        anchor_values = getattr(args, "credential_anchor", None)
         if live:
             if not live_source:
                 raise RevbenchContractError("live_source_invocation_profile_required")
@@ -322,6 +334,11 @@ def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
             sources = _credential_sources(args.credential_profile_source)
             if not sources:
                 raise RevbenchContractError("live_execution_private_runtime_required")
+            anchors = _credential_sources(
+                anchor_values, error="credential_anchor_invalid"
+            )
+            if not set(anchors) <= set(sources):
+                raise RevbenchContractError("credential_anchor_profile_unmapped")
             if _paths_overlap(args.ledger, args.live_custody_root) or _paths_overlap(
                 args.ledger, args.credential_root
             ):
@@ -330,8 +347,11 @@ def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
                 args.live_custody_root,
                 credential_root=args.credential_root,
                 credential_sources=sources,
+                credential_anchor_sources=anchors or None,
             )
-        elif any(value is not None for value in live_options):
+        elif anchor_values is not None or any(
+            value is not None for value in live_options
+        ):
             raise RevbenchContractError("local_fixture_rejects_live_runtime_options")
         authorization = _read_document(
             args.execution_authorization_ref,

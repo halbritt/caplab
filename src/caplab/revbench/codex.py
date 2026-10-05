@@ -24,13 +24,19 @@ from collections.abc import Iterator, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Protocol, Sequence
 
 from caplab.codex_events import is_codex_model_reroute
 from caplab.producer import ProducerIdentityError, producer_identity
-from caplab.runtime.canonical import canonical_json, sha256_hex
+from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
 
 from .custody import FreshProcessCapture
+from .host_closure import (
+    TRUST_ASSUMPTION,
+    HostClosureError,
+    closure_sha256,
+    verify_host_closure,
+)
 
 
 class CodexAdapterError(ValueError):
@@ -80,6 +86,7 @@ _EXECUTOR_RUNTIME_MODULES = (
     "json.decoder",
     "json.encoder",
     "json.scanner",
+    "math",
     "os",
     "pathlib",
     "platform",
@@ -121,6 +128,25 @@ CODEX_NATIVE_BUNDLE_POLICY_SHA256 = (
     "211354874f4e3443a6e11fbe8b09cf54205c9cfc767f1a9a7ca2d7a9b210a68e"
 )
 CODEX_NATIVE_BUNDLE_POLICY_SCHEMA = "caplab-revbench-codex-native-bundle-policy/1"
+CODEX_NATIVE_BUNDLE_POLICY_ID = "codex-terra-max-revbench-live-v1"
+# The additive external-token administration has its own pinned policy document.  The
+# apparatus receipt keeps pinning only the original digest: the external document is a
+# tracked package member, so the package tree identity already binds its exact bytes.
+CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_SHA256 = (
+    "03681f9256fd79190b0ca05a9d90475143e272db8809e74f24c56c0fc531d771"
+)
+CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_ID = (
+    "codex-terra-max-revbench-live-external-token-direct-bwrap-v1"
+)
+# The apparatus names the external-token policy it ships and the host-owner trust assumption of its
+# directly executed adapter, so a reader of any live receipt can see both without opening the policy.
+_EXTERNAL_PROTOCOL_FIELDS = {
+    "external_token_bundle_policy_source_sha256": CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_SHA256,
+    "host_closure_trust": TRUST_ASSUMPTION,
+}
+CODEX_EXTERNAL_CREDENTIAL_PROFILE_SCHEMA = (
+    "caplab-revbench-codex-external-credential-profile/1"
+)
 
 
 def codex_native_bundle_policy_bytes() -> bytes:
@@ -138,10 +164,7 @@ def codex_native_bundle_policy_bytes() -> bytes:
     return payload
 
 
-def codex_native_bundle_policy() -> dict[str, Any]:
-    """Return the pinned policy as an owned JSON object."""
-
-    payload = codex_native_bundle_policy_bytes()
+def _parse_bundle_policy(payload: bytes) -> dict[str, Any]:
     try:
         document = json.loads(payload, object_pairs_hook=_unique_object)
     except (UnicodeError, json.JSONDecodeError, ValueError) as error:
@@ -154,9 +177,70 @@ def codex_native_bundle_policy() -> dict[str, Any]:
     return document
 
 
-def validate_credential_profile(profile: Mapping[str, Any]) -> dict[str, Any]:
-    """Validate and own the nonsecret, operator-declared profile contract."""
+def codex_native_bundle_policy() -> dict[str, Any]:
+    """Return the pinned policy as an owned JSON object."""
 
+    return _parse_bundle_policy(codex_native_bundle_policy_bytes())
+
+
+def codex_native_external_bundle_policy_bytes() -> bytes:
+    """Load the exact external-token bundle policy shipped in the installed package."""
+
+    resource = importlib.resources.files("caplab.revbench").joinpath(
+        "contracts/codex-native-bundle-external-v1.json"
+    )
+    try:
+        payload = resource.read_bytes()
+    except OSError as error:
+        raise CodexAdapterError("codex_bundle_policy_unavailable") from error
+    if sha256_hex(payload) != CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_SHA256:
+        raise CodexAdapterError("codex_bundle_policy_digest_mismatch")
+    return payload
+
+
+def codex_native_external_bundle_policy() -> dict[str, Any]:
+    """Return the pinned external-token policy; it is never selected implicitly."""
+
+    return _parse_bundle_policy(codex_native_external_bundle_policy_bytes())
+
+
+def pinned_bundle_policy_matching(
+    registered: Any, candidates: Sequence[Mapping[str, Any]]
+) -> Mapping[str, Any] | None:
+    """Return the installed pinned policy exactly equal to a registered document.
+
+    Selection is by exact equality with an installed pinned document, never by a
+    name inside the registered document, so a lookalike cannot select a method.
+    """
+
+    try:
+        registered_bytes = canonical_json(registered)
+    except CanonicalizationError:
+        return None
+    for candidate in candidates:
+        if registered_bytes == canonical_json(candidate):
+            return candidate
+    return None
+
+
+def validate_credential_profile(
+    profile: Mapping[str, Any], *, policy: Mapping[str, Any] | None = None
+) -> dict[str, Any]:
+    """Validate and own the nonsecret profile contract for its named method.
+
+    The v1 profile keeps its original behavior.  The external-token profile is
+    recognized only by its own schema name and is checked against the pinned
+    external policy's delivery description (``policy`` defaults to the installed
+    document); neither schema is accepted under the other method's policy.
+    """
+
+    if (
+        isinstance(profile, Mapping)
+        and profile.get("schema_version") == CODEX_EXTERNAL_CREDENTIAL_PROFILE_SCHEMA
+    ):
+        return _validate_external_profile(
+            profile, codex_native_external_bundle_policy() if policy is None else policy
+        )
     return _validate_profile(profile)
 
 
@@ -352,11 +436,15 @@ def validate_execution_apparatus_receipt(
         raise CodexAdapterError("execution_apparatus_runtime_inventory_invalid")
 
     protocol = owned["protocol"]
-    if not isinstance(protocol, dict) or protocol != {
+    original_protocol = {
         "bundle_policy_source_sha256": CODEX_NATIVE_BUNDLE_POLICY_SHA256,
         "launch_plan_schema": "caplab-revbench-live-launch-plan/1",
         "response_adapter": "codex-jsonl-final-agent-message/1",
-    }:
+    }
+    if not isinstance(protocol, dict) or protocol not in (
+        original_protocol,
+        {**original_protocol, **_EXTERNAL_PROTOCOL_FIELDS},
+    ):
         raise CodexAdapterError("execution_apparatus_protocol_invalid")
     ambient = owned["ambient_observation"]
     if (
@@ -643,6 +731,7 @@ def _bootstrap_live_execution_apparatus() -> None:
     # Resource traversal has lazy imports.  Both authority preflight and live
     # execution must cross this same boundary before deriving an apparatus ID.
     codex_native_bundle_policy()
+    codex_native_external_bundle_policy()
     for module_name in _EXECUTOR_RUNTIME_MODULES:
         importlib.import_module(module_name)
     # Authorization, intent, and completion checks all use this exact UTC
@@ -784,6 +873,7 @@ def execution_apparatus_receipt(*, require_clean: bool = True) -> dict[str, Any]
             "bundle_policy_source_sha256": CODEX_NATIVE_BUNDLE_POLICY_SHA256,
             "launch_plan_schema": "caplab-revbench-live-launch-plan/1",
             "response_adapter": "codex-jsonl-final-agent-message/1",
+            **_EXTERNAL_PROTOCOL_FIELDS,
         },
         "ambient_observation": {
             "system": platform.system(),
@@ -848,6 +938,17 @@ class DerivedCodexResponse:
     selected_event_index: int
     selected_item_id: str
     extracted_text_sha256: str
+
+
+class CredentialLease(Protocol):
+    """What a live process run needs from a credential: a descriptor and fresh guards."""
+
+    @property
+    def descriptor(self) -> int: ...
+
+    def stream_quarantine(self) -> ExactSecretStreamQuarantine: ...
+
+    def assert_streams_safe(self, stdout: bytes, stderr: bytes) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -968,12 +1069,28 @@ class CodexExecutionBundle:
     nsswitch: bytes
     response_schema: bytes
     environment: dict[str, str]
+    bundle_policy_id: str = CODEX_NATIVE_BUNDLE_POLICY_ID
 
 
-def normalized_codex_containment_argv(logical_argv: Sequence[str]) -> list[str]:
+def bundle_policy_for(bundle: CodexExecutionBundle) -> Mapping[str, Any]:
+    """The pinned policy this bundle was resolved under; unknown ids are refused."""
+
+    default = codex_native_bundle_policy()
+    if bundle.bundle_policy_id == default["policy_id"]:
+        return default
+    if bundle.bundle_policy_id == CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_ID:
+        external = codex_native_external_bundle_policy()
+        if external["policy_id"] == bundle.bundle_policy_id:
+            return external
+    raise CodexAdapterError("codex_execution_bundle_policy_invalid")
+
+
+def normalized_codex_containment_argv(
+    logical_argv: Sequence[str], *, policy: Mapping[str, Any] | None = None
+) -> list[str]:
     """Return the pinned outer argv with stable path/fd placeholders."""
 
-    policy = codex_native_bundle_policy()
+    policy = codex_native_bundle_policy() if policy is None else policy
     launcher = policy["launcher"]
     if list(logical_argv) == launcher["version_argv"]:
         return list(policy["version_containment_argv_template"])
@@ -995,12 +1112,12 @@ def run_codex_process(
     *,
     bundle: CodexExecutionBundle,
     capture: FreshProcessCapture,
-    credential: SealedCredential | None,
+    credential: CredentialLease | None,
     monotonic_deadline: float,
 ) -> CodexProcessObservation:
     """Materialize only pinned members and run the exact contained command."""
 
-    policy = codex_native_bundle_policy()
+    policy = bundle_policy_for(bundle)
     _validate_execution_bundle(bundle, policy)
     current_apparatus = execution_apparatus_receipt()
     if sha256_hex(canonical_json(current_apparatus)) != bundle.apparatus_sha256:
@@ -1016,26 +1133,22 @@ def run_codex_process(
         if is_review
         else bundle.version_command_ref_sha256
     )
-    normalized = normalized_codex_containment_argv(logical_argv)
-    with tempfile.TemporaryDirectory(
-        prefix="caplab-revbench-codex-adapter-"
-    ) as temporary:
-        stage = Path(temporary)
-        loader_path = stage / "ld-linux-x86-64.so.2"
-        adapter_path = stage / "bwrap"
-        library_directory = stage / "lib"
-        library_directory.mkdir(mode=0o700)
-        loader_mode = int(policy["adapter_runtime"]["loader"]["mode"], 8)
-        _write_runtime_member(loader_path, bundle.adapter_loader, loader_mode)
-        _write_runtime_member(adapter_path, bundle.adapter, 0o700)
-        library_modes = {
-            member["name"]: int(member["mode"], 8)
-            for member in policy["adapter_runtime"]["libraries"]
-        }
-        for name, payload in bundle.adapter_libraries:
-            _write_runtime_member(
-                library_directory / name, payload, library_modes[name]
-            )
+    normalized = normalized_codex_containment_argv(logical_argv, policy=policy)
+    # A policy with a host closure runs the root-controlled adapter in place: nothing is
+    # staged, written or removed, and the pinned host files are rechecked at the launch
+    # boundary instead.  Every other policy keeps its invocation-owned private stage.
+    host_closure = policy.get("host_closure")
+    stage_context = (
+        contextlib.nullcontext(None)
+        if host_closure is not None
+        else tempfile.TemporaryDirectory(prefix="caplab-revbench-codex-adapter-")
+    )
+    with stage_context as temporary:
+        replacements: dict[str, str] = (
+            {}
+            if temporary is None
+            else _stage_adapter_members(Path(temporary), bundle, policy)
+        )
         with contextlib.ExitStack() as stack:
             descriptors = {
                 "{codex_executable_fd}": stack.enter_context(
@@ -1066,12 +1179,7 @@ def run_codex_process(
                         ),
                     }
                 )
-            replacements = {
-                "{adapter_loader}": str(loader_path),
-                "{adapter_library_directory}": str(library_directory),
-                "{adapter_executable}": str(adapter_path),
-                **{key: str(value) for key, value in descriptors.items()},
-            }
+            replacements.update({key: str(value) for key, value in descriptors.items()})
             actual = _resolve_actual_containment_argv(normalized, replacements)
             return _run_owned_process(
                 actual,
@@ -1088,7 +1196,33 @@ def run_codex_process(
                 capture=capture,
                 credential=credential,
                 monotonic_deadline=monotonic_deadline,
+                host_closure=host_closure,
             )
+
+
+def _stage_adapter_members(
+    stage: Path, bundle: CodexExecutionBundle, policy: Mapping[str, Any]
+) -> dict[str, str]:
+    """Write the pinned adapter members into this invocation's private stage."""
+
+    loader_path = stage / "ld-linux-x86-64.so.2"
+    adapter_path = stage / "bwrap"
+    library_directory = stage / "lib"
+    library_directory.mkdir(mode=0o700)
+    loader_mode = int(policy["adapter_runtime"]["loader"]["mode"], 8)
+    _write_runtime_member(loader_path, bundle.adapter_loader, loader_mode)
+    _write_runtime_member(adapter_path, bundle.adapter, 0o700)
+    library_modes = {
+        member["name"]: int(member["mode"], 8)
+        for member in policy["adapter_runtime"]["libraries"]
+    }
+    for name, payload in bundle.adapter_libraries:
+        _write_runtime_member(library_directory / name, payload, library_modes[name])
+    return {
+        "{adapter_loader}": str(loader_path),
+        "{adapter_library_directory}": str(library_directory),
+        "{adapter_executable}": str(adapter_path),
+    }
 
 
 def _resolve_actual_containment_argv(
@@ -1317,8 +1451,9 @@ def _run_owned_process(
     credential_profile_sha256: str,
     pass_fds: Sequence[int],
     capture: FreshProcessCapture,
-    credential: SealedCredential | None,
+    credential: CredentialLease | None,
     monotonic_deadline: float,
+    host_closure: Mapping[str, Any] | None = None,
 ) -> CodexProcessObservation:
     """Run one internally constructed process and durably capture safe bytes."""
 
@@ -1372,6 +1507,22 @@ def _run_owned_process(
         remaining_authority,
         remaining_monotonic,
     )
+    if host_closure is not None and not _host_closure_verified(capture, host_closure):
+        observation = CodexProcessObservation(
+            None,
+            None,
+            None,
+            _timestamp(),
+            b"",
+            True,
+            b"",
+            True,
+            None,
+            "preflight-refused",
+            "not-invoked",
+        )
+        capture.complete(_completion(capture, observation))
+        return observation
     launch_attempted_at = _timestamp()
     process: subprocess.Popen[bytes] | None = None
     try:
@@ -1522,17 +1673,18 @@ def _run_owned_process(
         capture.complete(_completion(capture, observation))
         return observation
     except BaseException:
-        _terminate_process_group(process)
-        try:
-            process.wait(timeout=1)
-        except subprocess.TimeoutExpired:
-            _terminate_process_group(process, force=True)
-            process.wait()
-        for stream in (process.stdin, process.stdout, process.stderr):
-            if stream is not None and not stream.closed:
-                stream.close()
-        capture.close()
-        raise
+        with contextlib.ExitStack() as cleanup:
+            cleanup.callback(capture.close)
+            for stream in (process.stdin, process.stdout, process.stderr):
+                if stream is not None and not stream.closed:
+                    cleanup.callback(stream.close)
+            _terminate_process_group(process)
+            try:
+                process.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                _terminate_process_group(process, force=True)
+                process.wait()
+            raise
     finally:
         if selector is not None:
             selector.close()
@@ -1566,6 +1718,35 @@ def _retain_safe_chunk(
     buffer.extend(payload)
 
 
+def _host_closure_verified(
+    capture: FreshProcessCapture, host_closure: Mapping[str, Any]
+) -> bool:
+    """Check the pinned host closure now and retain the result before any launch.
+
+    Both outcomes are written to custody first: a drift is recorded as a refusal, never
+    silently skipped, and a passed check is recorded before the process can exist.
+    """
+
+    try:
+        facts = verify_host_closure(host_closure)
+    except HostClosureError as error:
+        result, refusal, count = "refused", str(error), 0
+    else:
+        result, refusal, count = "verified", None, facts["member_count"]
+    capture.record_host_closure_check(
+        {
+            "schema_version": "caplab-revbench-host-closure-check/1",
+            "process_id": capture.intent["process_id"],
+            "closure_sha256": closure_sha256(host_closure),
+            "member_count": count,
+            "checked_at": _timestamp(),
+            "result": result,
+            "refusal_code": refusal,
+        }
+    )
+    return result == "verified"
+
+
 def _completion(
     capture: FreshProcessCapture, observation: CodexProcessObservation
 ) -> dict[str, Any]:
@@ -1587,9 +1768,12 @@ def _completion(
 def _terminate_process_group(
     process: subprocess.Popen[bytes], *, force: bool = False
 ) -> None:
+    pid = process.pid
+    if type(pid) is not int or pid <= 1:
+        raise CodexAdapterError("live_process_group_identity_invalid")
     signal_number = signal.SIGKILL if force else signal.SIGTERM
     try:
-        os.killpg(process.pid, signal_number)
+        os.killpg(pid, signal_number)
     except ProcessLookupError:
         return
     if force:
@@ -1598,7 +1782,7 @@ def _terminate_process_group(
         process.wait(timeout=1)
     except subprocess.TimeoutExpired:
         try:
-            os.killpg(process.pid, signal.SIGKILL)
+            os.killpg(pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
 
@@ -1881,6 +2065,56 @@ def _validate_profile(profile: Mapping[str, Any]) -> dict[str, Any]:
         or any(not isinstance(value, str) or not value for value in audience)
     ):
         raise CodexAdapterError("credential_identity_token_audience_invalid")
+    return owned
+
+
+def _validate_external_profile(
+    profile: Mapping[str, Any], policy: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Validate the closed public external-token profile against its pinned policy.
+
+    The public profile names the method, marker policy, store and lifetime rule.
+    It carries no source path, token metadata, whole-cache hash or private claim;
+    the private anchors are supplied separately and bound by this profile's id.
+    """
+
+    owned = _canonical_copy(profile)
+    if set(owned) != {
+        "schema_version",
+        "profile_id",
+        "provider",
+        "auth_method",
+        "delivery_method",
+        "quarantine_profile",
+        "initial_credentials_store",
+        "lifetime_rule",
+        "private_anchor_schema",
+    }:
+        raise CodexAdapterError("credential_profile_shape_invalid")
+    if owned["schema_version"] != CODEX_EXTERNAL_CREDENTIAL_PROFILE_SCHEMA:
+        raise CodexAdapterError("credential_profile_schema_invalid")
+    if (
+        not isinstance(owned["profile_id"], str)
+        or _IDENTIFIER.fullmatch(owned["profile_id"]) is None
+    ):
+        raise CodexAdapterError("credential_profile_id_invalid")
+    if (
+        owned["provider"] != "openai"
+        or owned["auth_method"] != "chatgpt-external-tokens"
+    ):
+        raise CodexAdapterError("credential_auth_method_invalid")
+    delivery = policy.get("credential_delivery")
+    if not isinstance(delivery, Mapping) or any(
+        owned[field] != delivery.get(source)
+        for field, source in (
+            ("delivery_method", "method"),
+            ("quarantine_profile", "quarantine_profile"),
+            ("initial_credentials_store", "initial_credentials_store"),
+            ("lifetime_rule", "lifetime_rule"),
+            ("private_anchor_schema", "private_anchor_schema"),
+        )
+    ):
+        raise CodexAdapterError("credential_profile_delivery_invalid")
     return owned
 
 

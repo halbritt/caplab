@@ -514,6 +514,7 @@ class RepositoryContractTests(unittest.TestCase):
                 )
                 for live_member in (
                     "codex-native-bundle-v1.json",
+                    "codex-native-bundle-external-v1.json",
                     "resolv-public-v1.conf",
                     "nsswitch-public-v1.conf",
                 ):

@@ -36,18 +36,23 @@ from caplab.subject_identity import (
 )
 
 from .codex import (
+    CODEX_NATIVE_BUNDLE_POLICY_ID,
     CodexAdapterError,
     CodexJSONLTransportError,
     CodexResponseSchemaError,
     codex_native_bundle_policy,
+    codex_native_external_bundle_policy,
     derive_codex_response,
     is_static_linux_elf,
     normalized_codex_containment_argv,
+    pinned_bundle_policy_matching,
     response_derivation_document,
     validate_credential_profile,
     validate_execution_apparatus_receipt,
 )
 from .custody import live_effect_id, live_process_id
+from .host_closure import CHECK_SCHEMA as HOST_CLOSURE_CHECK_SCHEMA
+from .host_closure import closure_sha256 as host_closure_sha256
 
 type JsonValue = None | bool | int | str | list[JsonValue] | dict[str, JsonValue]
 type ContentRef = dict[str, JsonValue]
@@ -1279,6 +1284,61 @@ def _validate_local_fixture_policy(
             )
 
 
+def selected_bundle_policy(registered: Any) -> Mapping[str, Any] | None:
+    """The installed pinned policy a registered document is exactly equal to, else None.
+
+    Selection is by exact equality with an installed pinned document: the
+    external-token method is never chosen by a name, a profile, or a default.
+    """
+
+    return pinned_bundle_policy_matching(
+        registered,
+        (codex_native_bundle_policy(), codex_native_external_bundle_policy()),
+    )
+
+
+def _registered_bundle_policy(
+    binding: Mapping[str, Any], registrar: ArtifactRegistrar, default: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    """The pinned policy the Binding registers, or ``default`` if it names none.
+
+    Problems reading the registration are not reported here: the original checks
+    below parse the same documents and keep reporting them where they always did.
+    """
+
+    try:
+        inference = _parse_canonical_json_ref(
+            binding["configuration"]["inference_ref"],
+            registrar,
+            "binding.configuration.inference_ref",
+        )
+        registered = _parse_canonical_json_ref(
+            inference["bundle_policy_ref"],
+            registrar,
+            "binding.configuration.inference_ref document.bundle_policy_ref",
+        )
+        selected = selected_bundle_policy(registered)
+    except (RevbenchContractError, KeyError, TypeError, CodexAdapterError):
+        return default
+    return default if selected is None else selected
+
+
+def _binding_host_closure(
+    binding: Mapping[str, Any], registrar: ArtifactRegistrar
+) -> Mapping[str, Any] | None:
+    """The host closure pinned by the policy this Binding registers, if it has one."""
+
+    policy = _registered_bundle_policy(binding, registrar, codex_native_bundle_policy())
+    closure = policy.get("host_closure")
+    return closure if isinstance(closure, Mapping) else None
+
+
+def argv_policy_for(policy: Mapping[str, Any]) -> Mapping[str, Any] | None:
+    """Explicit policy for ``normalized_codex_containment_argv``; None keeps the v1 default path."""
+
+    return None if policy.get("policy_id") == CODEX_NATIVE_BUNDLE_POLICY_ID else policy
+
+
 def _validate_codex_live_binding(
     native_policy: Mapping[str, Any],
     binding: Mapping[str, Any],
@@ -1295,6 +1355,10 @@ def _validate_codex_live_binding(
         raise RevbenchContractError(
             f"Codex bundle policy is unavailable: {error}"
         ) from error
+    # A Binding that registers the exactly pinned external-token policy selects that method;
+    # every check below then runs against it, so a mismatched profile, command or runtime
+    # is refused rather than reinterpreted under the original policy.
+    bundle = _registered_bundle_policy(binding, registrar, bundle)
     native = bundle["native_agent_system"]
     launcher = bundle["launcher"]
     containment = bundle["containment"]
@@ -1615,7 +1679,7 @@ def _validate_codex_live_binding(
         runtime["credential_profile_ref"],
         "binding.configuration.runtime_ref document.credential_profile_ref",
         kind="credential-profile",
-        schema="caplab-revbench-codex-credential-profile/1",
+        schema=bundle["credential_profile_schema"],
     )
     credential_profile = _parse_canonical_json_ref(
         credential_profile_ref,
@@ -1623,11 +1687,16 @@ def _validate_codex_live_binding(
         "binding.configuration.runtime_ref document.credential_profile_ref",
     )
     try:
-        validate_credential_profile(credential_profile)
+        validate_credential_profile(credential_profile, policy=bundle)
     except CodexAdapterError as error:
         raise RevbenchContractError(
             f"binding.configuration.runtime_ref credential profile: {error}"
         ) from error
+    if credential_profile.get("schema_version") != bundle["credential_profile_schema"]:
+        _fail(
+            "binding.configuration.runtime_ref document.credential_profile_ref",
+            "does not match bundle policy",
+        )
     adapter_runtime_refs = _object(
         runtime["adapter_runtime_refs"],
         "binding.configuration.runtime_ref document.adapter_runtime_refs",
@@ -2575,7 +2644,7 @@ def _validate_live_execution_intent_evidence(
         _fail(f"{path} document.execution_deadline_at", "renews total wall budget")
 
     binding = manifest["binding"]
-    policy = codex_native_bundle_policy()
+    policy = _registered_bundle_policy(binding, registrar, codex_native_bundle_policy())
     command = _parse_canonical_json_ref(
         binding["harness"]["command_ref"], registrar, f"{path} review command"
     )
@@ -2632,7 +2701,11 @@ def _validate_live_execution_intent_evidence(
                     "effect_scope": scope,
                     "argv_sha256": sha256_hex(canonical_json(logical_argv)),
                     "containment_argv_sha256": sha256_hex(
-                        canonical_json(normalized_codex_containment_argv(logical_argv))
+                        canonical_json(
+                            normalized_codex_containment_argv(
+                                logical_argv, policy=argv_policy_for(policy)
+                            )
+                        )
                     ),
                     "stdin_sha256": sha256_hex(stdin),
                     "environment_sha256": sha256_hex(canonical_json(environment)),
@@ -2668,8 +2741,14 @@ def _validate_live_process_receipt_evidence(
     reviews: Mapping[str, Any],
     registrar: ArtifactRegistrar,
     path: str,
+    host_closure: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Validate a process receipt against custody identity and stream bytes."""
+    """Validate a process receipt against custody identity and stream bytes.
+
+    ``host_closure`` is the closure pinned by the Binding's bundle policy, or None
+    for a policy that pins none; only such a receipt may carry, and an invoked
+    process must carry, the retained pre-launch check.
+    """
 
     _validate_content_ref(
         ref,
@@ -2682,9 +2761,20 @@ def _validate_live_process_receipt_evidence(
         for item in reviews["process_receipt_refs"]
     ):
         _fail(path, "is not declared by reviews")
-    receipt = _parse_canonical_json_ref(ref, registrar, path)
+    full_receipt = _parse_canonical_json_ref(ref, registrar, path)
+    check_ref = (
+        full_receipt.get("host_closure_check_ref")
+        if isinstance(full_receipt, Mapping)
+        else None
+    )
     receipt = _object(
-        receipt,
+        {
+            key: value
+            for key, value in (
+                full_receipt.items() if isinstance(full_receipt, Mapping) else ()
+            )
+            if key != "host_closure_check_ref"
+        },
         f"{path} document",
         {
             "schema_version",
@@ -2720,7 +2810,7 @@ def _validate_live_process_receipt_evidence(
         "caplab-revbench-live-process-receipt/1",
         f"{path} document.schema_version",
     )
-    identity = copy.deepcopy(dict(receipt))
+    identity = copy.deepcopy(dict(full_receipt))
     receipt_id = identity.pop("receipt_id")
     if receipt_id != "live-process-receipt-" + sha256_hex(canonical_json(identity)):
         _fail(f"{path} document.receipt_id", "is not content-derived")
@@ -2888,7 +2978,87 @@ def _validate_live_process_receipt_evidence(
             _fail(f"{path} recovery_ref", "does not match receipt")
     elif recovery_ref is not None:
         _fail(f"{path} document.recovery_ref", "is only valid for uncertainty")
+    _validate_host_closure_check_evidence(
+        check_ref,
+        receipt,
+        host_closure=host_closure,
+        registrar=registrar,
+        path=path,
+    )
     return copy.deepcopy(dict(receipt))
+
+
+def _validate_host_closure_check_evidence(
+    check_ref: Any,
+    receipt: Mapping[str, Any],
+    *,
+    host_closure: Mapping[str, Any] | None,
+    registrar: ArtifactRegistrar,
+    path: str,
+) -> None:
+    """The retained pre-launch check must agree with the receipt and the pinned closure."""
+
+    state = receipt["outer_launch_state"]
+    if host_closure is None:
+        if check_ref is not None:
+            _fail(
+                f"{path} document.host_closure_check_ref",
+                "is not valid for this bundle",
+            )
+        return
+    if check_ref is None:
+        if state == "invoked":
+            _fail(
+                f"{path} document.host_closure_check_ref",
+                "is required before an invoked process",
+            )
+        return
+    ref = _validate_content_ref(
+        check_ref,
+        f"{path} document.host_closure_check_ref",
+        kind="native-host-closure-check",
+        schema=HOST_CLOSURE_CHECK_SCHEMA,
+    )
+    check = _object(
+        _parse_canonical_json_ref(ref, registrar, f"{path} host_closure_check_ref"),
+        f"{path} host_closure_check_ref document",
+        {
+            "schema_version",
+            "process_id",
+            "closure_sha256",
+            "member_count",
+            "checked_at",
+            "result",
+            "refusal_code",
+        },
+    )
+    _const(
+        check["schema_version"],
+        HOST_CLOSURE_CHECK_SCHEMA,
+        f"{path} host_closure_check_ref document.schema_version",
+    )
+    if check["process_id"] != receipt["process_id"]:
+        _fail(f"{path} host_closure_check_ref", "belongs to another process")
+    if check["closure_sha256"] != host_closure_sha256(host_closure):
+        _fail(f"{path} host_closure_check_ref", "does not check the pinned closure")
+    checked_at = _validate_timestamp(
+        check["checked_at"], f"{path} host_closure_check_ref document.checked_at"
+    )
+    upper = receipt["launch_attempted_at"] or receipt["completion_recorded_at"]
+    if not receipt["intent_recorded_at"] <= checked_at <= upper:
+        _fail(f"{path} host_closure_check_ref", "was not made before launch")
+    if check["result"] == "verified":
+        if check["refusal_code"] is not None:
+            _fail(f"{path} host_closure_check_ref", "contradicts its result")
+    elif check["result"] == "refused":
+        if (
+            not isinstance(check["refusal_code"], str)
+            or state != "not-invoked"
+            or receipt["termination"] != "preflight-refused"
+        ):
+            _fail(f"{path} host_closure_check_ref", "contradicts its refusal")
+    else:
+        _fail(f"{path} host_closure_check_ref document.result", "is unsupported")
 
 
 def _verify_live_execution_attempt_evidence(
@@ -3381,6 +3551,7 @@ def _verify_live_execution_attempt_evidence(
     for field, expected in expected_version.items():
         if canonical_json(version[field]) != canonical_json(expected):
             _fail(f"{path}.version document.{field}", "does not match Binding")
+    host_closure = _binding_host_closure(binding, registrar)
     native_receipt = _validate_live_process_receipt_evidence(
         capture["process_receipt_ref"],
         execution_intent_ref=execution_intent_ref,
@@ -3388,6 +3559,7 @@ def _verify_live_execution_attempt_evidence(
         reviews=reviews,
         registrar=registrar,
         path=f"{path}.capture process_receipt_ref",
+        host_closure=host_closure,
     )
     version_receipt = _validate_live_process_receipt_evidence(
         version["process_receipt_ref"],
@@ -3396,6 +3568,7 @@ def _verify_live_execution_attempt_evidence(
         reviews=reviews,
         registrar=registrar,
         path=f"{path}.version process_receipt_ref",
+        host_closure=host_closure,
     )
     quarantined = native_receipt["termination"] == "privacy-quarantine"
     if (
@@ -4216,6 +4389,9 @@ def score(
                 reviews=validated_reviews,
                 registrar=registrar,
                 path=f"reviews.process_receipt_refs[{index}]",
+                host_closure=_binding_host_closure(
+                    validated_manifest["binding"], registrar
+                ),
             )
             receipt_indexes.append(receipt["sequence_index"])
             live_receipts.append(receipt)

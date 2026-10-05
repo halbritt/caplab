@@ -155,6 +155,7 @@ def make_live_codex_binding(
     *,
     policy=None,
     member_bytes=None,
+    credential_profile=None,
 ):
     policy = copy.deepcopy(policy or codex_native_bundle_policy())
     member_bytes = member_bytes or {}
@@ -298,22 +299,23 @@ def make_live_codex_binding(
         }
         for library in adapter_runtime["libraries"]
     ]
+    credential_profile = credential_profile or {
+        "schema_version": "caplab-revbench-codex-credential-profile/1",
+        "profile_id": "caplab-openai-revbench",
+        "provider": "openai",
+        "auth_method": "chatgpt",
+        "identity_basis": "operator-declared-unverified-token-claims",
+        "provider_account_id_sha256": sha256_hex(LIVE_ACCOUNT.encode()),
+        "provider_subject_sha256": sha256_hex(LIVE_SUBJECT.encode()),
+        "identity_token_issuer": "https://auth.openai.com",
+        "identity_token_audience": ["https://api.openai.com/v1"],
+    }
     credential_profile_ref = registered(
         registrar,
         "codex-live-credential-profile",
-        {
-            "schema_version": "caplab-revbench-codex-credential-profile/1",
-            "profile_id": "caplab-openai-revbench",
-            "provider": "openai",
-            "auth_method": "chatgpt",
-            "identity_basis": "operator-declared-unverified-token-claims",
-            "provider_account_id_sha256": sha256_hex(LIVE_ACCOUNT.encode()),
-            "provider_subject_sha256": sha256_hex(LIVE_SUBJECT.encode()),
-            "identity_token_issuer": "https://auth.openai.com",
-            "identity_token_audience": ["https://api.openai.com/v1"],
-        },
+        credential_profile,
         kind="credential-profile",
-        schema="caplab-revbench-codex-credential-profile/1",
+        schema=credential_profile["schema_version"],
     )
     configurations = {}
     documents = {
@@ -438,11 +440,11 @@ def make_live_codex_binding(
     return binding, native_policy_ref
 
 
-def make_synthetic_bundle_fixture(root: Path):
+def make_synthetic_bundle_fixture(root: Path, *, base_policy=None):
     executable = root / "synthetic-codex"
     write_fake_native(executable, version="codex-cli 0.147.0\n")
     elf = executable.read_bytes()
-    policy = copy.deepcopy(codex_native_bundle_policy())
+    policy = copy.deepcopy(base_policy or codex_native_bundle_policy())
     policy["launcher"]["executable_sha256"] = sha256_hex(elf)
     policy["launcher"]["executable_byte_count"] = len(elf)
     policy["containment"]["adapter_path"] = "/synthetic/bwrap"
