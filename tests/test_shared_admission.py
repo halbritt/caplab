@@ -364,7 +364,8 @@ class SharedAdmissionTests(unittest.TestCase):
             ).read_bytes()
         )
         self.assertEqual(proof["namespace_init"]["namespace_pids"][-1], 1)
-        self.assertEqual(proof["ended_at"], NOW)
+        self.assertEqual(proof["ended_at"]["lower"], NOW)
+        self.assertEqual(proof["ended_at"]["upper"], NOW)
         self.assertEqual(
             self.snapshot()["pools"]["fixture-pool"],
             {"slots": 0, "windows": {"fixture-window": {"spent": 1, "outstanding": 0}}},
@@ -480,8 +481,8 @@ class SharedAdmissionTests(unittest.TestCase):
         with self.assertRaisesRegex(LiveExecutionCustodyError, "live_execution_sealed"):
             recovered.claim_process(plan)
 
-    def test_creation_crossing_clock_second_is_known_child_with_unresolved_time(self):
-        plan, argv, logical = self.plan()
+    def test_native_second_bucket_crossing_uses_separate_measured_birth_interval(self):
+        plan, argv, logical = self.plan(["/bin/sleep", "0.3"], bind_root=True)
         session, capture = self.claim(plan)
         after = (
             datetime.datetime.fromisoformat(NOW.replace("Z", "+00:00"))
@@ -499,7 +500,7 @@ class SharedAdmissionTests(unittest.TestCase):
                 self.enrollment.capture(session.claim_process(plan)).reconcile(
                     session.claim_process(plan).completion
                 )["status"],
-                "hold",
+                "existing",
             )
         with mock.patch.object(shared, "_now", return_value=after):
             raw = subprocess.check_output(
@@ -518,9 +519,9 @@ class SharedAdmissionTests(unittest.TestCase):
         entry = next(iter(json.loads(raw)["allocations"].values()))
         self.assertEqual(
             entry["counts"],
-            {"known_created": 1, "possible_unknown": 0, "creation_time_unknown": 1},
+            {"known_created": 1, "possible_unknown": 0, "creation_time_unknown": 0},
         )
-        self.assertIsNone(entry["terminal"])
+        self.assertIsNotNone(entry["terminal"])
 
     def test_pinned_enrollment_cannot_be_disabled_or_rebound_on_resume(self):
         plan, argv, logical = self.plan()
@@ -733,7 +734,9 @@ class SharedAdmissionTests(unittest.TestCase):
                 tampered, registrar, self.runtime.custody_domain_id
             )
 
-    def test_policy_cutoffs_require_fixed_whole_second_native_representation(self):
+    def test_interval_sdk_accepts_rolling_and_fractional_cutoffs_without_home_effects(
+        self,
+    ):
         original = json.loads(Path(self.document["policy_path"]).read_bytes())
         for label in ("rolling", "fractional-cutoff"):
             with self.subTest(policy=label):
@@ -751,10 +754,8 @@ class SharedAdmissionTests(unittest.TestCase):
                 doc = copy.deepcopy(self.document)
                 doc["policy_path"] = str(path)
                 doc["policy_sha256"] = sha256_hex(path.read_bytes())
-                with self.assertRaisesRegex(
-                    LiveExecutionCustodyError, "time_resolution_unsupported"
-                ):
-                    shared.SharedAdmissionEnrollment(doc)
+                enrollment = shared.SharedAdmissionEnrollment(doc)
+                enrollment.validate_deadline("2027-01-01T00:00:00Z")
                 self.assertFalse(Path(doc["home"]).exists())
 
     def test_only_the_held_pidfd_liveness_can_bracket_its_death(self):

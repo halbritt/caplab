@@ -1250,6 +1250,9 @@ def _execute_live_codex(
         monotonic_execution_deadline = None
         execution_deadline_at = retained_execution_intent["execution_deadline_at"]
 
+    if shared_admission is not None and retained_execution_intent is None:
+        shared_admission.validate_deadline(execution_deadline_at)
+
     assignments: list[dict[str, Any]] = []
     plans: list[dict[str, Any]] = []
     for case in manifest["cases"]:

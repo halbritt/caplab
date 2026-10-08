@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import time
 from pathlib import Path
 from datetime import UTC, datetime
 from typing import Any, Mapping
@@ -16,7 +17,7 @@ from typing import Any, Mapping
 from caplab.catalog.projection import load_projection
 from caplab.catalog.preparation import select_entry, validate_against_spec
 from caplab.runtime.canonical import canonical_json, sha256_hex
-from caplab.revbench.process_tree import namespace_init
+from caplab.revbench.process_tree import namespace_init, boot_id
 from caplab.revbench.custody import (
     LiveExecutionCustodyError,
     FreshProcessCapture,
@@ -25,11 +26,47 @@ from caplab.revbench.custody import (
 )
 
 SCHEMA = "caplab-shared-admission-enrollment/1"
+PINNED_SCHEMA = "caplab-shared-admission-enrollment/2"
 MAX_BYTES = 16 * 1024 * 1024
+RESPONSE = "quartermaster-shared-admission-response/2"
+
+
+class SharedAdmissionControlError(LiveExecutionCustodyError):
+    """A reported or uncertain control-plane failure; never a launch permission."""
 
 
 def _now() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).isoformat(timespec="microseconds").replace("+00:00", "Z")
+
+
+def _clock_sample() -> dict:
+    return {"utc": _now(), "monotonic_ns": time.monotonic_ns(), "boot_id": boot_id()}
+
+
+def _interval(before: dict | None, after: dict | None, source_id: str) -> dict | None:
+    if before is None or after is None:
+        return None
+    if (
+        before["boot_id"] != after["boot_id"]
+        or before["monotonic_ns"] > after["monotonic_ns"]
+        or datetime.fromisoformat(before["utc"]) > datetime.fromisoformat(after["utc"])
+    ):
+        return None
+    preimage = {"before": before, "after": after}
+    return {
+        "schema": "quartermaster-time-interval/1",
+        "lower": before["utc"],
+        "upper": after["utc"],
+        "lower_inclusive": True,
+        "upper_inclusive": True,
+        "clock_domain": "UTC",
+        "clock_id": "host-utc:" + before["boot_id"],
+        "precision_microseconds": 1,
+        "provenance": {
+            "source_id": source_id,
+            "sha256": "sha256:" + sha256_hex(canonical_json(preimage)),
+        },
+    }
 
 
 def _read(path: Path) -> bytes:
@@ -85,7 +122,9 @@ class SharedAdmissionEnrollment:
             "binding_id",
             "credential_profile_sha256",
         }
-        if set(d) != fields or d["schema_version"] != SCHEMA:
+        if d.get("schema_version") == PINNED_SCHEMA:
+            fields.add("sdk_source_tree_sha256")
+        if set(d) != fields or d["schema_version"] not in {SCHEMA, PINNED_SCHEMA}:
             raise LiveExecutionCustodyError("shared_admission_enrollment_invalid")
         if not all(isinstance(d[k], str) and d[k] for k in fields):
             raise LiveExecutionCustodyError("shared_admission_enrollment_invalid")
@@ -103,35 +142,71 @@ class SharedAdmissionEnrollment:
             raise LiveExecutionCustodyError("shared_admission_profile_account_mismatch")
         if self.selection.entry.get("enabled") is not True:
             raise LiveExecutionCustodyError("shared_admission_catalog_entry_disabled")
-        self._validate_time_resolution()
+        self.policy = json.loads(_read(Path(d["policy_path"])))
+        self.capabilities = self._capabilities()
+        if not (
+            "quartermaster-time-interval/1"
+            in self.capabilities.get("time_evidence_schemas", [])
+            and RESPONSE in self.capabilities.get("response_protocols", [])
+            and self.capabilities.get("incident_reconciliation")
+            == "quartermaster-shared-admission-effect/3"
+        ):
+            raise LiveExecutionCustodyError("shared_admission_sdk_incompatible")
 
-    def _validate_time_resolution(self) -> None:
-        # Native event brackets have one-second resolution. Only fixed, whole-
-        # second cutoffs preserve their membership without invented precision.
+    def _capabilities(self) -> dict:
+        try:
+            raw = subprocess.run(
+                [self.document["cli"], "admission", "capabilities"],
+                capture_output=True,
+                stdin=subprocess.DEVNULL,
+                env={},
+                cwd="/",
+                timeout=10,
+                check=False,
+            )
+            if raw.returncode != 0 or len(raw.stdout) > MAX_BYTES:
+                raise LiveExecutionCustodyError("shared_admission_sdk_incompatible")
+            capabilities = json.loads(raw.stdout)
+        except (OSError, subprocess.TimeoutExpired, ValueError) as error:
+            raise LiveExecutionCustodyError(
+                "shared_admission_sdk_incompatible"
+            ) from error
+        if (
+            not isinstance(capabilities, dict)
+            or capabilities.get("schema")
+            != "quartermaster-shared-admission-capabilities/1"
+        ):
+            raise LiveExecutionCustodyError("shared_admission_sdk_incompatible")
+        expected = self.document.get("sdk_source_tree_sha256")
+        if expected is not None and expected != capabilities.get("source_tree_sha256"):
+            raise LiveExecutionCustodyError("shared_admission_sdk_pin_changed")
+        return capabilities
+
+    def validate_deadline(self, deadline: str) -> None:
+        """Check fixed-window fit without altering the native authority deadline."""
         account = next(
             a
             for a in self.projection.release["catalog"]["accounts"]
             if a["id"] == self.selection.entry["account_id"]
         )
         joined = set(account["quota_pool_ids"])
-        policy = json.loads(_read(Path(self.document["policy_path"])))
         try:
-            for budget in policy["launch_budgets"]:
+            end = datetime.fromisoformat(deadline)
+            for budget in self.policy["launch_budgets"]:
                 if budget["pool_id"] not in joined:
                     continue
                 for window in budget["windows"]:
-                    if window["kind"] != "fixed":
+                    if window["kind"] == "fixed" and not (
+                        datetime.fromisoformat(window["start"])
+                        < end
+                        <= datetime.fromisoformat(window["end"])
+                    ):
                         raise LiveExecutionCustodyError(
-                            "shared_admission_time_resolution_unsupported"
+                            "shared_admission_deadline_incompatible"
                         )
-                    for key in ("start", "end"):
-                        try:
-                            datetime.strptime(window[key], "%Y-%m-%dT%H:%M:%SZ")
-                        except (ValueError, TypeError) as error:
-                            raise LiveExecutionCustodyError(
-                                "shared_admission_time_resolution_unsupported"
-                            ) from error
-        except (KeyError, TypeError) as error:
+        except LiveExecutionCustodyError:
+            raise
+        except (KeyError, TypeError, ValueError) as error:
             raise LiveExecutionCustodyError(
                 "shared_admission_policy_invalid"
             ) from error
@@ -146,6 +221,8 @@ class SharedAdmissionEnrollment:
             _pinned(
                 d["cli"] if name == "cli" else d[name + "_path"], d[name + "_sha256"]
             )
+        if hasattr(self, "capabilities") and self._capabilities() != self.capabilities:
+            raise LiveExecutionCustodyError("shared_admission_sdk_pin_changed")
 
     def validate_binding(
         self, manifest: Mapping[str, Any], registrar: Any, domain: str
@@ -215,6 +292,10 @@ class ProcessAdmission:
         self.fresh_permit = False
         self.namespace_witness = None
         self.last_alive_at = None
+        self.last_alive_sample = None
+
+    def sample_clock(self) -> dict:
+        return _clock_sample()
 
     def _call(self, verb: str, **fields: Any) -> dict:
         d = self.enrollment.document
@@ -229,9 +310,22 @@ class ProcessAdmission:
             d["home_id"],
             "--now",
             _now(),
+            "--json-protocol",
+            RESPONSE,
         ]
         for name, value in fields.items():
-            if name in {"request", "policy", "catalog", "observations", "evidence"}:
+            if name == "require_fresh":
+                if value is True:
+                    argv.append("--require-fresh")
+                continue
+            if name in {
+                "request",
+                "policy",
+                "catalog",
+                "observations",
+                "evidence",
+                "ended_between",
+            }:
                 body = (
                     self.enrollment.projection.release_bytes
                     if name == "catalog"
@@ -254,11 +348,11 @@ class ProcessAdmission:
                 check=False,
             )
         except (OSError, subprocess.TimeoutExpired) as error:
-            raise LiveExecutionCustodyError(
+            raise SharedAdmissionControlError(
                 "shared_admission_transport_uncertain"
             ) from error
         if len(completed.stdout) > MAX_BYTES or len(completed.stderr) > MAX_BYTES:
-            raise LiveExecutionCustodyError("shared_admission_reply_too_large")
+            raise SharedAdmissionControlError("shared_admission_reply_too_large")
         raw = {
             "verb": verb,
             "argv": argv,
@@ -272,15 +366,31 @@ class ProcessAdmission:
             raw,
         )
         try:
-            result = json.loads(completed.stdout)
+            envelope = json.loads(completed.stdout)
         except (ValueError, UnicodeError) as error:
-            raise LiveExecutionCustodyError("shared_admission_reply_invalid") from error
+            raise SharedAdmissionControlError(
+                "shared_admission_reply_invalid"
+            ) from error
+        if not isinstance(envelope, dict) or envelope.get("schema") != RESPONSE:
+            raise SharedAdmissionControlError("shared_admission_protocol_invalid")
+        if set(envelope) == {"schema", "error"}:
+            error = envelope["error"]
+            if not isinstance(error, dict) or set(error) != {"code", "type", "message"}:
+                raise SharedAdmissionControlError("shared_admission_protocol_invalid")
+            expected = 4 if error["code"] == "admission_busy" else 2
+            if completed.returncode != expected:
+                raise SharedAdmissionControlError("shared_admission_protocol_invalid")
+            raise SharedAdmissionControlError("shared_admission_" + str(error["code"]))
+        if set(envelope) != {"schema", "result"}:
+            raise SharedAdmissionControlError("shared_admission_protocol_invalid")
+        result = envelope["result"]
         statuses = {
             "admitted": 0,
             "prepared": 0,
             "recorded": 0,
             "closed": 0,
             "settled": 0,
+            "reconciled": 0,
             "existing": 0,
             "refuse": 3,
             "defer": 4,
@@ -295,13 +405,24 @@ class ProcessAdmission:
         )
         if not snapshot and (
             not isinstance(result, dict)
-            or statuses.get(result.get("status")) != completed.returncode
+            or (
+                6
+                if verb == "prepare-launch"
+                and fields.get("require_fresh")
+                and result.get("status") == "existing"
+                else statuses.get(result.get("status"))
+            )
+            != completed.returncode
         ):
-            raise LiveExecutionCustodyError("shared_admission_operation_failed")
+            raise SharedAdmissionControlError("shared_admission_operation_failed")
         receipt = {
+            "schema_version": "caplab-shared-control-reply/2",
             "verb": verb,
             "argv": argv,
-            "result": result,
+            # Result text is a foreign encoding (including quota floats and
+            # Unicode). Its exact bytes are already in the transport preimage.
+            "response_sha256": sha256_hex(completed.stdout),
+            "status": result.get("status"),
             "exit_code": completed.returncode,
         }
         _retain(
@@ -310,6 +431,27 @@ class ProcessAdmission:
             receipt,
         )
         return result
+
+    def control_fault(self, error: SharedAdmissionControlError) -> dict:
+        fault = {"status": "hold", "code": str(error), "observed_at": _now()}
+        _retain(
+            self.root,
+            "shared-control-fault-" + sha256_hex(canonical_json(fault)) + ".json",
+            fault,
+        )
+        return fault
+
+    def retire_before_launch(self, completion: Mapping[str, Any]) -> dict | None:
+        # Called only after the native one-shot completion has durably closed
+        # this right wholly before Popen. Recovery never manufactures completion.
+        if completion["launch_attempted_at"] is not None:
+            raise LiveExecutionCustodyError("shared_admission_prechild_witness_invalid")
+        witness = {
+            "completion_sha256": sha256_hex(canonical_json(completion)),
+            "clock": _clock_sample(),
+        }
+        _retain(self.root, "shared-admission-prechild-closure.json", witness)
+        return self.reconcile(completion)
 
     def _retain_list(self, filename: str, body: bytes) -> None:
         path = self.root / filename
@@ -342,7 +484,11 @@ class ProcessAdmission:
         )
         d = self.enrollment.document
         intent = self.capture.intent
+        self.enrollment.validate_deadline(plan["execution_deadline_at"])
         request = {
+            "schema": "quartermaster-shared-admission-request/2",
+            "profile_id": self.enrollment.selection.profile["id"],
+            "host": self.enrollment.selection.profile["host"],
             "request_id": intent["effect_id"],
             "caller_id": d["caller_id"],
             "route_id": self.enrollment.selection.entry["route_id"],
@@ -372,6 +518,7 @@ class ProcessAdmission:
             **self._owner(),
             attempt_id=intent["process_id"],
             observations=_read(Path(d["observations_path"])),
+            require_fresh=True,
         )
         self.fresh_permit = result["status"] == "prepared"
         path = self.root / "shared-admission-prepare-result.json"
@@ -390,24 +537,39 @@ class ProcessAdmission:
             )
 
     def observe_liveness(self) -> None:
-        before = _now()
+        before = _clock_sample()
         if self.namespace_witness is not None and not self.namespace_witness.dead():
-            self.last_alive_at = before
+            self.last_alive_at = before["utc"]
+            self.last_alive_sample = before
 
-    def close_namespace_observation(self) -> None:
+    def close_namespace_observation(self, *, deadline: float | None = None) -> None:
         try:
-            if self.namespace_witness is not None and self.namespace_witness.dead():
-                after = _now()
+            # Observation may trail monitor reap. Wait on this same pidfd only,
+            # capped at 50ms and the original native deadline, never on PID reuse.
+            wait = (
+                0
+                if deadline is None
+                else min(50, max(0, int((deadline - time.monotonic()) * 1000)))
+            )
+            if self.namespace_witness is not None and self.namespace_witness.dead(wait):
+                after = _clock_sample()
+                before = self.last_alive_sample
+                ended = _interval(before, after, self.capture.intent["process_id"])
+                # The held descriptor's boot must match both clock observations.
+                if after["boot_id"] != self.namespace_witness.fact["boot_id"]:
+                    ended = None
                 _retain(
                     self.root,
                     "shared-admission-namespace-closure.json",
                     {
-                        "schema_version": "caplab-shared-namespace-closure/1",
+                        "schema_version": "caplab-shared-namespace-closure/2",
                         "process_id": self.capture.intent["process_id"],
                         "namespace_init": self.namespace_witness.fact,
                         "last_alive_at": self.last_alive_at,
-                        "observed_at": after,
-                        "ended_at": after if self.last_alive_at == after else None,
+                        "before": before,
+                        "after": after,
+                        "observed_at": after["utc"],
+                        "ended_at": ended,
                         "basis": "owned-namespace-init-pidfd-death",
                     },
                 )
@@ -416,33 +578,44 @@ class ProcessAdmission:
                 self.namespace_witness.close()
                 self.namespace_witness = None
 
-    def creation(self, before: str, after: str | None, *, pid: int | None) -> None:
+    def creation(self, before: dict, after: dict | None, *, pid: int | None) -> None:
         if not self.fresh_permit:
             raise LiveExecutionCustodyError("shared_admission_no_fresh_permit")
         if pid is not None and (type(pid) is not int or pid <= 1):
             raise LiveExecutionCustodyError("shared_admission_child_identity_invalid")
-        # A successful constructor witnesses creation. Its native one-second
-        # before/after bracket proves a quantized point only within one second.
         outcome = "created" if pid is not None else "unresolved"
-        created_at = before if pid is not None and before == after else None
+        created_at = (
+            _interval(before, after, self.capture.intent["process_id"])
+            if pid is not None
+            else None
+        )
         material = {
-            "schema_version": "caplab-shared-creation/1",
+            "schema_version": "caplab-shared-creation/2",
             "process_id": self.capture.intent["process_id"],
             "pid": pid,
             "before": before,
             "after": after,
             "outcome": outcome,
             "created_at": created_at,
-            "clock_basis": "trusted-host-utc-one-second-bracket",
+            "clock_basis": "trusted-host-utc-measured-bracket",
         }
         _retain(self.root, "shared-admission-creation.json", material)
-        self._record_creation(material)
+        try:
+            self._record_creation(material)
+        except SharedAdmissionControlError as error:
+            # Birth is already durable. Finish native capture; recovery retries
+            # this same evidence rather than aborting and losing tree custody.
+            self.control_fault(error)
 
     def _record_creation(self, material: dict) -> dict:
         proof = {
             "source_id": self.capture.intent["process_id"],
             "sha256": "sha256:" + sha256_hex(canonical_json(material)),
-            "observed_at": material["after"] or material["before"],
+            "observed_at": (
+                (material["after"] or material["before"])["utc"]
+                if material["schema_version"] == "caplab-shared-creation/2"
+                else material["after"] or material["before"]
+            ),
             "created_at": material["created_at"],
             "closed_right_sha256": None,
         }
@@ -456,6 +629,12 @@ class ProcessAdmission:
 
     def reconcile(self, completion: Mapping[str, Any] | None) -> dict | None:
         """Reconcile retained facts, never prepare or spawn during recovery."""
+        try:
+            return self._reconcile(completion)
+        except SharedAdmissionControlError as error:
+            return self.control_fault(error)
+
+    def _reconcile(self, completion: Mapping[str, Any] | None) -> dict | None:
         allocation = self.root / "shared-admission-allocation.json"
         if not allocation.exists():
             request_path = self.root / "shared-admission-request.json"
@@ -485,22 +664,67 @@ class ProcessAdmission:
                 return {"status": "hold", "code": "creation_unresolved"}
             # A native completion produced wholly before Popen closes this one
             # assigned right. No Popen error is in this branch.
-            material = {
-                "schema_version": "caplab-shared-noncreation/1",
-                "process_id": self.capture.intent["process_id"],
-                "completion_sha256": sha256_hex(canonical_json(completion)),
-                "observed_at": completion["completion_recorded_at"],
-            }
-            _retain(self.root, "shared-admission-noncreation.json", material)
+            noncreation = self.root / "shared-admission-noncreation.json"
+            if noncreation.exists():
+                material = _read_canonical_document(noncreation)
+                if (
+                    material["completion_sha256"]
+                    != sha256_hex(canonical_json(completion))
+                    or material["process_id"] != self.capture.intent["process_id"]
+                ):
+                    raise LiveExecutionCustodyError("shared_admission_custody_conflict")
+            else:
+                prechild = self.root / "shared-admission-prechild-closure.json"
+                if not prechild.exists():
+                    # A retained authentic pre-Popen completion can be observed now,
+                    # including on restart, without pretending its second bucket is
+                    # a subsecond observation after a prepared permit.
+                    _retain(
+                        self.root,
+                        prechild.name,
+                        {
+                            "completion_sha256": sha256_hex(canonical_json(completion)),
+                            "clock": _clock_sample(),
+                        },
+                    )
+                witness = _read_canonical_document(prechild)
+                if witness["completion_sha256"] != sha256_hex(
+                    canonical_json(completion)
+                ):
+                    raise LiveExecutionCustodyError("shared_admission_custody_conflict")
+                material = {
+                    "schema_version": "caplab-shared-noncreation/2",
+                    "process_id": self.capture.intent["process_id"],
+                    "completion_sha256": sha256_hex(canonical_json(completion)),
+                    "observed_at": witness["clock"]["utc"],
+                }
+                _retain(self.root, "shared-admission-noncreation.json", material)
             try:
                 permit = _read_canonical_document(
                     self.root / "shared-admission-prepare-result.json"
                 )
             except FileNotFoundError:
-                return {"status": "hold", "code": "permit_commit_unresolved"}
-            if permit["status"] == "existing":
-                return {"status": "hold", "code": "replayed_possible_creation"}
-            if permit["status"] == "prepared":
+                recovery_path = self.root / "shared-admission-prepare-recovery.json"
+                if recovery_path.exists():
+                    permit = _read_canonical_document(recovery_path)
+                else:
+                    snapshot = self._call("status")
+                    entry = snapshot["allocations"][self.record["admission_key_sha256"]]
+                    if entry["record"] != self.record:
+                        raise LiveExecutionCustodyError(
+                            "shared_admission_recovery_ambiguous"
+                        )
+                    permit = {
+                        "status": "recovered",
+                        "attempt": entry["attempts"].get(
+                            self.capture.intent["process_id"]
+                        ),
+                    }
+                    _retain(self.root, recovery_path.name, permit)
+            if (
+                permit["status"] in {"prepared", "existing"}
+                or permit.get("attempt") is not None
+            ):
                 proof = {
                     "source_id": self.capture.intent["process_id"],
                     "sha256": "sha256:" + sha256_hex(canonical_json(material)),
@@ -522,11 +746,7 @@ class ProcessAdmission:
         result = self._record_creation(material)
         if result["status"] not in {"recorded", "existing"}:
             return result
-        if (
-            material["outcome"] != "created"
-            or material["created_at"] is None
-            or completion is None
-        ):
+        if material["outcome"] != "created" or completion is None:
             return {"status": "hold", "code": "creation_or_time_unresolved"}
         plan = _read_canonical_document(
             self.root / "shared-admission-containment.json"
@@ -574,7 +794,11 @@ class ProcessAdmission:
             "close-launch",
             **self._owner(),
             attempt_id=self.capture.intent["process_id"],
-            ended_at=quiescence["ended_at"],
+            **(
+                {"ended_between": quiescence["ended_at"]}
+                if isinstance(quiescence["ended_at"], dict)
+                else {"ended_at": quiescence["ended_at"]}
+            ),
             evidence=proof,
         )
         if result["status"] not in {"closed", "existing"}:
@@ -591,10 +815,27 @@ class ProcessAdmission:
             "closed_right_sha256": digest,
             "no_inflight_sha256": digest,
         }
-        result = self._call("settle", **self._owner(), evidence=proof)
-        _retain(
-            self.root,
-            "shared-admission-terminal-result.json",
-            {k: v for k, v in result.items() if k != "status"},
+        snapshot = self._call("status")
+        entry = snapshot["allocations"][self.record["admission_key_sha256"]]
+        if entry["record"] != self.record:
+            raise LiveExecutionCustodyError("shared_admission_recovery_ambiguous")
+        verb = (
+            "reconcile"
+            if (entry["terminal"] or {}).get("kind") == "reconciled"
+            else "settle"
         )
+        result = self._call(verb, **self._owner(), evidence=proof)
+        if result.get("status") == "hold" and result.get("code") in {
+            "creation_time_unresolved",
+            "creation_right_violation",
+        }:
+            # This branch already proved complete native right/tree closure.
+            # An unknown birth or retained validity violation never becomes zero.
+            result = self._call("reconcile", **self._owner(), evidence=proof)
+        if result.get("status") in {"settled", "reconciled", "existing"}:
+            _retain(
+                self.root,
+                "shared-admission-terminal-result.json",
+                {k: v for k, v in result.items() if k != "status"},
+            )
         return result

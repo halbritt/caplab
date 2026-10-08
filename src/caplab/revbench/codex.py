@@ -1509,7 +1509,14 @@ def _run_owned_process(
         return _complete_before_launch(capture, "authorization-expired")
     admission = capture.shared_admission
     if admission is not None:
-        if not admission.prepare(list(normalized_containment_argv)):
+        from caplab.revbench.shared_admission import SharedAdmissionControlError
+
+        try:
+            allowed = admission.prepare(list(normalized_containment_argv))
+        except SharedAdmissionControlError as error:
+            admission.control_fault(error)
+            return _complete_before_launch(capture, "preflight-refused")
+        if not allowed:
             return _complete_before_launch(capture, "preflight-refused")
         # Control-plane latency belongs to the original native deadlines.
         read_at, remaining_authority, remaining_total = _launch_budget(
@@ -1529,6 +1536,7 @@ def _run_owned_process(
         if remaining_authority <= 0 or remaining_total <= 0:
             return _complete_before_launch(capture, "authorization-expired")
     launch_attempted_at = _timestamp()
+    shared_before = admission.sample_clock() if admission is not None else None
     process: subprocess.Popen[bytes] | None = None
     try:
         process = subprocess.Popen(
@@ -1557,7 +1565,7 @@ def _run_owned_process(
         )
         capture.complete(_completion(capture, observation))
         if admission is not None:
-            admission.creation(launch_attempted_at, None, pid=None)
+            admission.creation(shared_before, None, pid=None)
         return observation
 
     process_started_at = _timestamp()
@@ -1566,6 +1574,7 @@ def _run_owned_process(
     selector: selectors.BaseSelector | None = None
     try:
         if admission is not None:
+            shared_after = admission.sample_clock()
             admission.observe_namespace(
                 process,
                 deadline=min(
@@ -1575,7 +1584,7 @@ def _run_owned_process(
                 ),
             )
             admission.observe_liveness()
-            admission.creation(launch_attempted_at, process_started_at, pid=process.pid)
+            admission.creation(shared_before, shared_after, pid=process.pid)
         if process.stdin is None or process.stdout is None or process.stderr is None:
             raise CodexAdapterError("live_process_pipe_unavailable")
         selector = selectors.DefaultSelector()
@@ -1683,7 +1692,7 @@ def _run_owned_process(
                 break
         exit_code = process.wait(timeout=1)
         if admission is not None:
-            admission.close_namespace_observation()
+            admission.close_namespace_observation(deadline=deadline)
         if credential is not None and termination != "privacy-quarantine":
             credential.assert_streams_safe(
                 bytes(buffers["stdout"]), bytes(buffers["stderr"])
@@ -1790,7 +1799,7 @@ def _complete_before_launch(
     )
     terminal = capture.complete(_completion(capture, observation))
     if capture.shared_admission is not None:
-        capture.shared_admission.reconcile(terminal.completion)
+        capture.shared_admission.retire_before_launch(terminal.completion)
     return observation
 
 

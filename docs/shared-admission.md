@@ -9,12 +9,14 @@ runners remain unenrolled. Other native harness adapters are outside this slice.
 
 ## Enrollment and use
 
-Development uses Quartermaster source candidate
-`7fc9696f69703fca682ce5b179af914a4f70ba6e`, or its isolated wheel/CLI, rather
-than the deployed predecessor. Its public `admission` commands must support
-`reserve`, `prepare-launch`, `record-launch`, `close-launch`, `settle` and
-`status` with the `quartermaster-shared-admission-policy/1` contract.
-Quartermaster owns subsequent compatibility fixes and installation.
+Use a Quartermaster SDK reporting interval-v1, response protocol v2 and incident
+reconciliation through `quartermaster admission capabilities`. The deployed
+`/home/halbritt/.local/bin/quartermaster` reports source tree
+`sha256:af3621e6ddd0062cbc46ec5e37bb3c31f8321dd88a4024a8495055aac6bfa247`
+at this candidate's verification. It supports policies 1/2 and reducers 1–3.
+The adapter sends explicit request-v2 profile/host selection, including under
+policy 1; policy 2's `request-max-slots` reader accepts this slice's one slot.
+Caplab owns its implementation, native operation and rollout choices.
 
 Create the shared home/policy/catalog through Quartermaster's documented public
 interfaces. The same governed pool must have one designated home across enrolled
@@ -29,7 +31,8 @@ Enrollment is an explicit JSON object with exactly these fields:
 
 | Field | Required value |
 | --- | --- |
-| `schema_version` | `caplab-shared-admission-enrollment/1` |
+| `schema_version` | `caplab-shared-admission-enrollment/2` |
+| `sdk_source_tree_sha256` | Exact prefixed digest from `admission capabilities`; checked before each operation |
 | `cli`, `cli_sha256` | Absolute Quartermaster CLI path and raw executable SHA256 |
 | `home`, `home_id` | Absolute shared home and the policy's designated home identity |
 | `release_path`, `release_sha256` | Absolute retained catalog release path and raw file SHA256 |
@@ -42,7 +45,12 @@ Enrollment is an explicit JSON object with exactly these fields:
 | `binding_id` | Existing native manifest's Binding identity |
 | `credential_profile_sha256` | Raw SHA256 of the Binding runtime's resolved `credential_profile_ref` bytes |
 
-All values are nonempty strings; SHA256 values are unprefixed hex digests.
+All values are nonempty strings. File/profile SHA256 values are unprefixed hex;
+`sdk_source_tree_sha256` includes `sha256:`. Version 1's original 17-field
+configuration remains readable for historical recovery and has no source-tree
+pin; version 2 adds precisely that field. New enrollment should use version 2.
+An incompatible SDK refuses before a native process claim. Capabilities identify
+local source bytes, not authenticated installation or provider identity.
 The selected catalog tuple/profile is checked against the complete existing
 Binding/native-system contract, including native harness/model/effort/config.
 The native credential profile bytes are pinned separately. These declarations
@@ -65,8 +73,8 @@ The enrollment is retained before any native process claim. Resumed executions
 must supply the identical enrollment. An old unenrolled execution intent cannot
 be enrolled after claim; omitting the option cannot disable retained enrollment.
 Changing any pinned input refuses. The CLI executable digest alone does not
-pin its interpreter/libraries: installation provenance and compatible wheel/source
-remain an owning deployment obligation. New Caplab source requires a fresh
+pin its interpreter/libraries; version 2 additionally checks the SDK source-tree
+identity. Installation provenance remains a separate deployment concern. New Caplab source requires a fresh
 prospective clean apparatus receipt/native authorization, not an active run's pins.
 This source candidate adds supervisor observations and control-plane calls; it
 is not a claim that an existing authorized apparatus already includes them.
@@ -105,25 +113,39 @@ access, pidfd support, a fast unobserved init or missing native completion
 retains capacity. Output truncation remains a native measurement failure; it
 does not defeat an independently observed positive namespace/tree closure. Namespace inspection is bounded by the original native time budget.
 
-This first adapter accepts only joined-pool fixed windows with whole-second UTC
-`start`/`end` cutoffs in `YYYY-MM-DDTHH:MM:SSZ` form. It refuses rolling or
-fractional-second cutoffs before any native custody claim: native one-second
-receipts cannot preserve their exact membership. Other pools' windows are not
-constrained by this consumer compatibility check.
+Command `--now` uses full-resolution host UTC; native measurement timestamps
+keep their existing one-second schema. Birth evidence separately samples host
+UTC, monotonic nanoseconds and boot ID immediately around `Popen`. It retains the
+closed possible-time interval, not a midpoint or an invented event instant.
+End evidence brackets the same held init pidfd's last positive liveness and its
+positive death observation. The final observation waits at most 50 ms, bounded
+by the original native deadline; monitor reap remains insufficient evidence.
+Reversed UTC/monotonic or changed-boot brackets retain unknown time. These are
+trusted host-clock observations, not hardware clock qualification.
 
-Native UTC receipts have one-second resolution. A before/after creation bracket
-inside one UTC second establishes the native quantized timestamp under the existing
-trusted host-clock assumption. Every point in that bucket has identical
-membership in the supported fixed windows; continuous microsecond precision
-is not claimed. Likewise, a live-init observation followed by
-init death inside one second establishes the quantized end. Cross-second brackets
-retain known creation/unknown time or unresolved end time; no midpoint or later
-observation is relabeled as actual event time. Quartermaster needs interval-valued
-evidence support, or independently validated actual event timestamps, for those
-cases and for rolling/fractional cutoff support. This consumer does not fabricate
-that API or choose a representative point across ambiguous buckets. Independent
-review must assess this fixed-window/native-resolution compatibility; source
-tests do not qualify clock behavior for live measurements.
+Fixed windows with fractional cutoffs and rolling windows are supported through
+SDK interval accounting. The SDK conservatively counts each creation once in
+every applicable window and ages rolling consumption from the latest possible
+birth. On a fresh execution the fixed-window deadline fit is checked before any
+process claim; retained recovery preserves the original deadline. The native
+supervisor still refuses at zero remaining authority. Neither interval upper
+bounds nor shared latency extend that authority. A positive birth whose bracket
+may violate validity is counted and retained; it is not permission to launch late.
+
+Before `Popen`, a control-plane failure completes the consumed native right as
+not invoked and retains a separate full-resolution observation of that closure.
+Recovery inspects the existing exact admission/attempt, never prepares again.
+A possibly committed permit plus this positive prechild completion may record
+`not_created`; a crash with no completion remains held. `clock_order`, bounded
+`admission_busy`, invalid replies and uncertain transports remain visible through
+raw transport/control-fault sidecars and a returned shared `hold` when recovery
+cannot finish. Custody conflicts and pin changes still propagate as errors.
+After `Popen`, lost creation replies do not abort native capture: the already
+retained birth preimage is retried on the same attempt after native completion.
+Positive tree/right closure uses ordinary settlement first. SDK incident
+reconciliation can then close custody with unknown positive birth or a retained
+validity violation, freeing slots/unused allocation atomically while retaining
+one debit or timing hold and the incident. No unresolved child is retired by it.
 
 Immutable additive sidecars stay in existing private native custody, outside
 measurement/qualification documents. They retain actual command inputs/replies,
@@ -152,7 +174,9 @@ Host namespace refusal is an explicit unavailable qualification result.
 Advisory `pool_runner.invoke` still creates children through its existing
 `subprocess.run` path without this Revbench custody protocol. Local-fixture
 Revbench, retrieval, preference and review-dissent also retain their native paths.
-They require separate owner-selected producer/custody integration before claiming
+`scripts/caplab-ladder-subject.py` and `scripts/caplab-artifact-rater.py` also
+invoke Codex directly and are unenrolled. These paths require separate
+producer/custody integration before claiming
 full Caplab enrollment. This candidate neither blocks those paths nor claims
 full shared-catalog/admission goal completion, deployment, qualification or
 acceptance from local tests.
