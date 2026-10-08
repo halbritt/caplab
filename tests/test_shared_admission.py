@@ -373,6 +373,31 @@ class SharedAdmissionTests(unittest.TestCase):
         _terminal_custody_capture(session, plan, terminal, self.enrollment)
         self.assertEqual(self.snapshot()["records"], before)
 
+    def test_real_truncated_output_keeps_native_failure_but_closed_tree_settles(self):
+        plan, argv, logical = self.plan(
+            [
+                "/usr/bin/python3",
+                "-I",
+                "-S",
+                "-c",
+                "import os,time; os.write(1,b'x'*2048); time.sleep(5)",
+            ],
+            bind_root=True,
+        )
+        session, capture = self.claim(plan)
+        observation = self.run_process(capture, plan, argv, logical)
+        self.assertEqual(observation.termination, "stdout-limit")
+        self.assertFalse(observation.stdout_complete)
+        self.assertEqual(len(observation.stdout), 1024)
+        _terminal_custody_capture(session, plan, capture, self.enrollment)
+        self.assertTrue(
+            (capture.custody_root / "shared-admission-namespace-closure.json").is_file()
+        )
+        self.assertEqual(
+            self.snapshot()["pools"]["fixture-pool"],
+            {"slots": 0, "windows": {"fixture-window": {"spent": 1, "outstanding": 0}}},
+        )
+
     def test_positive_prechild_retirement_returns_unused_slot_and_bound(self):
         plan, argv, logical = self.plan()
         session, capture = self.claim(plan)

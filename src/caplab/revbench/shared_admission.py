@@ -542,8 +542,6 @@ class ProcessAdmission:
             or completion["exit_code"] is None
         ):
             return {"status": "hold", "code": "tree_closure_unresolved"}
-        if not completion["stdout_complete"] or not completion["stderr_complete"]:
-            return {"status": "hold", "code": "tree_capture_incomplete"}
         try:
             quiescence = _read_canonical_document(
                 self.root / "shared-admission-namespace-closure.json"

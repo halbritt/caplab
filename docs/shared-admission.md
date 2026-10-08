@@ -95,14 +95,15 @@ lifetime ([source](https://github.com/containers/bubblewrap/blob/v0.9.0/bubblewr
 For enrolled processes the existing supervisor inspects only its owned outer
 process's direct children, identifies the actual child namespace PID1, and opens
 a reuse-safe Linux pidfd. Boot identity, start ticks, parent and namespace IDs
-are retained. Settlement additionally requires observed init death, completed
-native streams/root wait, the pinned PID-namespace/death-on-parent plan, and a
+are retained. Settlement additionally requires observed init death, durable native completion/root wait, the pinned
+PID-namespace/death-on-parent plan, and a
 proved end timestamp. PID namespace init death closes that namespace's process
 population ([Linux contract](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html)).
 No daemon, helper launch, persistent PID registry, additional privilege, new
 harness argv or new native measurement schema is introduced. Missing `/proc`
-access, pidfd support, a fast unobserved init or an incomplete capture retains
-capacity. Namespace inspection is bounded by the original native time budget.
+access, pidfd support, a fast unobserved init or missing native completion
+retains capacity. Output truncation remains a native measurement failure; it
+does not defeat an independently observed positive namespace/tree closure. Namespace inspection is bounded by the original native time budget.
 
 This first adapter accepts only joined-pool fixed windows with whole-second UTC
 `start`/`end` cutoffs in `YYYY-MM-DDTHH:MM:SSZ` form. It refuses rolling or
