@@ -118,7 +118,15 @@ keep their existing one-second schema. Birth evidence separately samples host
 UTC, monotonic nanoseconds and boot ID immediately around `Popen`. It retains the
 closed possible-time interval, not a midpoint or an invented event instant.
 End evidence brackets the same held init pidfd's last positive liveness and its
-positive death observation. The final observation waits at most 50 ms, bounded
+positive death observation. If the descriptor was acquired but no positive
+liveness sample was recorded, the retained outer-process precreation sample
+can supply the lower bound: the recorded namespace init must be a child of
+that exact positively created outer process. The closure sidecar retains
+`lower_bound_basis` to distinguish these cases. Both bounds still require the
+same boot and ordered UTC/monotonic clocks. This fallback cannot prove death
+without the held init descriptor and does not repair an unobserved init or an
+already retained closure with unknown time.
+The final observation waits at most 50 ms, bounded
 by the original native deadline; monitor reap remains insufficient evidence.
 Reversed UTC/monotonic or changed-boot brackets retain unknown time. These are
 trusted host-clock observations, not hardware clock qualification.
@@ -140,6 +148,12 @@ A possibly committed permit plus this positive prechild completion may record
 `admission_busy`, invalid replies and uncertain transports remain visible through
 raw transport/control-fault sidecars and a returned shared `hold` when recovery
 cannot finish. Custody conflicts and pin changes still propagate as errors.
+Transient failures of the per-operation SDK capability probe (transport error,
+timeout, nonzero exit, oversized reply or invalid JSON) use that same recoverable
+control-fault path. A valid reply declaring incompatible capabilities or a
+changed pinned SDK identity remains a hard error. Before creation the native
+right closes without launching; after creation capture continues and recovery
+reuses retained evidence. A failed probe never supplies launch permission.
 After `Popen`, lost creation replies do not abort native capture: the already
 retained birth preimage is retried on the same attempt after native completion.
 Positive tree/right closure uses ordinary settlement first. SDK incident

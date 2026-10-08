@@ -164,12 +164,21 @@ class SharedAdmissionEnrollment:
                 timeout=10,
                 check=False,
             )
-            if raw.returncode != 0 or len(raw.stdout) > MAX_BYTES:
-                raise LiveExecutionCustodyError("shared_admission_sdk_incompatible")
+        except (OSError, subprocess.TimeoutExpired) as error:
+            raise SharedAdmissionControlError(
+                "shared_admission_capability_probe_unavailable"
+            ) from error
+        if raw.returncode != 0:
+            raise SharedAdmissionControlError("shared_admission_capability_probe_failed")
+        if len(raw.stdout) > MAX_BYTES:
+            raise SharedAdmissionControlError(
+                "shared_admission_capability_reply_too_large"
+            )
+        try:
             capabilities = json.loads(raw.stdout)
-        except (OSError, subprocess.TimeoutExpired, ValueError) as error:
-            raise LiveExecutionCustodyError(
-                "shared_admission_sdk_incompatible"
+        except (ValueError, UnicodeError) as error:
+            raise SharedAdmissionControlError(
+                "shared_admission_capability_reply_invalid"
             ) from error
         if (
             not isinstance(capabilities, dict)
@@ -554,6 +563,24 @@ class ProcessAdmission:
             if self.namespace_witness is not None and self.namespace_witness.dead(wait):
                 after = _clock_sample()
                 before = self.last_alive_sample
+                lower_bound_basis = "observed-live-namespace-init"
+                if before is None:
+                    try:
+                        birth = _read_canonical_document(
+                            self.root / "shared-admission-creation.json"
+                        )
+                    except FileNotFoundError:
+                        birth = None
+                    # This held init is a child of the positively created outer
+                    # process. Its death cannot precede that process's birth.
+                    if birth is not None and (
+                        birth["schema_version"] == "caplab-shared-creation/2"
+                        and birth["outcome"] == "created"
+                        and birth["process_id"] == self.capture.intent["process_id"]
+                        and birth["pid"] == self.namespace_witness.fact["parent_pid"]
+                    ):
+                        before = birth["before"]
+                        lower_bound_basis = "owned-outer-precreation-clock"
                 ended = _interval(before, after, self.capture.intent["process_id"])
                 # The held descriptor's boot must match both clock observations.
                 if after["boot_id"] != self.namespace_witness.fact["boot_id"]:
@@ -566,6 +593,7 @@ class ProcessAdmission:
                         "process_id": self.capture.intent["process_id"],
                         "namespace_init": self.namespace_witness.fact,
                         "last_alive_at": self.last_alive_at,
+                        "lower_bound_basis": lower_bound_basis,
                         "before": before,
                         "after": after,
                         "observed_at": after["utc"],
