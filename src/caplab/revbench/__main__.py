@@ -30,6 +30,7 @@ from caplab.revbench.codex import (
 )
 from caplab.revbench.custody import FilesystemLiveExecutionRuntime
 from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
+from caplab.revbench.shared_admission import SharedAdmissionEnrollment
 
 
 _LIVE_PYTHON = "/usr/bin/python3"
@@ -217,6 +218,11 @@ def build_parser(*, live_source: bool = False) -> argparse.ArgumentParser:
     execute_parser.add_argument("--output", type=Path, required=True)
     if live_source:
         execute_parser.add_argument(
+            "--shared-admission",
+            type=Path,
+            help="explicit opt-in enrollment JSON for future live Revbench",
+        )
+        execute_parser.add_argument(
             "--live-custody-root",
             type=Path,
             help="private durable root for globally one-shot live process custody",
@@ -363,6 +369,10 @@ def run(args: argparse.Namespace, *, live_source: bool = False) -> int:
             authorization,
             registrar,
             live_runtime=runtime,
+            shared_admission=(
+                SharedAdmissionEnrollment.read(args.shared_admission)
+                if getattr(args, "shared_admission", None) is not None else None
+            ),
         )
     elif args.command == "score":
         manifest = _read_document(args.manifest, role="manifest")

@@ -1507,6 +1507,16 @@ def _run_owned_process(
     )
     if remaining_authority <= 0 or remaining_total <= 0:
         return _complete_before_launch(capture, "authorization-expired")
+    admission = capture.shared_admission
+    if admission is not None:
+        if not admission.prepare(list(normalized_containment_argv)):
+            return _complete_before_launch(capture, "preflight-refused")
+        # Control-plane latency belongs to the original native deadlines.
+        read_at, remaining_authority, remaining_total = _launch_budget(
+            plan, monotonic_deadline
+        )
+        if remaining_authority <= 0 or remaining_total <= 0:
+            return _complete_before_launch(capture, "authorization-expired")
     if host_closure is not None:
         if not _host_closure_verified(capture, host_closure):
             return _complete_before_launch(capture, "preflight-refused")
@@ -1546,12 +1556,26 @@ def _run_owned_process(
             "not-invoked",
         )
         capture.complete(_completion(capture, observation))
+        if admission is not None:
+            admission.creation(launch_attempted_at, None, pid=None)
         return observation
 
     process_started_at = _timestamp()
+    process_started_monotonic = time.monotonic()
 
     selector: selectors.BaseSelector | None = None
     try:
+        if admission is not None:
+            admission.observe_namespace(
+                process,
+                deadline=min(
+                    monotonic_deadline,
+                    read_at + remaining_authority,
+                    process_started_monotonic + float(plan["timeout_seconds"]),
+                ),
+            )
+            admission.observe_liveness(process)
+            admission.creation(launch_attempted_at, process_started_at, pid=process.pid)
         if process.stdin is None or process.stdout is None or process.stderr is None:
             raise CodexAdapterError("live_process_pipe_unavailable")
         selector = selectors.DefaultSelector()
@@ -1593,11 +1617,14 @@ def _run_owned_process(
         # absolute total deadline are never restarted by inspection, process startup or polling;
         # only the per-process timeout counts from the launch.
         deadline = min(
-            time.monotonic() + float(plan["timeout_seconds"]),
+            (process_started_monotonic if admission is not None else time.monotonic())
+            + float(plan["timeout_seconds"]),
             read_at + remaining_authority,
             monotonic_deadline,
         )
         while selector.get_map():
+            if admission is not None:
+                admission.observe_liveness(process)
             remaining = deadline - time.monotonic()
             if remaining <= 0 and not killed:
                 termination = "timeout"
@@ -1655,6 +1682,8 @@ def _run_owned_process(
                         _unregister_close(selector, stream)
                 break
         exit_code = process.wait(timeout=1)
+        if admission is not None:
+            admission.close_namespace_observation()
         if credential is not None and termination != "privacy-quarantine":
             credential.assert_streams_safe(
                 bytes(buffers["stdout"]), bytes(buffers["stderr"])
@@ -1688,6 +1717,8 @@ def _run_owned_process(
                 process.wait()
             raise
     finally:
+        if admission is not None:
+            admission.close_namespace_observation()
         if selector is not None:
             selector.close()
 
@@ -1757,7 +1788,9 @@ def _complete_before_launch(
         termination,
         "not-invoked",
     )
-    capture.complete(_completion(capture, observation))
+    terminal = capture.complete(_completion(capture, observation))
+    if capture.shared_admission is not None:
+        capture.shared_admission.reconcile(terminal.completion)
     return observation
 
 

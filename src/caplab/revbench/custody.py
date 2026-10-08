@@ -69,6 +69,7 @@ class RecoveredProcessCapture:
     completion: dict[str, Any] | None
     recovery: dict[str, Any] | None
     host_closure_check: dict[str, Any] | None = None
+    custody_root: Path | None = None
 
 
 def live_effect_id(effect_scope: Mapping[str, Any]) -> str:
@@ -102,6 +103,11 @@ class FreshProcessCapture:
         self._closed = False
         self._completed = False
         self._host_closure_check: dict[str, Any] | None = None
+        self.shared_admission = None
+
+    @property
+    def custody_root(self) -> Path:
+        return self._root
 
     def record_host_closure_check(self, check: Mapping[str, Any]) -> None:
         """Retain the pre-launch host-closure check before any process can start.
@@ -175,6 +181,7 @@ class FreshProcessCapture:
             completion=sealed,
             recovery=None,
             host_closure_check=self._host_closure_check,
+            custody_root=self._root,
         )
 
     def close(self) -> None:
@@ -446,6 +453,17 @@ class LiveExecutionSession:
         return [
             _canonical_copy(entry["launch_plan"])
             for entry in self.intent["process_sequence"]
+        ]
+
+    def retained_processes(self) -> list[RecoveredProcessCapture]:
+        """Read claimed processes, including sealed executions; never claim a right."""
+        if self._closed:
+            raise LiveExecutionCustodyError("live_execution_session_closed")
+        return [
+            self._recover_declared_process(
+                entry["launch_plan"], entry["effect_id"], entry["process_id"]
+            )
+            for entry in self.intent["process_sequence"][: len(self._claimed_processes())]
         ]
 
     def finalization_recorded_at(self) -> str:
@@ -1464,6 +1482,7 @@ def _recover_process(root: Path, intent: dict[str, Any]) -> RecoveredProcessCapt
         completion=completion,
         recovery=None,
         host_closure_check=_read_host_closure_check(root, intent["process_id"]),
+        custody_root=root,
     )
 
 
@@ -1509,6 +1528,7 @@ def _recover_uncertain(root: Path, intent: dict[str, Any]) -> RecoveredProcessCa
         completion=None,
         recovery=recovery,
         host_closure_check=_read_host_closure_check(root, intent["process_id"]),
+        custody_root=root,
     )
 
 

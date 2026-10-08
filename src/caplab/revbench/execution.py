@@ -20,6 +20,10 @@ from pathlib import Path
 from typing import Any
 
 from caplab.runtime.canonical import canonical_json, sha256_hex
+from caplab.revbench.shared_admission import (
+    SharedAdmissionEnrollment,
+    require_retained_enrollment,
+)
 
 from . import _core
 from .codex import (
@@ -1050,14 +1054,18 @@ def _terminal_custody_capture(
     session: Any,
     launch_plan: Mapping[str, Any],
     capture: FreshProcessCapture | RecoveredProcessCapture,
+    shared_admission: SharedAdmissionEnrollment | None = None,
 ) -> RecoveredProcessCapture:
     """Reload the terminal custody record instead of trusting runner projections."""
 
     if isinstance(capture, RecoveredProcessCapture):
-        return capture
-    retained = session.claim_process(launch_plan)
+        retained = capture
+    else:
+        retained = session.claim_process(launch_plan)
     if not isinstance(retained, RecoveredProcessCapture):
         raise LiveExecutionCustodyError("process_completion_not_durable")
+    if shared_admission is not None:
+        shared_admission.capture(retained).reconcile(retained.completion)
     return retained
 
 
@@ -1161,9 +1169,12 @@ def _execute_live_codex(
     runtime: FilesystemLiveExecutionRuntime,
     started_at: str,
     started_monotonic: float,
+    shared_admission: SharedAdmissionEnrollment | None = None,
 ) -> dict[str, Any]:
     """Execute the one pinned Codex provider slice under one-shot custody."""
 
+    if shared_admission is not None:
+        shared_admission.validate_binding(manifest, registrar, runtime.custody_domain_id)
     if runtime.custody_domain_id != authorization["custody_domain_id"]:
         raise _core.RevbenchContractError(
             "live execution custody domain does not match explicit authorization"
@@ -1409,7 +1420,10 @@ def _execute_live_codex(
                 "live-execution-intent-" + sha256_hex(canonical_json(session.intent))
             ),
         )
+        require_retained_enrollment(session, shared_admission)
         if session.sealed is not None:
+            if shared_admission is not None:
+                shared_admission.reconcile_session(session)
             return copy.deepcopy(session.sealed)
         retained_plans = session.declared_launch_plans()
         retained_by_scope = {
@@ -1455,6 +1469,10 @@ def _execute_live_codex(
                     break
                 raise
             if isinstance(version_capture, FreshProcessCapture):
+                if shared_admission is not None:
+                    version_capture.shared_admission = shared_admission.capture(
+                        version_capture
+                    )
                 if monotonic_execution_deadline is None:
                     raise LiveExecutionCustodyError(
                         "live_execution_recovery_cannot_launch"
@@ -1468,7 +1486,7 @@ def _execute_live_codex(
                     monotonic_deadline=monotonic_execution_deadline,
                 )
             version_terminal = _terminal_custody_capture(
-                session, version_plan, version_capture
+                session, version_plan, version_capture, shared_admission
             )
             version_observation = _recovered_observation(version_terminal)
             version_recovery_ref = (
@@ -1583,6 +1601,10 @@ def _execute_live_codex(
             elif credential is None:
                 raise LiveExecutionCustodyError("live_execution_recovery_cannot_launch")
             else:
+                if shared_admission is not None:
+                    native_capture.shared_admission = shared_admission.capture(
+                        native_capture
+                    )
                 if monotonic_execution_deadline is None:
                     raise LiveExecutionCustodyError(
                         "live_execution_recovery_cannot_launch"
@@ -1597,7 +1619,7 @@ def _execute_live_codex(
                 )
 
             native_terminal = _terminal_custody_capture(
-                session, native_plan, native_capture
+                session, native_plan, native_capture, shared_admission
             )
             native_observation = _recovered_observation(native_terminal)
             if native_terminal.recovery is not None and native_recovery_ref is None:
@@ -1886,9 +1908,15 @@ def execute(
     registrar: _core.ArtifactRegistrar,
     *,
     live_runtime: FilesystemLiveExecutionRuntime | None = None,
+    shared_admission: SharedAdmissionEnrollment | None = None,
 ) -> dict[str, Any]:
     """Execute one sealed revbench manifest under exact registered authority."""
 
+    if (
+        shared_admission is not None
+        and type(shared_admission) is not SharedAdmissionEnrollment
+    ):
+        raise _core.RevbenchContractError("shared_admission_enrollment_required")
     validated = _core._validate_manifest(manifest, registrar)
     started_monotonic = time.monotonic()
     started_at = _timestamp()
@@ -1908,7 +1936,10 @@ def execute(
             live_runtime,
             started_at,
             started_monotonic,
+            shared_admission,
         )
+    if shared_admission is not None:
+        raise _core.RevbenchContractError("shared_admission_local_fixture_unenrolled")
     _core._validate_execution_authorization(
         execution_authorization_ref,
         validated,

@@ -1968,10 +1968,14 @@ class CodexLiveExecutionTests(unittest.TestCase):
                 "execution_authorization_ref",
                 "registrar",
                 "live_runtime",
+                "shared_admission",
             ],
         )
         with self.assertRaises(TypeError):
             execute({}, {}, object(), live_process_runner=lambda *_: None)
+        # Enrollment is a concrete configuration, never an injected runner.
+        with self.assertRaisesRegex(RevbenchContractError, "shared_admission_enrollment_required"):
+            execute({}, {}, object(), shared_admission=object())
 
         registrar, manifest, reviews, _measurement, _calls, _source = (
             self._run_fake_subprocess_seam()
