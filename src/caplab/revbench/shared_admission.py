@@ -103,6 +103,38 @@ class SharedAdmissionEnrollment:
             raise LiveExecutionCustodyError("shared_admission_profile_account_mismatch")
         if self.selection.entry.get("enabled") is not True:
             raise LiveExecutionCustodyError("shared_admission_catalog_entry_disabled")
+        self._validate_time_resolution()
+
+    def _validate_time_resolution(self) -> None:
+        # Native event brackets have one-second resolution. Only fixed, whole-
+        # second cutoffs preserve their membership without invented precision.
+        account = next(
+            a
+            for a in self.projection.release["catalog"]["accounts"]
+            if a["id"] == self.selection.entry["account_id"]
+        )
+        joined = set(account["quota_pool_ids"])
+        policy = json.loads(_read(Path(self.document["policy_path"])))
+        try:
+            for budget in policy["launch_budgets"]:
+                if budget["pool_id"] not in joined:
+                    continue
+                for window in budget["windows"]:
+                    if window["kind"] != "fixed":
+                        raise LiveExecutionCustodyError(
+                            "shared_admission_time_resolution_unsupported"
+                        )
+                    for key in ("start", "end"):
+                        try:
+                            datetime.strptime(window[key], "%Y-%m-%dT%H:%M:%SZ")
+                        except (ValueError, TypeError) as error:
+                            raise LiveExecutionCustodyError(
+                                "shared_admission_time_resolution_unsupported"
+                            ) from error
+        except (KeyError, TypeError) as error:
+            raise LiveExecutionCustodyError(
+                "shared_admission_policy_invalid"
+            ) from error
 
     @classmethod
     def read(cls, path: Path) -> SharedAdmissionEnrollment:

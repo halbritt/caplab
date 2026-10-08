@@ -66,7 +66,7 @@ class ProcessWitness:
         events = poller.poll(timeout_ms)
         if any(mask & (select.POLLNVAL | select.POLLERR) for _, mask in events):
             raise ProcessProofUnavailable("process_pidfd_invalid")
-        return any(mask & select.POLLIN for _, mask in events)
+        return any(mask & (select.POLLIN | select.POLLHUP) for _, mask in events)
 
     def close(self) -> None:
         if self.descriptor >= 0:

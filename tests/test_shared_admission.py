@@ -322,6 +322,7 @@ class SharedAdmissionTests(unittest.TestCase):
         self.assertNotEqual(
             observation.exit_code, 0
         )  # real outer child, contained exec fails
+        self.assertIn(b"execvp", observation.stderr)
         terminal = _terminal_custody_capture(session, plan, capture, self.enrollment)
         expected = {
             "slots": 1,
@@ -678,6 +679,30 @@ class SharedAdmissionTests(unittest.TestCase):
             enrollment.validate_binding(
                 tampered, registrar, self.runtime.custody_domain_id
             )
+
+    def test_policy_cutoffs_require_fixed_whole_second_native_representation(self):
+        original = json.loads(Path(self.document["policy_path"]).read_bytes())
+        for label in ("rolling", "fractional-cutoff"):
+            with self.subTest(policy=label):
+                policy = copy.deepcopy(original)
+                window = policy["launch_budgets"][0]["windows"][0]
+                if label == "rolling":
+                    window["kind"] = "rolling"
+                    window.pop("start")
+                    window.pop("end")
+                    window["duration_seconds"] = 60
+                else:
+                    window["start"] = "2026-01-01T00:00:00.500000Z"
+                path = self.root / (label + ".json")
+                path.write_bytes(canonical_json(policy))
+                doc = copy.deepcopy(self.document)
+                doc["policy_path"] = str(path)
+                doc["policy_sha256"] = sha256_hex(path.read_bytes())
+                with self.assertRaisesRegex(
+                    LiveExecutionCustodyError, "time_resolution_unsupported"
+                ):
+                    shared.SharedAdmissionEnrollment(doc)
+                self.assertFalse(Path(doc["home"]).exists())
 
 
 class KernelProcessProofTests(unittest.TestCase):

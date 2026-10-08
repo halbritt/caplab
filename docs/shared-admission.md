@@ -104,14 +104,25 @@ harness argv or new native measurement schema is introduced. Missing `/proc`
 access, pidfd support, a fast unobserved init or an incomplete capture retains
 capacity. Namespace inspection is bounded by the original native time budget.
 
+This first adapter accepts only joined-pool fixed windows with whole-second UTC
+`start`/`end` cutoffs in `YYYY-MM-DDTHH:MM:SSZ` form. It refuses rolling or
+fractional-second cutoffs before any native custody claim: native one-second
+receipts cannot preserve their exact membership. Other pools' windows are not
+constrained by this consumer compatibility check.
+
 Native UTC receipts have one-second resolution. A before/after creation bracket
-inside one UTC second establishes only that quantized point under the existing
-trusted host-clock assumption. Likewise, a live-init observation followed by
+inside one UTC second establishes the native quantized timestamp under the existing
+trusted host-clock assumption. Every point in that bucket has identical
+membership in the supported fixed windows; continuous microsecond precision
+is not claimed. Likewise, a live-init observation followed by
 init death inside one second establishes the quantized end. Cross-second brackets
 retain known creation/unknown time or unresolved end time; no midpoint or later
 observation is relabeled as actual event time. Quartermaster needs interval-valued
 evidence support, or independently validated actual event timestamps, for those
-cases. This consumer does not fabricate that API or choose a representative point.
+cases and for rolling/fractional cutoff support. This consumer does not fabricate
+that API or choose a representative point across ambiguous buckets. Independent
+review must assess this fixed-window/native-resolution compatibility; source
+tests do not qualify clock behavior for live measurements.
 
 Immutable additive sidecars stay in existing private native custody, outside
 measurement/qualification documents. They retain actual command inputs/replies,

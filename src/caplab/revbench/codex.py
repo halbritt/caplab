@@ -1561,7 +1561,7 @@ def _run_owned_process(
         return observation
 
     process_started_at = _timestamp()
-    process_started_monotonic = time.monotonic()
+    process_started_monotonic = time.monotonic() if admission is not None else None
 
     selector: selectors.BaseSelector | None = None
     try:
