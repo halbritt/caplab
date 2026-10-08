@@ -417,6 +417,34 @@ class SharedAdmissionTests(unittest.TestCase):
         )
         self.assertEqual((result["launched"], result["unused"]), (0, 1))
 
+    def test_foreign_quota_bytes_preserve_fractional_values_unicode_and_retained_hash(
+        self,
+    ):
+        path = Path(self.document["observations_path"])
+        rows = json.loads(path.read_bytes())
+        row = rows[0]
+        row.pop("_content_hash")
+        row["payload"]["windows"][0]["remaining_percent"] = 50.25
+        row["payload"]["observation_note"] = "e\u0301"
+        # Quartermaster's published hash rule preserves JSON text, while
+        # Caplab's native identity codec normalizes NFC and excludes floats.
+        row["_content_hash"] = "sha256:" + sha256_hex(
+            json.dumps(
+                row, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+            ).encode()
+        )
+        raw = (json.dumps(rows, ensure_ascii=False, indent=2) + "\n").encode()
+        path.write_bytes(raw)
+        plan, argv, _ = self.plan()
+        _, capture = self.claim(plan)
+        gate = self.enrollment.capture(capture)
+        self.assertTrue(gate.prepare(argv))
+        retained = capture.custody_root / ("shared-input-" + sha256_hex(raw) + ".json")
+        self.assertEqual(retained.read_bytes(), raw)
+        capture.shared_admission = gate
+        codex._complete_before_launch(capture, "preflight-refused")
+        self.assertEqual(self.snapshot()["pools"]["fixture-pool"]["slots"], 0)
+
     def test_crash_after_permit_has_no_replay_right_and_keeps_hold(self):
         plan, argv, logical = self.plan()
         session, capture = self.claim(plan)

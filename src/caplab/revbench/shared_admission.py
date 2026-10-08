@@ -235,6 +235,8 @@ class ProcessAdmission:
                 body = (
                     self.enrollment.projection.release_bytes
                     if name == "catalog"
+                    else value
+                    if isinstance(value, bytes)
                     else canonical_json(value)
                 )
                 filename = "shared-input-" + sha256_hex(body) + ".json"
@@ -354,9 +356,9 @@ class ProcessAdmission:
         result = self._call(
             "reserve",
             request=request,
-            policy=json.loads(_read(Path(d["policy_path"]))),
+            policy=_read(Path(d["policy_path"])),
             catalog=self.enrollment.projection.release,
-            observations=json.loads(_read(Path(d["observations_path"]))),
+            observations=_read(Path(d["observations_path"])),
             holder_id=intent["process_id"],
             namespace="caplab",
         )
@@ -369,7 +371,7 @@ class ProcessAdmission:
             "prepare-launch",
             **self._owner(),
             attempt_id=intent["process_id"],
-            observations=json.loads(_read(Path(d["observations_path"]))),
+            observations=_read(Path(d["observations_path"])),
         )
         self.fresh_permit = result["status"] == "prepared"
         path = self.root / "shared-admission-prepare-result.json"
