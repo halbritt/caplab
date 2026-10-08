@@ -29,6 +29,7 @@ class DeathBoundTests(unittest.TestCase):
         born = json.loads((capture.custody_root / "shared-admission-creation.json").read_bytes())
         ended = json.loads((capture.custody_root / "shared-admission-namespace-closure.json").read_bytes())
         self.assertIsNone(ended["last_alive_at"])
+        self.assertEqual(ended["lower_bound_basis"], "owned-outer-precreation-clock")
         self.assertIsNotNone(ended["ended_at"])
         self.assertEqual(ended["ended_at"]["lower"], born["before"]["utc"])
         self.assertEqual(ended["namespace_init"]["parent_pid"], born["pid"])
@@ -83,3 +84,36 @@ class DeathBoundTests(unittest.TestCase):
             sample["utc"] = (datetime.datetime.fromisoformat(sample["utc"])
                              + datetime.timedelta(days=1)).isoformat().replace("+00:00", "Z")
         self.invalid_birth_clock(forward)
+
+    def invalid_fallback_fact(self, field, wrong):
+        self.clocks.close()
+        plan, argv, logical = self.plan(["/bin/sleep", "0.3"], bind_root=True)
+        session, capture = self.claim(plan)
+        reader = shared._read_canonical_document
+
+        def disturbed_reader(path):
+            doc = reader(path)
+            if path.name == "shared-admission-creation.json":
+                return {**doc, field: wrong}
+            return doc
+
+        with mock.patch.object(shared.ProcessAdmission, "observe_liveness"), \
+                mock.patch.object(shared, "_read_canonical_document", disturbed_reader):
+            self.assertEqual(self.run_process(capture, plan, argv, logical).exit_code, 0)
+        closure = json.loads((capture.custody_root /
+                              "shared-admission-namespace-closure.json").read_bytes())
+        self.assertIsNone(closure["ended_at"])
+        _terminal_custody_capture(session, plan, capture, self.enrollment)
+        self.assertEqual(self.snapshot()["pools"]["fixture-pool"]["slots"], 1)
+
+    def test_fallback_refuses_wrong_parent(self):
+        self.invalid_fallback_fact("pid", 1)
+
+    def test_fallback_refuses_unresolved_creation(self):
+        self.invalid_fallback_fact("outcome", "unresolved")
+
+    def test_fallback_refuses_wrong_process(self):
+        self.invalid_fallback_fact("process_id", "other")
+
+    def test_fallback_refuses_wrong_schema(self):
+        self.invalid_fallback_fact("schema_version", "other")

@@ -312,12 +312,28 @@ class SharedAdmissionTests(unittest.TestCase):
         )
         return json.loads(raw)
 
+    @staticmethod
+    @contextlib.contextmanager
+    def unavailable_namespace_observation():
+        # These hold/accounting cases require an unavailable observation, not
+        # a scheduler race with a fast child. Keep processes/SDK/custody real;
+        # refuse only the OS /proc child-enumeration boundary. Positive pidfd
+        # settlement has separate real-process controls.
+        original = Path.read_text
+        def read(path, *args, **kwargs):
+            if str(path).startswith("/proc/") and path.name == "children" and "task" in path.parts:
+                raise PermissionError("test host cannot enumerate namespace children")
+            return original(path, *args, **kwargs)
+        with mock.patch.object(Path, "read_text", new=read):
+            yield
+
     def test_real_outer_exec_failure_counts_once_and_recovery_does_not_charge_again(
         self,
     ):
         plan, argv, logical = self.plan(["/not-a-caplab-child-executable"])
         session, capture = self.claim(plan)
-        observation = self.run_process(capture, plan, argv, logical)
+        with self.unavailable_namespace_observation():
+            observation = self.run_process(capture, plan, argv, logical)
         self.assertEqual(observation.invocation_state, "invoked")
         self.assertNotEqual(
             observation.exit_code, 0
@@ -642,7 +658,8 @@ class SharedAdmissionTests(unittest.TestCase):
         with self.runtime.claim_execution(intent) as session:
             shared.require_retained_enrollment(session, self.enrollment)
             capture = session.claim_process(version)
-            self.run_process(capture, version, argv, logical)
+            with self.unavailable_namespace_observation():
+                self.run_process(capture, version, argv, logical)
             _terminal_custody_capture(session, version, capture, self.enrollment)
             request = {
                 "request_id": "external-consumer",

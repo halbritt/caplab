@@ -42,6 +42,7 @@ from .codex import (
     CodexResponseSchemaError,
     codex_native_bundle_policy,
     codex_native_external_bundle_policy,
+    codex_native_shared_bundle_policy,
     derive_codex_response,
     is_static_linux_elf,
     normalized_codex_containment_argv,
@@ -1299,7 +1300,8 @@ def selected_bundle_policy(registered: Any) -> Mapping[str, Any] | None:
 
     return pinned_bundle_policy_matching(
         registered,
-        (codex_native_bundle_policy(), codex_native_external_bundle_policy()),
+        (codex_native_bundle_policy(), codex_native_external_bundle_policy(),
+         codex_native_shared_bundle_policy()),
     )
 
 

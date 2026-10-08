@@ -302,6 +302,16 @@ class ProcessAdmission:
         self.namespace_witness = None
         self.last_alive_at = None
         self.last_alive_sample = None
+        self.post_monitor_observation_ms = None
+
+    def adopt_namespace(self, witness, *, post_monitor_timeout_ms: int) -> None:
+        # Called only by the prospective pinned readiness administration. This
+        # descriptor is already bound to the actual direct child PID1.
+        if post_monitor_timeout_ms != 1000 or self.namespace_witness is not None:
+            raise LiveExecutionCustodyError("shared_admission_readiness_invalid")
+        self.namespace_witness = witness
+        self.post_monitor_observation_ms = post_monitor_timeout_ms
+        _retain(self.root, "shared-admission-namespace-init.json", witness.fact)
 
     def sample_clock(self) -> dict:
         return _clock_sample()
@@ -554,11 +564,15 @@ class ProcessAdmission:
     def close_namespace_observation(self, *, deadline: float | None = None) -> None:
         try:
             # Observation may trail monitor reap. Wait on this same pidfd only,
-            # capped at 50ms and the original native deadline, never on PID reuse.
+            # historical routes cap at 50ms and their original native deadline.
+            # The prospective readiness route owns a 1s post-monitor observer;
+            # it extends no execution/launch authority. Never poll a reused PID.
             wait = (
                 0
                 if deadline is None
-                else min(50, max(0, int((deadline - time.monotonic()) * 1000)))
+                else (self.post_monitor_observation_ms
+                      if self.post_monitor_observation_ms is not None
+                      else min(50, max(0, int((deadline - time.monotonic()) * 1000))))
             )
             if self.namespace_witness is not None and self.namespace_witness.dead(wait):
                 after = _clock_sample()

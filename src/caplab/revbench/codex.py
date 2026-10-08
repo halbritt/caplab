@@ -31,6 +31,7 @@ from caplab.producer import ProducerIdentityError, producer_identity
 from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
 
 from .custody import FreshProcessCapture
+from .process_tree import SandboxReadiness, ProcessProofUnavailable
 from .host_closure import (
     TRUST_ASSUMPTION,
     HostClosureError,
@@ -138,6 +139,12 @@ CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_SHA256 = (
 CODEX_NATIVE_EXTERNAL_BUNDLE_POLICY_ID = (
     "codex-terra-max-revbench-live-external-token-direct-bwrap-v1"
 )
+CODEX_NATIVE_SHARED_BUNDLE_POLICY_ID = (
+    "codex-terra-max-revbench-live-external-token-readiness-v1"
+)
+CODEX_NATIVE_SHARED_BUNDLE_POLICY_SHA256 = (
+    "3875443873cf81fe0b7f333ff7002779394890c00c293dd4f343252d8289a53c"
+)
 # The apparatus names the external-token policy it ships and the host-owner trust assumption of its
 # directly executed adapter, so a reader of any live receipt can see both without opening the policy.
 _EXTERNAL_PROTOCOL_FIELDS = {
@@ -202,6 +209,20 @@ def codex_native_external_bundle_policy() -> dict[str, Any]:
     """Return the pinned external-token policy; it is never selected implicitly."""
 
     return _parse_bundle_policy(codex_native_external_bundle_policy_bytes())
+
+
+def codex_native_shared_bundle_policy() -> dict[str, Any]:
+    """Prospective held-pidfd readiness administration, selected by exact registered bytes."""
+    resource = importlib.resources.files("caplab.revbench").joinpath(
+        "contracts/codex-native-bundle-shared-v1.json"
+    )
+    try:
+        payload = resource.read_bytes()
+    except OSError as error:
+        raise CodexAdapterError("codex_bundle_policy_unavailable") from error
+    if sha256_hex(payload) != CODEX_NATIVE_SHARED_BUNDLE_POLICY_SHA256:
+        raise CodexAdapterError("codex_bundle_policy_digest_mismatch")
+    return _parse_bundle_policy(payload)
 
 
 def pinned_bundle_policy_matching(
@@ -1082,6 +1103,8 @@ def bundle_policy_for(bundle: CodexExecutionBundle) -> Mapping[str, Any]:
         external = codex_native_external_bundle_policy()
         if external["policy_id"] == bundle.bundle_policy_id:
             return external
+    if bundle.bundle_policy_id == CODEX_NATIVE_SHARED_BUNDLE_POLICY_ID:
+        return codex_native_shared_bundle_policy()
     raise CodexAdapterError("codex_execution_bundle_policy_invalid")
 
 
@@ -1170,11 +1193,19 @@ def run_codex_process(
             else _stage_adapter_members(Path(temporary), bundle, policy)
         )
         with contextlib.ExitStack() as stack:
+            readiness = (
+                stack.enter_context(SandboxReadiness())
+                if policy.get("readiness_observation") is not None
+                else None
+            )
             descriptors = {
                 "{codex_executable_fd}": stack.enter_context(
                     _sealed_data_memfd("codex-executable", bundle.executable)
                 )
             }
+            if readiness is not None:
+                descriptors["{sandbox_block_fd}"] = readiness.block_reader
+                descriptors["{sandbox_info_fd}"] = readiness.info_writer
             if is_review:
                 assert credential is not None
                 os.lseek(credential.descriptor, 0, os.SEEK_SET)
@@ -1221,6 +1252,7 @@ def run_codex_process(
                 credential=credential,
                 monotonic_deadline=monotonic_deadline,
                 host_closure=host_closure,
+                **({"sandbox_readiness": readiness} if readiness is not None else {}),
             )
 
 
@@ -1264,6 +1296,8 @@ def _resolve_actual_containment_argv(
         "{ca_certificates_fd}",
         "{resolver_fd}",
         "{nsswitch_fd}",
+        "{sandbox_block_fd}",
+        "{sandbox_info_fd}",
     }
     if any(
         key not in allowed or not isinstance(value, str) or not value
@@ -1478,6 +1512,7 @@ def _run_owned_process(
     credential: CredentialLease | None,
     monotonic_deadline: float,
     host_closure: Mapping[str, Any] | None = None,
+    sandbox_readiness: SandboxReadiness | None = None,
 ) -> CodexProcessObservation:
     """Run one internally constructed process and durably capture safe bytes."""
 
@@ -1502,6 +1537,24 @@ def _run_owned_process(
         raise CodexAdapterError("live_launch_plan_actual_mismatch")
     if not popen_argv or any(not isinstance(token, str) for token in popen_argv):
         raise CodexAdapterError("live_containment_argv_invalid")
+    normalized = list(normalized_containment_argv)
+    readiness_tokens = (("--block-fd", "{sandbox_block_fd}"),
+                        ("--info-fd", "{sandbox_info_fd}"))
+    if any(token in normalized for _, token in readiness_tokens):
+        boundary = normalized.index("--") if "--" in normalized else 0
+        flags = normalized[:boundary]
+        if (type(sandbox_readiness) is not SandboxReadiness
+                or len(popen_argv) != len(normalized) or "--as-pid-1" in flags):
+            raise CodexAdapterError("live_sandbox_readiness_mismatch")
+        for (option, token), descriptor in zip(readiness_tokens, sandbox_readiness.pass_fds):
+            if normalized.count(token) != 1 or flags.count(option) != 1:
+                raise CodexAdapterError("live_sandbox_readiness_mismatch")
+            index = normalized.index(token)
+            if (index == 0 or index >= boundary or normalized[index - 1] != option
+                    or popen_argv[index] != str(descriptor) or descriptor not in pass_fds):
+                raise CodexAdapterError("live_sandbox_readiness_mismatch")
+    elif sandbox_readiness is not None:
+        raise CodexAdapterError("live_sandbox_readiness_not_planned")
     read_at, remaining_authority, remaining_total = _launch_budget(
         plan, monotonic_deadline
     )
@@ -1569,19 +1622,36 @@ def _run_owned_process(
         return observation
 
     process_started_at = _timestamp()
-    process_started_monotonic = time.monotonic() if admission is not None else None
+    process_started_monotonic = (time.monotonic()
+                                 if admission is not None or sandbox_readiness is not None
+                                 else None)
 
     selector: selectors.BaseSelector | None = None
     try:
-        if admission is not None:
+        if sandbox_readiness is not None:
+            sandbox_readiness.child_started()
+            # Retain actual outer creation before readiness or any SDK latency.
+            # The native application is still blocked, not a new launch right.
+            if admission is not None:
+                admission.creation(shared_before, admission.sample_clock(), pid=process.pid)
+            startup_deadline = min(monotonic_deadline, read_at + remaining_authority,
+                                   process_started_monotonic + float(plan["timeout_seconds"]))
+            witness = sandbox_readiness.observe(process.pid, deadline=startup_deadline)
+            if admission is not None:
+                admission.adopt_namespace(witness, post_monitor_timeout_ms=1000)
+                admission.observe_liveness()
+            # Reading/retaining readiness consumes the original authority. Never
+            # release a blocked application under expired UTC/monotonic bounds.
+            _, authority_left, total_left = _launch_budget(plan, monotonic_deadline)
+            if authority_left <= 0 or total_left <= 0 or time.monotonic() >= startup_deadline:
+                raise CodexAdapterError("live_sandbox_readiness_authorization_expired")
+            sandbox_readiness.release()
+        elif admission is not None:
             shared_after = admission.sample_clock()
             admission.observe_namespace(
                 process,
-                deadline=min(
-                    monotonic_deadline,
-                    read_at + remaining_authority,
-                    process_started_monotonic + float(plan["timeout_seconds"]),
-                ),
+                deadline=min(monotonic_deadline, read_at + remaining_authority,
+                             process_started_monotonic + float(plan["timeout_seconds"])),
             )
             admission.observe_liveness()
             admission.creation(shared_before, shared_after, pid=process.pid)
@@ -1626,7 +1696,7 @@ def _run_owned_process(
         # absolute total deadline are never restarted by inspection, process startup or polling;
         # only the per-process timeout counts from the launch.
         deadline = min(
-            (process_started_monotonic if admission is not None else time.monotonic())
+            (process_started_monotonic if process_started_monotonic is not None else time.monotonic())
             + float(plan["timeout_seconds"]),
             read_at + remaining_authority,
             monotonic_deadline,

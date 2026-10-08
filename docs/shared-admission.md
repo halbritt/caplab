@@ -107,11 +107,33 @@ are retained. Settlement additionally requires observed init death, durable nati
 PID-namespace/death-on-parent plan, and a
 proved end timestamp. PID namespace init death closes that namespace's process
 population ([Linux contract](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html)).
-No daemon, helper launch, persistent PID registry, additional privilege, new
-harness argv or new native measurement schema is introduced. Missing `/proc`
-access, pidfd support, a fast unobserved init or missing native completion
+No daemon, helper launch, persistent PID registry or additional privilege is
+introduced. Historical policies add no harness argv and keep their existing
+bounded proc-sampling observer; fast unobserved init or missing native completion
 retains capacity. Output truncation remains a native measurement failure; it
-does not defeat an independently observed positive namespace/tree closure. Namespace inspection is bounded by the original native time budget.
+does not defeat an independently observed positive namespace/tree closure.
+
+For new administrations, the additive registered policy
+`codex-terra-max-revbench-live-external-token-readiness-v1` adds Bubblewrap
+`--block-fd`/`--info-fd` to both version and review launch templates. The owned
+supervisor validates the reported direct-child namespace PID1 and acquires its
+pidfd before releasing the native application. Actual outer creation is retained
+first. Readiness latency belongs to the original authority/per-process/total
+bounds; a post-observation expiry refuses release. No policy is selected from
+enrollment alone: register the exact bytes from
+`caplab.revbench.codex.codex_native_shared_bundle_policy()` as part of a new
+Binding/apparatus/authorization. Old campaigns and the two previous registered
+policy files are unchanged. See [ADR 0067](decisions/adr-0067-shared-admission-readiness.md).
+
+This prospective route permits at most 1000 ms of pidfd observation after native
+execution stops, including original-deadline timeout. Monitor wait, pipe EOF
+and PID absence remain insufficient. The descriptor proves kernel death; it
+is not reacquired after a restart. Malformed info, unsupported pidfd or expired
+startup aborts through owned monitor cleanup and records a created outer when
+Popen succeeded, without inventing a terminal native completion/noncreation.
+The shared allocation remains held if positive closure evidence was lost.
+Closing a block writer can release Bubblewrap, so cleanup must kill/reap the
+monitor first; the barrier itself is not a crash-proof permission capability.
 
 Command `--now` uses full-resolution host UTC; native measurement timestamps
 keep their existing one-second schema. Birth evidence separately samples host
@@ -126,8 +148,9 @@ that exact positively created outer process. The closure sidecar retains
 same boot and ordered UTC/monotonic clocks. This fallback cannot prove death
 without the held init descriptor and does not repair an unobserved init or an
 already retained closure with unknown time.
-The final observation waits at most 50 ms, bounded
-by the original native deadline; monitor reap remains insufficient evidence.
+Historical routes wait at most 50 ms, bounded by their original native deadline;
+the prospective readiness route uses the separate bounded observer described
+above. Monitor reap remains insufficient evidence.
 Reversed UTC/monotonic or changed-boot brackets retain unknown time. These are
 trusted host-clock observations, not hardware clock qualification.
 

@@ -50,6 +50,9 @@ class CapabilityRecoveryTests(unittest.TestCase):
                     return subprocess.CompletedProcess(command, 1, b"", b"busy")
                 if failure == "invalid_json":
                     return subprocess.CompletedProcess(command, 0, b"{", b"")
+                if failure == "oversized":
+                    return subprocess.CompletedProcess(command, 0,
+                                                       b"x" * (shared.MAX_BYTES + 1), b"")
                 raise AssertionError(failure)
             return run(command, *args, **kwargs)
 
@@ -107,6 +110,9 @@ class CapabilityRecoveryTests(unittest.TestCase):
     def test_capability_invalid_json_is_recoverable(self):
         self.exercise("record-launch", "invalid_json")
 
+    def test_capability_oversized_reply_is_recoverable(self):
+        self.exercise("record-launch", "oversized")
+
     def test_valid_changed_capability_identity_remains_a_pin_error(self):
         self.clocks.close()
         plan, argv, _ = self.plan()
@@ -123,7 +129,8 @@ class CapabilityRecoveryTests(unittest.TestCase):
             return reply
 
         with mock.patch.object(subprocess, "run", changed):
-            with self.assertRaisesRegex(LiveExecutionCustodyError, "sdk_pin_changed"):
+            with self.assertRaisesRegex(LiveExecutionCustodyError, "sdk_pin_changed") as caught:
                 self.enrollment.capture(capture).prepare(argv)
+            self.assertIs(type(caught.exception), LiveExecutionCustodyError)
         self.assertFalse(capture._closed)
         self.assertFalse(Path(self.document["home"]).exists())
