@@ -704,6 +704,32 @@ class SharedAdmissionTests(unittest.TestCase):
                     shared.SharedAdmissionEnrollment(doc)
                 self.assertFalse(Path(doc["home"]).exists())
 
+    def test_only_the_held_pidfd_liveness_can_bracket_its_death(self):
+        from caplab.revbench.process_tree import ProcessWitness
+
+        plan, _, _ = self.plan()
+        _, capture = self.claim(plan)
+        gate = self.enrollment.capture(capture)
+        child = subprocess.Popen(["/bin/sleep", "5"])
+        try:
+            with ProcessWitness.open(child.pid) as witness:
+                gate.namespace_witness = witness
+                gate.observe_liveness()
+                self.assertEqual(gate.last_alive_at, NOW)
+                child.terminate()
+                child.wait(timeout=2)
+                gate.last_alive_at = None
+                gate.observe_liveness()
+                self.assertIsNone(gate.last_alive_at)
+                # Component control uses an actual pidfd, not a forged
+                # namespace witness or a fabricated terminal receipt.
+                gate.namespace_witness = None
+        finally:
+            if child.poll() is None:
+                child.kill()
+                child.wait(timeout=2)
+            capture.close()
+
 
 class KernelProcessProofTests(unittest.TestCase):
     def test_actual_pidfd_tracks_owned_process_death_and_rejects_unsafe_pid(self):

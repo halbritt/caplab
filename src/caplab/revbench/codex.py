@@ -1574,7 +1574,7 @@ def _run_owned_process(
                     process_started_monotonic + float(plan["timeout_seconds"]),
                 ),
             )
-            admission.observe_liveness(process)
+            admission.observe_liveness()
             admission.creation(launch_attempted_at, process_started_at, pid=process.pid)
         if process.stdin is None or process.stdout is None or process.stderr is None:
             raise CodexAdapterError("live_process_pipe_unavailable")
@@ -1624,7 +1624,7 @@ def _run_owned_process(
         )
         while selector.get_map():
             if admission is not None:
-                admission.observe_liveness(process)
+                admission.observe_liveness()
             remaining = deadline - time.monotonic()
             if remaining <= 0 and not killed:
                 termination = "timeout"

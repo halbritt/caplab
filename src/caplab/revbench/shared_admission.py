@@ -387,11 +387,9 @@ class ProcessAdmission:
                 self.namespace_witness.fact,
             )
 
-    def observe_liveness(self, process) -> None:
+    def observe_liveness(self) -> None:
         before = _now()
-        if process.poll() is None or (
-            self.namespace_witness is not None and not self.namespace_witness.dead()
-        ):
+        if self.namespace_witness is not None and not self.namespace_witness.dead():
             self.last_alive_at = before
 
     def close_namespace_observation(self) -> None:
