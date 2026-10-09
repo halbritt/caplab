@@ -4,8 +4,12 @@ This candidate guards Caplab's existing one-shot live Codex Revbench custody.
 Both assigned `version-probe` helpers and `native-review` processes participate.
 It does not construct a Binding, substitute a harness, authorize an experiment,
 or qualify a measurement. Unenrolled execution keeps its existing behavior.
-Local fixtures, advisory `pool_runner`, retrieval, preference and review-dissent
-runners remain unenrolled. Other native harness adapters are outside this slice.
+Other producer integrations have separate contracts:
+[advisory pool](product/contracts/advisory-pool-shared-admission.md),
+[retrieval commands](product/contracts/retrieval-shared-admission.md), and
+[native calibration](product/contracts/native-calibration-shared-admission.md).
+Each remains opt-in with its own custody and coverage boundaries. Other native
+harness adapters are outside this Revbench slice.
 
 ## Enrollment and use
 

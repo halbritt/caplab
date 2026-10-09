@@ -88,8 +88,17 @@ def _retain(root: Path, name: str, document: Mapping[str, Any]) -> dict:
     try:
         retained = _read_canonical_document(root / name)
     except FileNotFoundError:
-        _write_exclusive(root, name, canonical_json(owned))
-        return owned
+        try:
+            _write_exclusive(root, name, canonical_json(owned))
+        except LiveExecutionCustodyError as error:
+            if not isinstance(error.__cause__, FileExistsError):
+                raise
+            # Publication links a complete, fsynced preimage atomically. A
+            # competing winner is usable only after the normal custody read
+            # validates its exact content/ownership and syncs its directory.
+            retained = _read_canonical_document(root / name)
+        else:
+            return owned
     if retained != owned:
         raise LiveExecutionCustodyError("shared_admission_custody_conflict")
     return retained

@@ -78,25 +78,31 @@ def _validate_sealed(document: dict[str, Any], field: str, error: str) -> str:
     return actual
 
 
-def _resolve_source(binding: object, field: str) -> Path:
+def _resolve_source(binding: object, field: str, *, source_root: Path | None = None,
+                    loaded_source: Path | None = None) -> Path:
     if not isinstance(binding, dict):
         raise NativeReviewLiveContractError(f"invalid_{field}_binding")
     raw = binding.get("path")
     if not isinstance(raw, str) or Path(raw).is_absolute():
         raise NativeReviewLiveContractError(f"invalid_{field}_path")
+    project_root = _PROJECT_ROOT if source_root is None else source_root.resolve(strict=True)
     try:
-        source = (_PROJECT_ROOT / raw).resolve(strict=True)
+        source = (project_root / raw).resolve(strict=True)
     except OSError as error:
         raise NativeReviewLiveContractError(f"{field}_unreadable:{error}") from error
-    if not source.is_relative_to(_PROJECT_ROOT) or not source.is_file():
+    if not source.is_relative_to(project_root) or not source.is_file():
         raise NativeReviewLiveContractError(f"invalid_{field}_path")
     if sha256(source.read_bytes()).hexdigest() != binding.get("sha256"):
         raise NativeReviewLiveContractError(f"{field}_digest_mismatch")
+    if source_root is not None and source.read_bytes() != loaded_source.read_bytes():
+        raise NativeReviewLiveContractError(f'{field}_loaded_source_mismatch')
     return source
 
 
 def load_native_review_live_manifest(
-    manifest_path: str | os.PathLike[str], instrument_path: str | os.PathLike[str]
+    manifest_path: str | os.PathLike[str], instrument_path: str | os.PathLike[str],
+    *, source_root: Path | None = None,
+    allow_expired_for_reconciliation: bool = False,
 ) -> dict[str, Any]:
     """Load one exact native development campaign without held-out access."""
 
@@ -112,7 +118,7 @@ def load_native_review_live_manifest(
         )
     except ValueError as error:
         raise NativeReviewLiveContractError("invalid_native_review_live_expiry") from error
-    if expiry.tzinfo is None or datetime.now(UTC) > expiry:
+    if expiry.tzinfo is None or (datetime.now(UTC) > expiry and not allow_expired_for_reconciliation):
         raise NativeReviewLiveContractError("native_review_live_authorization_expired")
     _validate_sealed(
         manifest, "manifest_sha256", "native_review_live_manifest_digest_mismatch"
@@ -128,8 +134,11 @@ def load_native_review_live_manifest(
     containment = manifest.get("containment")
     if not isinstance(containment, dict):
         raise NativeReviewLiveContractError("native_review_containment_missing")
-    _resolve_source(containment.get("runner_source"), "native_review_runner_source")
-    _resolve_source(containment.get("runtime_source"), "native_review_runtime_source")
+    from caplab.preference import native_live as preference_runtime
+    _resolve_source(containment.get("runner_source"), "native_review_runner_source",
+        source_root=source_root, loaded_source=Path(__file__))
+    _resolve_source(containment.get("runtime_source"), "native_review_runtime_source",
+        source_root=source_root, loaded_source=Path(preference_runtime.__file__))
     if manifest.get("limits") != {
         "primary_trials": 16,
         "maximum_replacements": 4,
@@ -555,8 +564,14 @@ def execute_native_review_trial(
     slot_index: int,
     attempt_kind: str,
     prior_attempts: Sequence[Mapping[str, Any]],
+    shared_admission: Path | None = None,
 ) -> Path:
     """Execute and seal exactly one contained native review attempt."""
+
+    if shared_admission is not None:
+        from caplab.runtime.native_admission import execute_enrolled_trial
+        return execute_enrolled_trial(shared_admission, manifest, family='review-dissent',
+            slot_index=slot_index, attempt_kind=attempt_kind, prior_attempts=prior_attempts)
 
     versions = preflight_native_runtime(manifest)
     attempt_root, command = prepare_native_review_trial(
@@ -613,38 +628,50 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--instrument", required=True, type=Path)
+    parser.add_argument('--shared-admission', type=Path)
+    parser.add_argument('--source-root', type=Path)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("validate")
     commands.add_parser("preflight")
     commands.add_parser("status")
+    commands.add_parser('admission-describe')
+    commands.add_parser('admission-reconcile')
     run = commands.add_parser("run")
     run.add_argument("--slot-index", required=True, type=int)
     run.add_argument(
         "--attempt-kind", required=True, choices=("primary", "replacement")
     )
     args = parser.parse_args(argv)
-    manifest = load_native_review_live_manifest(args.manifest, args.instrument)
-    if args.command == "validate":
+    manifest = load_native_review_live_manifest(args.manifest, args.instrument, source_root=args.source_root,
+        allow_expired_for_reconciliation=args.command in {'admission-describe', 'admission-reconcile'})
+    admission = None
+    if args.shared_admission is not None:
+        from caplab.runtime.native_admission import load_native_admission
+        admission = load_native_admission(args.shared_admission, manifest, family='review-dissent')
+    if args.command in {'admission-describe', 'admission-reconcile'}:
+        if admission is None:
+            parser.error('--shared-admission is required for admission commands')
+        value = admission.describe() if args.command == 'admission-describe' else admission.reconcile()
+    elif args.command == "validate":
         value: object = {
             "campaign_id": manifest["campaign_id"],
             "manifest_sha256": manifest["manifest_sha256"],
         }
     elif args.command == "preflight":
-        value = preflight_native_runtime(manifest)
+        value = preflight_native_runtime(manifest, shared_admission=admission)
     elif args.command == "status":
         value = assess_native_review_attempts(
             manifest, load_native_review_attempts(manifest)
         )
     else:
-        attempts = load_native_review_attempts(manifest)
-        value = str(
-            execute_native_review_trial(
-                manifest,
-                slot_index=args.slot_index,
-                attempt_kind=args.attempt_kind,
-                prior_attempts=attempts,
-            )
-        )
+        if admission is not None:
+            from caplab.runtime.native_admission import execute_enrolled_trial
+            value = str(execute_enrolled_trial(args.shared_admission, manifest, family='review-dissent',
+                slot_index=args.slot_index, attempt_kind=args.attempt_kind))
+        else:
+            attempts = load_native_review_attempts(manifest)
+            value = str(execute_native_review_trial(manifest, slot_index=args.slot_index,
+                attempt_kind=args.attempt_kind, prior_attempts=attempts))
     print(json.dumps(value, ensure_ascii=False, sort_keys=True))
     return 0
 

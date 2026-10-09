@@ -54,7 +54,9 @@ def _digest(value: object) -> str:
 
 
 def load_native_live_manifest(
-    manifest_path: str | os.PathLike[str], instrument_path: str | os.PathLike[str]
+    manifest_path: str | os.PathLike[str], instrument_path: str | os.PathLike[str],
+    *, source_root: Path | None = None,
+    allow_expired_for_reconciliation: bool = False,
 ) -> dict[str, Any]:
     """Load an authorized native campaign and its content-addressed instrument."""
 
@@ -76,7 +78,7 @@ def load_native_live_manifest(
         )
     except ValueError as error:
         raise NativePreferenceLiveContractError("invalid_native_live_expiry") from error
-    if expires_at.tzinfo is None or datetime.now(UTC) > expires_at:
+    if expires_at.tzinfo is None or (datetime.now(UTC) > expires_at and not allow_expired_for_reconciliation):
         raise NativePreferenceLiveContractError("native_live_authorization_expired")
     sealed = dict(manifest)
     claimed = sealed.pop("manifest_sha256", None)
@@ -92,16 +94,19 @@ def load_native_live_manifest(
     source_path = containment.get("source_path") if isinstance(containment, dict) else None
     if not isinstance(source_path, str) or Path(source_path).is_absolute():
         raise NativePreferenceLiveContractError("invalid_native_live_containment_source")
+    project_root = _PROJECT_ROOT if source_root is None else source_root.resolve(strict=True)
     try:
-        source_file = (_PROJECT_ROOT / source_path).resolve(strict=True)
+        source_file = (project_root / source_path).resolve(strict=True)
     except OSError as error:
         raise NativePreferenceLiveContractError(
             f"native_live_containment_source_unreadable:{error}"
         ) from error
-    if not source_file.is_relative_to(_PROJECT_ROOT) or not source_file.is_file():
+    if not source_file.is_relative_to(project_root) or not source_file.is_file():
         raise NativePreferenceLiveContractError("invalid_native_live_containment_source")
     if sha256(source_file.read_bytes()).hexdigest() != containment.get("source_sha256"):
         raise NativePreferenceLiveContractError("native_live_containment_source_mismatch")
+    if source_root is not None and source_file.read_bytes() != Path(__file__).read_bytes():
+        raise NativePreferenceLiveContractError('native_live_loaded_source_mismatch')
     result = dict(manifest)
     result["_instrument"] = instrument
     result["_manifest_path"] = manifest_file.resolve()
@@ -442,7 +447,8 @@ def prepare_native_trial(
     return attempt_root, invocation["command"]
 
 
-def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
+def preflight_native_runtime(manifest: Mapping[str, Any], *, shared_admission=None,
+                             assignment: str = 'preflight') -> dict[str, str]:
     """Verify exact native harness and containment versions without inference."""
 
     instrument = manifest.get("_instrument")
@@ -452,24 +458,31 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
     if not isinstance(expected, dict):
         raise NativePreferenceLiveContractError("native_runtime_versions_missing")
     observed: dict[str, str] = {}
+    def probe(command, *, cwd, subject, stage):
+        if shared_admission is not None:
+            return shared_admission.run(command, cwd=cwd, subject=subject,
+                assignment=assignment + ':' + stage, timeout=30, env=_launcher_environment())
+        return subprocess.run(command, cwd=cwd, stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False,
+            env=_launcher_environment())
     with tempfile.TemporaryDirectory(prefix="caplab-native-preflight-") as directory:
         root = Path(directory).resolve()
         for subject_id, version_key in (("fable", "claude-code"), ("gpt", "codex")):
-            probe = build_contained_version_probe(instrument, subject_id, root)
-            completed = subprocess.run(
-                probe["command"], cwd=root, stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False,
-                env=_launcher_environment(),
-            )
+            invocation = build_contained_version_probe(instrument, subject_id, root)
+            completed = probe(invocation['command'], cwd=root, subject=subject_id, stage='version')
             value = completed.stdout.decode("utf-8", errors="replace").strip()
             if completed.returncode != 0 or value != expected.get(version_key):
                 raise NativePreferenceLiveContractError(f"native_runtime_version_mismatch:{version_key}")
             observed[version_key] = value
-    bwrap = subprocess.run(
-        ["/usr/bin/bwrap", "--version"], stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False,
-        env=_launcher_environment(),
-    )
+    if shared_admission is None:
+        bwrap = subprocess.run(["/usr/bin/bwrap", "--version"], stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30, check=False,
+            env=_launcher_environment())
+    else:
+        from caplab.runtime.native_admission import platform_version_probe
+        with tempfile.TemporaryDirectory(prefix='caplab-native-platform-preflight-') as directory:
+            root = Path(directory).resolve()
+            bwrap = probe(platform_version_probe(root), cwd=root, subject='platform', stage='version')
     value = bwrap.stdout.decode("utf-8", errors="replace").strip()
     if bwrap.returncode != 0 or value != expected.get("bubblewrap"):
         raise NativePreferenceLiveContractError("native_runtime_version_mismatch:bubblewrap")
@@ -494,16 +507,8 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
         prefix="caplab-native-auth-preflight-"
     ) as directory:
         root = Path(directory).resolve()
-        claude_auth = subprocess.run(
-            _contained_command(root, auth_commands["claude-code"]),
-            cwd=root,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=30,
-            check=False,
-            env=_launcher_environment(),
-        )
+        claude_auth = probe(_contained_command(root, auth_commands['claude-code']),
+                            cwd=root, subject='fable', stage='auth')
         try:
             claude_status = json.loads(claude_auth.stdout.decode("utf-8"))
         except (UnicodeError, json.JSONDecodeError) as error:
@@ -522,16 +527,8 @@ def preflight_native_runtime(manifest: Mapping[str, Any]) -> dict[str, str]:
                 "native_auth_status_mismatch:claude-code"
             )
         observed["claude-code-auth"] = "claude.ai:firstParty:max"
-        codex_auth = subprocess.run(
-            _contained_command(root, auth_commands["codex"]),
-            cwd=root,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=30,
-            check=False,
-            env=_launcher_environment(),
-        )
+        codex_auth = probe(_contained_command(root, auth_commands['codex']),
+                           cwd=root, subject='gpt', stage='auth')
         if codex_auth.returncode != 0 or codex_auth.stderr.decode(
             "utf-8", errors="replace"
         ).strip() != "Logged in using ChatGPT":
@@ -618,8 +615,14 @@ def _failure_status(stdout: bytes, stderr: bytes, timed_out: bool) -> str:
 def execute_native_trial(
     manifest: dict[str, Any], *, slot_index: int, attempt_kind: str,
     prior_attempts: Sequence[Mapping[str, Any]],
+    shared_admission: Path | None = None,
 ) -> Path:
     """Execute and seal exactly one contained native attempt."""
+
+    if shared_admission is not None:
+        from caplab.runtime.native_admission import execute_enrolled_trial
+        return execute_enrolled_trial(shared_admission, manifest, family='preference',
+            slot_index=slot_index, attempt_kind=attempt_kind, prior_attempts=prior_attempts)
 
     versions = preflight_native_runtime(manifest)
     attempt_root, command = prepare_native_trial(
@@ -770,30 +773,48 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m caplab.preference.native_live")
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--instrument", required=True, type=Path)
+    parser.add_argument('--shared-admission', type=Path)
+    parser.add_argument('--source-root', type=Path)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("validate")
     commands.add_parser("preflight")
+    commands.add_parser('admission-describe')
+    commands.add_parser('admission-reconcile')
     run = commands.add_parser("run")
     run.add_argument("--slot-index", required=True, type=int)
     run.add_argument("--attempt-kind", required=True, choices=("primary", "replacement"))
     observe = commands.add_parser("observe")
     observe.add_argument("--attempt-root", required=True, type=Path)
     args = parser.parse_args(argv)
-    manifest = load_native_live_manifest(args.manifest, args.instrument)
+    manifest = load_native_live_manifest(args.manifest, args.instrument, source_root=args.source_root,
+        allow_expired_for_reconciliation=args.command in {'admission-describe', 'admission-reconcile'})
+    admission = None
+    if args.shared_admission is not None:
+        from caplab.runtime.native_admission import load_native_admission
+        admission = load_native_admission(args.shared_admission, manifest, family='preference')
+    if args.command in {'admission-describe', 'admission-reconcile'}:
+        if admission is None:
+            parser.error('--shared-admission is required for admission commands')
+        print(json.dumps(admission.describe() if args.command == 'admission-describe'
+                         else admission.reconcile(), sort_keys=True))
+        return 0
     if args.command == "validate":
         print(json.dumps({"campaign_id": manifest["campaign_id"], "manifest_sha256": manifest["manifest_sha256"]}, sort_keys=True))
         return 0
     if args.command == "preflight":
-        print(json.dumps(preflight_native_runtime(manifest), sort_keys=True))
+        print(json.dumps(preflight_native_runtime(manifest, shared_admission=admission), sort_keys=True))
         return 0
     if args.command == "observe":
         print(json.dumps(record_native_observation(manifest, attempt_root=args.attempt_root), sort_keys=True))
         return 0
-    attempts = load_native_custody_attempts(manifest)
-    root = execute_native_trial(
-        manifest, slot_index=args.slot_index, attempt_kind=args.attempt_kind,
-        prior_attempts=attempts,
-    )
+    if admission is not None:
+        from caplab.runtime.native_admission import execute_enrolled_trial
+        root = execute_enrolled_trial(args.shared_admission, manifest, family='preference',
+            slot_index=args.slot_index, attempt_kind=args.attempt_kind)
+    else:
+        attempts = load_native_custody_attempts(manifest)
+        root = execute_native_trial(manifest, slot_index=args.slot_index,
+            attempt_kind=args.attempt_kind, prior_attempts=attempts)
     print(root)
     return 0
 
