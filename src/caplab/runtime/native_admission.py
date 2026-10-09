@@ -231,7 +231,8 @@ class NativeCalibrationAdmission:
         if path.exists():
             return self._recover(path, body, command, timeout)
         now = datetime.now(UTC)
-        until = min(datetime.fromisoformat(self.manifest['expires_at']), now + timedelta(seconds=timeout))
+        until = min(datetime.fromisoformat(self.manifest['expires_at']).astimezone(UTC),
+                    now + timedelta(seconds=timeout))
         if until <= now:
             raise LiveExecutionCustodyError('native_execution_deadline_expired')
         deadline = time.monotonic() + (until - now).total_seconds()

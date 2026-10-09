@@ -515,3 +515,19 @@ class NativeCalibrationAdmissionTests(unittest.TestCase):
         self.assertEqual((self.workspace / 'one').read_text(), 'x')
         self.assertEqual(self.status()['pools']['fixture-pool'], {'slots': 0,
             'windows': {'fixture-window': {'spent': 1, 'outstanding': 0}}})
+
+    def test_native_offset_expiry_preserves_instant_in_sdk_utc_deadline(self):
+        # Native manifests accept aware ISO offsets. The SDK request must be
+        # UTC Z without moving that accepted native deadline.
+        expiry = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=20)).astimezone(
+            datetime.timezone(datetime.timedelta(hours=1)))
+        self.manifest['expires_at'] = expiry.isoformat()
+        result = self.controller().run(self.command("print('offset accepted')"), cwd=self.workspace,
+            subject='gpt', assignment='offset-expiry', timeout=30)
+        self.assertEqual(result.stdout, b'offset accepted\n')
+        state = self.status()
+        allocation = next(iter(state['allocations'].values()))
+        self.assertEqual(datetime.datetime.fromisoformat(allocation['request']['valid_until']), expiry)
+        self.assertTrue(allocation['request']['valid_until'].endswith('Z'))
+        self.assertEqual(state['pools']['fixture-pool'], {'slots': 0,
+            'windows': {'fixture-window': {'spent': 1, 'outstanding': 0}}})
