@@ -352,7 +352,8 @@ def sandbox_argv(argv: list[str], workspace: str | None,
 
 def invoke(adapter: dict, prompt: str, timeout: int,
            workspace: str | None = None,
-           readonly: list[str] | None = None) -> dict:
+           readonly: list[str] | None = None, *,
+           admission=None, launch_key: str | None = None) -> dict:
     """Run the adapter once. `readonly` names workspace subtrees (the
     materialized `base/` and `evidence/`) re-bound read-only inside the lane."""
     argv = list(adapter["command"])
@@ -391,14 +392,26 @@ def invoke(adapter: dict, prompt: str, timeout: int,
     started = time.time()
     timed_out = False
     error = None
+    shared_result = None
     try:
-        completed = subprocess.run(argv, input=stdin_data, capture_output=True,
-                                   timeout=timeout, cwd=run_cwd)
-        stdout = completed.stdout.decode("utf-8", errors="replace")
-        code = completed.returncode
+        if admission is not None:
+            completed = admission.run(adapter, argv, launch_key=launch_key,
+                                      timeout=timeout, cwd=run_cwd, stdin=stdin_data)
+            stdout = completed['stdout'].decode('utf-8', errors='replace')
+            code, timed_out, error = completed['exit_code'], completed['timed_out'], completed['error']
+            shared_result = {k: completed[k] for k in ('shared_admission', 'custody_path')}
+        else:
+            completed = subprocess.run(argv, input=stdin_data, capture_output=True,
+                                       timeout=timeout, cwd=run_cwd)
+            stdout = completed.stdout.decode("utf-8", errors="replace")
+            code = completed.returncode
     except subprocess.TimeoutExpired:
+        if admission is not None:
+            raise
         stdout, code, timed_out = "", None, True
     except OSError as exc:
+        if admission is not None:
+            raise
         stdout, code = "", None
         error = f"process launch failed: {exc.strerror}"
     body = stdout
@@ -416,6 +429,7 @@ def invoke(adapter: dict, prompt: str, timeout: int,
         "raw_head": stdout[:400],
         "sandbox": sandbox,
         "error": error,
+        **(shared_result or {}),
     }
 
 
@@ -424,11 +438,13 @@ class ManifestIntegrityError(ValueError):
 
 
 def invoke_with_manifest(adapter: dict, prompt: str, timeout: int, *,
-                         workspace: str, readonly: list[str], manifest_digest: str) -> dict:
+                         workspace: str, readonly: list[str], manifest_digest: str,
+                         admission=None, launch_key: str | None = None) -> dict:
     """Refuse an altered input; retain a returned capture even if its post-check fails."""
     if not _materialize.verify_manifest(workspace, expected_digest=manifest_digest):
         raise ManifestIntegrityError("base manifest failed before invocation")
-    result = invoke(adapter, prompt, timeout, workspace=workspace, readonly=readonly)
+    result = invoke(adapter, prompt, timeout, workspace=workspace, readonly=readonly,
+                    **({'admission': admission, 'launch_key': launch_key} if admission is not None else {}))
     after = _materialize.verify_manifest(workspace, expected_digest=manifest_digest)
     return {**result, "manifest_before": True, "manifest_after": after,
             "manifest_verified": after}
@@ -484,7 +500,8 @@ def _majority(verdicts: list) -> tuple:
 def measure_case(case: dict, body: str, adapter: dict, timeout: int,
                  replicates: int = 1, mutant_replicates: int | None = None,
                  workspace: str | None = None,
-                 base_record: dict | None = None) -> dict:
+                 base_record: dict | None = None, *, admission=None,
+                 assignment_prefix: str | None = None) -> dict:
     """One matched pair, optionally replicated.
 
     Replication exists because the control arm reproduces at ~53% on identical
@@ -499,6 +516,9 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
            "defect_class": case["operator"], "response_validation": VALIDATION_VERSION,
            "anchor_matching": ANCHOR_MATCHING_VERSION,
            "pair_validation": PAIR_VALIDATION_VERSION}
+    if admission is not None:
+        row['environment'] = ENVIRONMENT_VERSION + '-held-pid1-v1'
+        row['shared_admission_enrollment_sha256'] = run_spec.digest(admission.receipt)
     row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
     tree = tree_mode()
     base_source = (base_record or {}).get("base_source") if tree else None
@@ -506,7 +526,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         if base_record is None:
             return {**row, "usable": False,
                     "error": "no base registry record for this substrate"}
-        row.update({"environment": ENVIRONMENT_VERSION, "base_source": base_source,
+        row.update({"environment": ENVIRONMENT_VERSION + ("-held-pid1-v1" if admission is not None else ""), "base_source": base_source,
                     "base_materializer": base_record.get("materializer"),
                     "operator_version": "v3"})
         if base_source == "lost" and case["operator"] in BASE_DEPENDENT_OPERATORS:
@@ -577,17 +597,22 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         else:
             runs = []
             for replicate in range(1, per_arm[name] + 1):
+                admission_fields = ({'admission': admission,
+                                     'launch_key': json.dumps([assignment_prefix, row['dispatch_id'], name, replicate], separators=(',', ':'))}
+                                    if admission is not None else {})
+                if admission is not None and not assignment_prefix:
+                    raise ValueError('enrolled measurement requires its frozen run specification')
                 if tree:
                     try:
                         result = invoke_with_manifest(adapter, prompt_text, timeout,
-                            workspace=workspace, readonly=readonly, manifest_digest=manifest["digest"])
+                            workspace=workspace, readonly=readonly, manifest_digest=manifest["digest"], **admission_fields)
                     except ManifestIntegrityError as error:
                         manifest_ok = False
                         integrity_failure = {"phase": "before", "arm": name,
                                              "replicate": replicate, "error": str(error)}
                         break
                 else:
-                    result = invoke(adapter, prompt_text, timeout, workspace=workspace, readonly=readonly)
+                    result = invoke(adapter, prompt_text, timeout, workspace=workspace, readonly=readonly, **admission_fields)
                     result["manifest_verified"] = None
                 runs.append(result)
                 if tree and not result["manifest_verified"]:
@@ -756,7 +781,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
              max_cases: int = 40, abort_after_empty: int = 8,
              replicates: int = 1, mutant_replicates: int | None = None,
              anchor_path: str | None = None, workers: int = 1,
-             cases_path: str | None = None) -> dict:
+             cases_path: str | None = None,
+             shared_admission_config: str | None = None) -> dict:
     """Measure one binding over a sampled slice of the pool.
 
     Two populations run in one sweep and are kept apart:
@@ -771,6 +797,14 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
     """
     declaration = load_declaration(backends_root, backend)
     adapter = declaration["adapter"]
+    admission = None
+    if shared_admission_config is not None:
+        from pathlib import Path
+        from .shared_admission import PoolAdmission
+        os.makedirs(out_dir, mode=0o700, exist_ok=True)
+        admission = PoolAdmission.read(Path(shared_admission_config), declaration, Path(out_dir))
+    elif os.path.exists(os.path.join(out_dir, 'shared-launches', 'pool-enrollment.json')):
+        raise ValueError('pool_retained_enrollment_required')
     from .anchor import anchor_substrate_ids, load as load_anchor
 
     substrates = SubstrateRegistry(registry_path).read()
@@ -834,12 +868,14 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "timeout": timeout, "abort_after_empty": abort_after_empty,
         "replicates": replicates, "mutant_replicates": mutant_replicates,
         "requested_workers": workers, "declared_lanes": declared_lanes(declaration),
-        "environment": ENVIRONMENT_VERSION, "sandbox_available": sandbox_available(),
+        "environment": ENVIRONMENT_VERSION + ("-held-pid1-v1" if admission is not None else ""), "sandbox_available": sandbox_available(),
         "base_registry_sha256": base_registry_sha,
         "response_validation": VALIDATION_VERSION, "anchor_matching": ANCHOR_MATCHING_VERSION,
         "pair_validation": PAIR_VALIDATION_VERSION,
         "instrument_sources": run_spec.instrument_sources(), "python_version": sys.version,
     }
+    if admission is not None:
+        spec['shared_admission'] = admission.receipt
     expected_spec_id = run_spec.digest(spec)
     if retained_spec_ids and retained_spec_ids != {expected_spec_id}:
         raise ValueError("retained rows differ from the requested pool run specification")
@@ -874,7 +910,8 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
                                    replicates=arm_replicates,
                                    mutant_replicates=arm_mutant_replicates,
                                    workspace=os.path.join(out_dir, "workspace"),
-                                   base_record=(base_registry or {}).get(case["substrate_id"]))
+                                   base_record=(base_registry or {}).get(case["substrate_id"]),
+                                   **({"admission": admission, "assignment_prefix": spec_id} if admission is not None else {}))
             row["backend_measured"] = backend
             row["run_spec_sha256"] = spec_id
             row["anchor"] = is_anchor
@@ -933,7 +970,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "sweep_seed": sweep_seed,
         "partition": partition,
         "case_selection": case_selection,
-        "environment": ENVIRONMENT_VERSION,
+        "environment": ENVIRONMENT_VERSION + ("-held-pid1-v1" if admission is not None else ""),
         "response_validation": VALIDATION_VERSION,
         "anchor_matching": ANCHOR_MATCHING_VERSION,
         "pair_validation": PAIR_VALIDATION_VERSION,

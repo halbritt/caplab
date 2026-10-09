@@ -7,6 +7,7 @@ name = "agent-capability-lab"
 version = "0.1.0"
 description = "Behavioral capability measurement for software agents"
 requires-python = ">=3.12"
+dependencies = ["pyyaml>=6,<7"]
 
 [project.urls]
 Repository = "https://github.com/halbritt/caplab"

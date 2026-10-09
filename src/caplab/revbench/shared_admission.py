@@ -288,7 +288,7 @@ def require_retained_enrollment(
         enrollment.bind_session(session)
 
 
-class ProcessAdmission:
+class _AssignedLaunchAdmission:
     """One native assigned right, one shared allocation; replay never invokes."""
 
     def __init__(self, enrollment: SharedAdmissionEnrollment, capture: Any):
@@ -489,9 +489,7 @@ class ProcessAdmission:
             "fence": self.record["fence"],
         }
 
-    def prepare(self, containment_argv: list[str]) -> bool:
-        if not isinstance(self.capture, FreshProcessCapture) or self.capture._closed:
-            raise LiveExecutionCustodyError("shared_admission_native_right_closed")
+    def _prepare(self, containment_argv: list[str]) -> bool:
         plan = self.capture.intent["launch_plan"]
         if (
             sha256_hex(canonical_json(containment_argv))
@@ -881,3 +879,12 @@ class ProcessAdmission:
                 {k: v for k, v in result.items() if k != "status"},
             )
         return result
+
+
+class ProcessAdmission(_AssignedLaunchAdmission):
+    """Revbench adapter: only its genuine fresh native capture can acquire rights."""
+
+    def prepare(self, containment_argv: list[str]) -> bool:
+        if not isinstance(self.capture, FreshProcessCapture) or self.capture._closed:
+            raise LiveExecutionCustodyError("shared_admission_native_right_closed")
+        return self._prepare(containment_argv)

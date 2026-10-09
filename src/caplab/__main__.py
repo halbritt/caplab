@@ -28,6 +28,10 @@ def main(
         if clock is None:
             return qualification_main(remaining)
         return qualification_main(remaining, clock=clock)
+    if command == "advisory":
+        from caplab.advisory.__main__ import main as advisory_main
+
+        return advisory_main(remaining)
     if command == "retrieval":
         from caplab.retrieval.__main__ import main as retrieval_main
 

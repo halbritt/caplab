@@ -138,7 +138,7 @@ def cmd_pool_run(args):
         max_cases=args.max_cases, replicates=args.replicates,
         mutant_replicates=args.mutant_replicates,
         anchor_path=args.anchor_set, workers=args.workers,
-        cases_path=args.cases)
+        cases_path=args.cases, shared_admission_config=args.shared_admission)
     print(json.dumps(summary, indent=2))
     if summary.get("aborted"):
         print("run aborted; no claims derived", file=sys.stderr)
@@ -147,6 +147,24 @@ def cmd_pool_run(args):
         claims = claims_from_runs([args.out], args.backends_root)
         print(json.dumps(Ledger(args.ledger).append(claims), indent=2))
     return 0
+
+
+def cmd_admission_domain(args):
+    from pathlib import Path
+    from .shared_admission import initialize_pool_domain
+    print(json.dumps({'custody_domain_id': initialize_pool_domain(Path(args.out))}))
+    return 0
+
+
+def cmd_admission_reconcile(args):
+    from pathlib import Path
+    from .shared_admission import PoolAdmission
+    from .pool_runner import load_declaration
+    controller = PoolAdmission.read(Path(args.shared_admission),
+        load_declaration(args.backends_root, args.backend), Path(args.out), recovery=True)
+    results = controller.reconcile()
+    print(json.dumps(results))
+    return 2 if any(r and r.get('status') == 'hold' for r in results) else 0
 
 
 def cmd_compare(args):
@@ -305,6 +323,16 @@ def main(argv=None):
                    help="actually run the planned AFK-eligible measurements")
     p.set_defaults(fn=cmd_sweep)
 
+    p = sub.add_parser('admission-domain', help='initialize/read pool custody identity; no launch rights')
+    p.add_argument('--out', required=True)
+    p.set_defaults(fn=cmd_admission_domain)
+    p = sub.add_parser('admission-reconcile', help='reconcile retained pool facts without launching')
+    p.add_argument('--out', required=True)
+    p.add_argument('--backend', required=True)
+    p.add_argument('--backends-root', default=DEFAULT_BACKENDS)
+    p.add_argument('--shared-admission', required=True)
+    p.set_defaults(fn=cmd_admission_reconcile)
+
     p = sub.add_parser("pool-run",
                        help="measure a binding over Tier 3 pool cases "
                             "(synthetic-contract profile)")
@@ -339,6 +367,8 @@ def main(argv=None):
                         "(substrate, operator) cells under this sweep seed. "
                         "The run is stamped outcome-selected and can never "
                         "yield a Scored claim; it feeds the promotion gate")
+    p.add_argument("--shared-admission", default=None,
+                   help="prospective pinned pool enrollment; requires held-PID1 containment")
     p.add_argument("--claim", action="store_true")
     p.set_defaults(fn=cmd_pool_run)
 
