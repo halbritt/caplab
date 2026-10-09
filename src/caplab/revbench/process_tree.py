@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import select
+import signal
 import time
 from pathlib import Path
 
@@ -32,6 +33,8 @@ class SandboxReadiness:
         self.info_reader = self.info_writer = -1
         self.witness = None
         self.released = False
+        self._outer_started = False
+        self._aborted = False
         try:
             self.block_reader, self.block_writer = os.pipe2(os.O_CLOEXEC)
             self.info_reader, self.info_writer = os.pipe2(os.O_CLOEXEC)
@@ -45,6 +48,7 @@ class SandboxReadiness:
         return self.block_reader, self.info_writer
 
     def child_started(self) -> None:
+        self._outer_started = True
         for name in ("block_reader", "info_writer"):
             descriptor = getattr(self, name)
             if descriptor >= 0:
@@ -105,7 +109,29 @@ class SandboxReadiness:
         self.block_writer = -1
         self.released = True
 
+    def abort(self) -> None:
+        """Kill the held PID1 before any refusal-path block-writer EOF.
+
+        Reaping a SIGTERM monitor does not imply init death. If an actual init
+        was never observed, or its descriptor was lost, keep the block writer
+        open and report uncertainty rather than releasing an application.
+        """
+        if self.released or self._aborted or not self._outer_started:
+            return
+        if self.witness is None or self.witness.descriptor < 0:
+            raise ProcessProofUnavailable("sandbox_abort_init_unproved")
+        if not self.witness.dead():
+            try:
+                signal.pidfd_send_signal(self.witness.descriptor, signal.SIGKILL)
+            except ProcessLookupError:
+                pass  # This descriptor must still positively observe death.
+        if not self.witness.dead(1000):
+            raise ProcessProofUnavailable("sandbox_abort_init_still_live")
+        self._aborted = True
+
     def close(self) -> None:
+        # Abort errors intentionally retain descriptors; EOF would be a launch.
+        self.abort()
         try:
             if self.witness is not None:
                 self.witness.close()

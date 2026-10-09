@@ -1788,12 +1788,15 @@ def _run_owned_process(
             for stream in (process.stdin, process.stdout, process.stderr):
                 if stream is not None and not stream.closed:
                     cleanup.callback(stream.close)
-            _terminate_process_group(process)
+            _terminate_process_group(process, force=(
+                sandbox_readiness is not None and not sandbox_readiness.released))
             try:
                 process.wait(timeout=1)
             except subprocess.TimeoutExpired:
                 _terminate_process_group(process, force=True)
                 process.wait()
+            if sandbox_readiness is not None:
+                sandbox_readiness.abort()
             raise
     finally:
         if admission is not None:

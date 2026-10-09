@@ -1,6 +1,7 @@
 """Readiness controls using real bwrap, native custody and the installed SDK."""
 
 import datetime
+import contextlib
 import json
 import os
 import time
@@ -22,15 +23,42 @@ class ReadinessAdmissionTests(unittest.TestCase):
     claim = prior.SharedAdmissionTests.claim
     snapshot = review.ReviewRegressionTests.snapshot
 
+    @contextlib.contextmanager
+    def readiness(self, *, unobserved_init=False):
+        readiness = SandboxReadiness()
+        try:
+            yield readiness
+        finally:
+            try:
+                readiness.close()
+            except ProcessProofUnavailable as error:
+                if not unobserved_init:
+                    raise
+                # ADR0068: a missing descriptor is not successful abort cleanup.
+                # The block writer must remain open, never EOF-release the app.
+                self.assertEqual(str(error), 'sandbox_abort_init_unproved')
+                self.assertFalse(readiness.released)
+                self.assertGreaterEqual(readiness.block_writer, 0)
+                os.fstat(readiness.block_writer)
+                # Fixture-only disposal after the actual local monitor's forced
+                # group kill. This grants no Q fact or shared terminal effect.
+                for name in ('block_reader', 'block_writer', 'info_reader', 'info_writer'):
+                    descriptor = getattr(readiness, name)
+                    if descriptor >= 0:
+                        os.close(descriptor)
+                        setattr(readiness, name, -1)
+
     def run_readiness(self, command, *, corrupt_info=False, pidfd_unavailable=False,
-                      expire_barrier=False, deadline=float("inf")):
+                      expire_barrier=False, deadline=float("inf"), writable_marker_root=None):
         self.clocks.close()
-        with SandboxReadiness() as readiness:
+        with self.readiness(unobserved_init=corrupt_info or pidfd_unavailable) as readiness:
             original, _, logical = self.plan(command, bind_root=True)
             normalized = ["/usr/bin/bwrap", "--unshare-all", "--die-with-parent",
                           "--new-session", "--block-fd", "{sandbox_block_fd}",
                           "--info-fd", "{sandbox_info_fd}",
-                          "--ro-bind", "/", "/", "--", *logical]
+                          "--ro-bind", "/", "/",
+                          *(["--bind", str(writable_marker_root), str(writable_marker_root)] if writable_marker_root is not None else []),
+                          "--", *logical]
             plan = {**original, "containment_argv_sha256":
                     shared.sha256_hex(shared.canonical_json(normalized))}
             session, capture = self.claim(plan)
@@ -98,6 +126,20 @@ class ReadinessAdmissionTests(unittest.TestCase):
         self.assertIsNotNone(closed["ended_at"])
         self.assertEqual(snap["pools"]["fixture-pool"], {
             "slots": 0, "windows": {"fixture-window": {"spent": 1, "outstanding": 0}}})
+
+    def test_expired_barrier_in_full_supervisor_does_not_run_application(self):
+        marker = self.root / 'application-marker'
+        observation, snap, born, closed = self.run_readiness(
+            ['/bin/sh', '-c', 'touch ' + str(marker)], expire_barrier=True,
+            writable_marker_root=self.root)
+        self.assertIsNone(observation)
+        # The regression is an EOF-triggered child after the supervisor returns;
+        # observe that asynchronous cut point before disposing the fixture.
+        time.sleep(0.05)
+        self.assertFalse(marker.exists())
+        self.assertEqual(born['outcome'], 'created')
+        self.assertEqual(snap['pools']['fixture-pool']['slots'], 1)
+        self.assertEqual(snap['pools']['fixture-pool']['windows']['fixture-window']['spent'], 1)
 
     def test_real_child_exec_failure_counts_one_and_closes_namespace(self):
         observation, snap, _, closed = self.run_readiness(["/no-such-contained-executable"])
