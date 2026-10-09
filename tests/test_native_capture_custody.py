@@ -26,7 +26,7 @@ def load_script(name):
     return module
 
 
-RATER = load_script("caplab-artifact-rater")
+from caplab import artifact_rater_cli as RATER
 LADDER = load_script("caplab-ladder-subject")
 
 

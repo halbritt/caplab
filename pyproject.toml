@@ -15,6 +15,7 @@ Issues = "https://github.com/halbritt/caplab/issues"
 
 [project.scripts]
 caplab = "caplab.__main__:main"
+caplab-artifact-rater = "caplab.artifact_rater_cli:main"
 
 [project.optional-dependencies]
 test = ["jsonschema>=4.23,<5", "pyyaml>=6,<7"]
