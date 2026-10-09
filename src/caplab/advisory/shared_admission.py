@@ -241,6 +241,7 @@ class PoolAdmission:
     def run(self, adapter: dict, argv: list[str], *, launch_key: str,
             timeout: float, cwd: str | None, stdin: bytes | None,
             recover_assigned: bool = False) -> dict:
+        started = time.monotonic()
         self._validate_declaration()
         if initialize_pool_domain(self.root.parent) != self.domain_id:
             raise LiveExecutionCustodyError('pool_custody_domain_changed')
@@ -256,7 +257,6 @@ class PoolAdmission:
         extras = 1 if adapter.get('prompt_mode', 'stdin') == 'arg' else 0
         if logical[:len(expected)] != expected or len(logical) != len(expected) + extras:
             raise LiveExecutionCustodyError('pool_native_command_drift')
-        started = time.monotonic()
         with SandboxReadiness() as readiness:
             workspace = Path(cwd).resolve() if cwd is not None else None
             if workspace is not None and (workspace == self.root.resolve() or workspace in self.root.resolve().parents):

@@ -260,3 +260,22 @@ class PoolRecoveryTests(unittest.TestCase):
         self.assertEqual(result['release_sha256'], self.enrollment.document['release_sha256'])
         self.assertFalse((self.root / 'shared-home').exists())
 
+    def test_capability_latency_consumes_original_invocation_timeout(self):
+        # Genuine SDK reply delayed at its subprocess boundary. Constructing
+        # enrollment precedes invocation; its next pin check belongs to it.
+        controller = self.controller()
+        real = subprocess.run
+        delayed = False
+        def delayed_capabilities(argv, *args, **kwargs):
+            nonlocal delayed
+            result = real(argv, *args, **kwargs)
+            if argv == [CLI, 'admission', 'capabilities'] and not delayed:
+                delayed = True
+                time.sleep(5.1)
+            return result
+        with mock.patch.object(subprocess, 'run', side_effect=delayed_capabilities):
+            result = self.invoke(controller, timeout=5)
+        self.assertIsNone(result['exit_code'])
+        self.assertIn('deadline expired', result['error'])
+        self.assert_accounting(0)
+
