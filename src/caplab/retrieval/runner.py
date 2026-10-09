@@ -145,6 +145,11 @@ def bounded_run(argv: list, *, stdin: bytes = b"", cwd: Path | None = None, env:
     proc = subprocess.Popen([str(a) for a in argv], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE, cwd=cwd, env=dict(env) if env is not None else None,
                             start_new_session=True)
+    return _capture_process(proc, stdin=stdin, timeout=timeout, limit=limit, start=start)
+
+
+def _capture_process(proc, *, stdin: bytes, timeout: float, limit: int, start: int) -> Completed:
+    """Capture an already owned process; preserve the native output/timeout contract."""
     buffers = {"out": bytearray(), "err": bytearray()}
     overflow = threading.Event()
 
@@ -238,7 +243,8 @@ class CommandAdapter(Adapter):
     than 256 MiB, is not pinned. An executable larger than that limit is refused.
     """
 
-    def __init__(self, arm: dict, spec: dict):
+    def __init__(self, arm: dict, spec: dict, *, admission=None):
+        self.admission = admission
         self.arm = arm["id"]
         self.argv = list(arm["configuration"]["argv"])
         self.corpus = spec["corpus"]
@@ -280,7 +286,10 @@ class CommandAdapter(Adapter):
                 digest = file_sha256(path)
                 files[f"argv[{index}]"] = {"path": str(path.resolve()), "sha256": digest}
                 self._pinned[path] = (digest, self._signature(path))
-        return {"adapter": "command", "argv": self.argv, "files": files}
+        pinned = {"adapter": "command", "argv": self.argv, "files": files}
+        if self.admission is not None:
+            pinned["shared_admission"] = self.admission.pin(pinned)
+        return pinned
 
     def request(self, query: dict, seed: int, cutoff: int) -> bytes:
         # Gold labels (relevant_ids, forbidden_ids, stratum) never enter the request.
@@ -292,12 +301,20 @@ class CommandAdapter(Adapter):
         self._verify_files(full=False)
         request = self.request(query, seed, cutoff)
         with tempfile.TemporaryDirectory(prefix="caplab-cmd-") as scratch:
-            done = bounded_run(self.argv, stdin=request, cwd=Path(scratch), env=scrubbed_env(Path(scratch)),
-                               timeout=timeout)
+            if self.admission is None:
+                done = bounded_run(self.argv, stdin=request, cwd=Path(scratch), env=scrubbed_env(Path(scratch)),
+                                   timeout=timeout)
+                shared_result = None
+            else:
+                done, shared_result = self.admission.run(self.argv, assignment=contracts.assignment_id(self.arm, query["id"], seed),
+                        stdin=request, cwd=Path(scratch), env=scrubbed_env(Path(scratch)), timeout=timeout)
         raw = {"request": request, "stdout": done.stdout, "stderr": done.stderr}
         observation = {"adapter": "command", "exit_code": done.returncode, "cutoff_requested": cutoff,
                        "request_bytes": len(request), "stdout_bytes": len(done.stdout),
                        "stderr_bytes": len(done.stderr), "output_truncated": done.truncated}
+
+        if shared_result is not None:
+            observation["shared_admission"] = shared_result
 
         def failure(status, code, message, **detail):
             return Outcome(status=status, error={"code": code, "message": message, **detail},
@@ -308,7 +325,8 @@ class CommandAdapter(Adapter):
         if done.truncated:
             return failure("error", "output_too_large", f"output exceeded {MAX_OUTPUT_BYTES} bytes")
         if done.returncode != 0:
-            code = "killed_by_signal" if done.returncode < 0 else "nonzero_exit"
+            code = ("shared_admission_refused" if done.returncode is None else
+                    "killed_by_signal" if done.returncode < 0 else "nonzero_exit")
             return failure("error", code, f"exit status {done.returncode}", exit_code=done.returncode,
                            stderr_tail=text_tail(done.stderr))
         try:
@@ -335,9 +353,9 @@ class CommandAdapter(Adapter):
                        observation=observation, raw=raw, latency_ns=done.elapsed_ns)
 
 
-def build_adapter(arm: dict, spec: dict) -> Adapter:
+def build_adapter(arm: dict, spec: dict, *, admission=None) -> Adapter:
     if arm["adapter"] == "command":
-        return CommandAdapter(arm, spec)
+        return CommandAdapter(arm, spec, admission=admission)
     from caplab.retrieval import cairn  # Deferred: only real Cairn arms need it.
 
     return cairn.CairnAdapter(arm, spec)
@@ -363,7 +381,7 @@ def _git_state(directory: Path) -> dict:
     return {"commit": head.stdout.decode().strip(), "modified": bool(status.stdout.strip())}
 
 
-def _runner_identity(artifacts_factory=None) -> dict:
+def _runner_identity(artifacts_factory=None, *, enrolled=False) -> dict:
     """Exact bytes of every harness module that determines the evidence and its scores.
 
     A module copied into a modified tree is still pinned by its hash; the checkout state
@@ -373,13 +391,22 @@ def _runner_identity(artifacts_factory=None) -> dict:
     names = {f"caplab.retrieval.{name}" for name in HARNESS_MODULES}
     if artifacts_factory is not None:
         names.add(getattr(artifacts_factory, "__module__", ""))
+    if enrolled:
+        names.update({"caplab.retrieval.shared_admission", "caplab.revbench.shared_admission",
+                      "caplab.revbench.custody", "caplab.revbench.process_tree",
+                      "caplab.runtime.canonical", "caplab.revbench.codex",
+                      "caplab.catalog.projection", "caplab.catalog.preparation", "caplab.catalog.discovery"})
     for name in sorted(names):
         path = getattr(sys.modules.get(name), "__file__", None)
         if path and Path(path).is_file():
             modules[name] = {"path": str(Path(path).resolve()), "sha256": file_sha256(Path(path))}
     here = Path(__file__).resolve().parent
-    return {"module": "caplab.retrieval.runner", "modules": modules, "checkout": _git_state(here),
-            "python": sys.version.split()[0], "platform": platform.platform()}
+    identity = {"module": "caplab.retrieval.runner", "modules": modules, "checkout": _git_state(here),
+                "python": sys.version.split()[0], "platform": platform.platform()}
+    if enrolled:
+        gate = Path(__file__).with_name("exec_gate.py")
+        identity["subprocess_sources"] = {"exec_gate": {"path": str(gate.resolve()), "sha256": file_sha256(gate)}}
+    return identity
 
 
 def _attempt_dict(item: dict, status: str, *, ranked=None, delivered=None, latency_ns=None, error=None,
@@ -450,7 +477,7 @@ def _sigterm_interrupts(state: dict):
 
 
 def run_experiment(spec: dict, output: Path, *, adapters: Mapping[str, Adapter] | None = None,
-                   artifacts_factory: Callable | None = None) -> dict:
+                   artifacts_factory: Callable | None = None, shared_admission: Path | None = None) -> dict:
     """Execute every planned assignment once and return the finished run report.
 
     `output` must not exist (the artifact store refuses a reused directory). Contract
@@ -461,13 +488,19 @@ def run_experiment(spec: dict, output: Path, *, adapters: Mapping[str, Adapter] 
     """
     spec = contracts.validate_spec(spec)
     output = Path(output)
-    arms = {arm["id"]: (adapters or {}).get(arm["id"]) or build_adapter(arm, spec) for arm in spec["arms"]}
+    enrolled = {}
+    if shared_admission is not None:
+        if adapters:
+            raise ValueError("retrieval_admission_injected_adapter_refused")
+        from .shared_admission import read_enrollment
+        enrolled = read_enrollment(shared_admission, spec)
+    arms = {arm["id"]: (adapters or {}).get(arm["id"]) or build_adapter(arm, spec, admission=enrolled.get(arm["id"])) for arm in spec["arms"]}
     if artifacts_factory is None:
         try:
             from caplab.retrieval.artifacts import RunArtifacts as artifacts_factory
         except ImportError as exc:
             raise RuntimeError("caplab.retrieval.artifacts (RunArtifacts) is required to record a run") from exc
-    provenance = {"runner": _runner_identity(artifacts_factory), "spec_digest": contracts.spec_digest(spec),
+    provenance = {"runner": _runner_identity(artifacts_factory, enrolled=bool(enrolled)), "spec_digest": contracts.spec_digest(spec),
                   "arms": {arm_id: adapter.pin() for arm_id, adapter in arms.items()}}
     artifacts = artifacts_factory(output, spec, provenance=provenance)
 

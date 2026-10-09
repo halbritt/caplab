@@ -29,6 +29,13 @@ def build_parser() -> argparse.ArgumentParser:
     run = commands.add_parser("run", help="execute the sealed roster into a new evidence directory")
     run.add_argument("--spec", type=Path, required=True)
     run.add_argument("--output", type=Path, required=True)
+    run.add_argument("--shared-admission", type=Path, help="pin all command arms to explicit declared shared domains")
+    domain = commands.add_parser("admission-domain", help="initialize persistent native custody identity; no reservation")
+    domain.add_argument("--custody", type=Path, required=True)
+    for command in ("admission-describe", "admission-reconcile"):
+        a = commands.add_parser(command)
+        a.add_argument("--spec", type=Path, required=True)
+        a.add_argument("--shared-admission", type=Path, required=True)
     report = commands.add_parser("report", help="verify retained evidence before reporting")
     report.add_argument("--run", type=Path, required=True)
     report.add_argument("--format", choices=("json", "markdown"), default="json")
@@ -81,6 +88,16 @@ def incomplete(report: dict[str, Any]) -> bool:
 
 
 def execute(args: argparse.Namespace) -> int:
+    if args.command == "admission-domain":
+        from .shared_admission import initialize_domain
+        emit({"custody_domain_id": initialize_domain(args.custody)})
+        return 0
+    if args.command in {"admission-describe", "admission-reconcile"}:
+        from .shared_admission import read_enrollment
+        controllers = read_enrollment(args.shared_admission, read_spec(args.spec))
+        emit({key: controller.describe() if args.command == "admission-describe" else controller.reconcile()
+              for key, controller in controllers.items()})
+        return 0
     if args.command == "validate":
         emit(read_spec(args.spec))
         return 0
@@ -99,7 +116,7 @@ def execute(args: argparse.Namespace) -> int:
         from .runner import AdapterError, RunnerCleanupError, run_experiment
 
         try:
-            report = run_experiment(read_spec(args.spec), args.output)["report"]
+            report = run_experiment(read_spec(args.spec), args.output, shared_admission=args.shared_admission)["report"]
         except AdapterError as error:
             emit(error_document(error), stderr=True)
             return 2

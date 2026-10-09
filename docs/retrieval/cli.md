@@ -18,7 +18,10 @@ also provide `caplab retrieval ...`.
 | Command | Arguments | Behavior |
 |---|---|---|
 | validate | `--spec FILE` | Parse strict UTF-8 JSON and emit the validated normalized spec; no retrieval or output directory creation |
-| run | `--spec FILE --output NEW_DIRECTORY` | Seal the full assignment roster and execute actual configured adapters; retain evidence and emit the report |
+| run | `--spec FILE --output NEW_DIRECTORY [--shared-admission FILE]` | Seal the full assignment roster and execute actual configured adapters; retain evidence and emit the report |
+| admission-domain | `--custody DIRECTORY` | Initialize persistent native custody identity; no shared reservation |
+| admission-describe | `--spec FILE --shared-admission FILE` | Show pinned command/account/profile domains; no shared reservation |
+| admission-reconcile | `--spec FILE --shared-admission FILE` | Propose effects from retained native facts; no spawn or prepare |
 | report | `--run DIRECTORY [--format json\|markdown]` | Verify retained artifacts before emitting a report; JSON is the default |
 | compare | `--left DIRECTORY --right DIRECTORY [--left-arm ID --right-arm ID]` | Verify both bundles and align compatible cases/seeds; select arms explicitly for within-run comparisons |
 | import-task | `--report FILE --plan FILE --corpus FILE --cairn-checkout DIRECTORY --output NEW_DIRECTORY` | Retain original native task evidence and apply the selected checkout's real evidence parser; no regrading or replay |
@@ -175,3 +178,12 @@ inputs and never replay closed cohorts.
 The full [retrieval evaluation plan](../plans/cairn-retrieval-evaluation.md)
 still requires independent integration, real Cairn evidence and acceptance of
 the complete instrument. This CLI slice supplies entry points, not that judgment.
+
+
+Prospective command-arm enrollment is documented in
+[retrieval shared admission](../product/contracts/retrieval-shared-admission.md).
+It uses a pinned SDK home and policy, finite outer-launch capacity plus
+concurrency, declared account mappings and actual native assignment custody.
+The held-PID1/explicit-exec-gate administration is a distinct source-pinned
+instrument environment; do not silently pool it with historical runs. Ordinary
+Cairn adapters and helpers remain unenrolled by this route.
