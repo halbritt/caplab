@@ -31,7 +31,7 @@ from caplab.producer import ProducerIdentityError, producer_identity
 from caplab.runtime.canonical import CanonicalizationError, canonical_json, sha256_hex
 
 from .custody import FreshProcessCapture
-from .process_tree import SandboxReadiness, ProcessProofUnavailable
+from .process_tree import SandboxReadiness, ProcessProofUnavailable, preserve_launch_error
 from .host_closure import (
     TRUST_ASSUMPTION,
     HostClosureError,
@@ -1782,27 +1782,38 @@ def _run_owned_process(
         )
         capture.complete(_completion(capture, observation))
         return observation
-    except BaseException:
-        with contextlib.ExitStack() as cleanup:
-            cleanup.callback(capture.close)
-            for stream in (process.stdin, process.stdout, process.stderr):
-                if stream is not None and not stream.closed:
-                    cleanup.callback(stream.close)
+    except BaseException as error:
+        with preserve_launch_error(error, 'native_process_group_abort'):
             _terminate_process_group(process, force=(
                 sandbox_readiness is not None and not sandbox_readiness.released))
+        with preserve_launch_error(error, 'native_monitor_reap'):
             try:
                 process.wait(timeout=1)
             except subprocess.TimeoutExpired:
                 _terminate_process_group(process, force=True)
                 process.wait()
-            if sandbox_readiness is not None:
+        if sandbox_readiness is not None:
+            with preserve_launch_error(error, 'native_readiness_abort'):
                 sandbox_readiness.abort()
-            raise
+        for stream in (process.stdin, process.stdout, process.stderr):
+            if stream is not None and not stream.closed:
+                with preserve_launch_error(error, 'native_stream_close'):
+                    stream.close()
+        with preserve_launch_error(error, 'native_capture_close'):
+            capture.close()
+        raise
     finally:
-        if admission is not None:
-            admission.close_namespace_observation()
-        if selector is not None:
-            selector.close()
+        error = sys.exception()
+        for label, close in (
+            ('native_namespace_observation_close', admission.close_namespace_observation if admission is not None else None),
+            ('native_selector_close', selector.close if selector is not None else None),
+        ):
+            if close is not None:
+                if error is None:
+                    close()
+                else:
+                    with preserve_launch_error(error, label):
+                        close()
 
 
 class _PassThroughQuarantine:

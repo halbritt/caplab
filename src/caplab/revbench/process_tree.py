@@ -8,6 +8,7 @@ new process, persistent registry or account authority is provided here.
 from __future__ import annotations
 
 import json
+import contextlib
 import os
 import select
 import signal
@@ -17,6 +18,15 @@ from pathlib import Path
 
 class ProcessProofUnavailable(ValueError):
     pass
+
+
+@contextlib.contextmanager
+def preserve_launch_error(error: BaseException, operation: str):
+    """Keep the launch refusal primary and expose secondary cleanup failures."""
+    try:
+        yield
+    except BaseException as cleanup_error:
+        error.add_note(f'{operation}: {type(cleanup_error).__name__}: {cleanup_error}')
 
 
 class SandboxReadiness:
@@ -146,8 +156,12 @@ class SandboxReadiness:
     def __enter__(self) -> SandboxReadiness:
         return self
 
-    def __exit__(self, *_args) -> None:
-        self.close()
+    def __exit__(self, _kind, error, _traceback) -> None:
+        if error is None:
+            self.close()
+        else:
+            with preserve_launch_error(error, 'sandbox_readiness_close'):
+                self.close()
 
 
 def boot_id() -> str:

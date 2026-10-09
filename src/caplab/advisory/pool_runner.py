@@ -353,7 +353,7 @@ def sandbox_argv(argv: list[str], workspace: str | None,
 def invoke(adapter: dict, prompt: str, timeout: int,
            workspace: str | None = None,
            readonly: list[str] | None = None, *,
-           admission=None, launch_key: str | None = None) -> dict:
+           admission=None, launch_key: str | None = None, recover_assigned: bool = False) -> dict:
     """Run the adapter once. `readonly` names workspace subtrees (the
     materialized `base/` and `evidence/`) re-bound read-only inside the lane."""
     argv = list(adapter["command"])
@@ -396,10 +396,13 @@ def invoke(adapter: dict, prompt: str, timeout: int,
     try:
         if admission is not None:
             completed = admission.run(adapter, argv, launch_key=launch_key,
-                                      timeout=timeout, cwd=run_cwd, stdin=stdin_data)
+                                      timeout=timeout, cwd=run_cwd, stdin=stdin_data,
+                                      **({'recover_assigned': True} if recover_assigned else {}))
             stdout = completed['stdout'].decode('utf-8', errors='replace')
             code, timed_out, error = completed['exit_code'], completed['timed_out'], completed['error']
             shared_result = {k: completed[k] for k in ('shared_admission', 'custody_path')}
+            if 'recovery_basis' in completed:
+                shared_result.update({k: completed[k] for k in ('recovery_basis', 'seconds')})
         else:
             completed = subprocess.run(argv, input=stdin_data, capture_output=True,
                                        timeout=timeout, cwd=run_cwd)
@@ -439,12 +442,13 @@ class ManifestIntegrityError(ValueError):
 
 def invoke_with_manifest(adapter: dict, prompt: str, timeout: int, *,
                          workspace: str, readonly: list[str], manifest_digest: str,
-                         admission=None, launch_key: str | None = None) -> dict:
+                         admission=None, launch_key: str | None = None, recover_assigned: bool = False) -> dict:
     """Refuse an altered input; retain a returned capture even if its post-check fails."""
     if not _materialize.verify_manifest(workspace, expected_digest=manifest_digest):
         raise ManifestIntegrityError("base manifest failed before invocation")
     result = invoke(adapter, prompt, timeout, workspace=workspace, readonly=readonly,
-                    **({'admission': admission, 'launch_key': launch_key} if admission is not None else {}))
+                    **({'admission': admission, 'launch_key': launch_key,
+                        'recover_assigned': recover_assigned} if admission is not None else {}))
     after = _materialize.verify_manifest(workspace, expected_digest=manifest_digest)
     return {**result, "manifest_before": True, "manifest_after": after,
             "manifest_verified": after}
@@ -598,6 +602,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
             runs = []
             for replicate in range(1, per_arm[name] + 1):
                 admission_fields = ({'admission': admission,
+                                     'recover_assigned': True,
                                      'launch_key': json.dumps([assignment_prefix, row['dispatch_id'], name, replicate], separators=(',', ':'))}
                                     if admission is not None else {})
                 if admission is not None and not assignment_prefix:
@@ -802,7 +807,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         from pathlib import Path
         from .shared_admission import PoolAdmission
         os.makedirs(out_dir, mode=0o700, exist_ok=True)
-        admission = PoolAdmission.read(Path(shared_admission_config), declaration, Path(out_dir))
+        admission = PoolAdmission.read(Path(shared_admission_config), declaration, Path(out_dir), recovery=True)
     elif os.path.exists(os.path.join(out_dir, 'shared-launches', 'pool-enrollment.json')):
         raise ValueError('pool_retained_enrollment_required')
     from .anchor import anchor_substrate_ids, load as load_anchor

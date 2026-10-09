@@ -4,6 +4,7 @@ This is a prospective administration under ADR0068. Existing unenrolled calls
 keep their previous subprocess path. New pool runs can reserve a shared account
 pool's concurrency and finite guarded outer-launch budget through the deployed
 Quartermaster SDK. Provider percentages remain separate veto observations.
+ADR0069 corrects refusal containment and adds interrupted case recovery.
 
 Use an owner-controlled, durable, nonrollback output directory, disjoint from
 the model-visible case workspaces. Do not copy it to restart an assignment in a
@@ -90,3 +91,40 @@ retry/qualification rules; the shared ledger does not choose them.
 
 The installed public command requires the declared PyYAML 6 runtime dependency.
 The source-native equivalent is `PYTHONPATH=src python3 -m caplab.advisory`.
+
+`caplab advisory admission-describe` takes the same backend, declaration root,
+output and configuration options as `admission-reconcile`. It exposes the
+version-pinned native holder/launch-path mapping to the declared account and
+catalog `quota_pool_ids`, profile/home, shared home and policy. Python callers
+use `PoolAdmission.describe()`. Neither interface reserves or launches. This
+configured/operator evidence can support finite declared-domain enrollment;
+provider-authenticated physical identity is not a universal prerequisite.
+Possibly aliased profiles may be conservatively joined by the owner's catalog
+to shared pools, preserving the SDK's all-pool atomic enforcement. Do not change
+account joins in the consumer or advertise local assertions as authentication.
+Provider-window observations remain separate and apply only to their supported
+accounts; an unknown applicability/value cannot be converted into launch capacity.
+
+Enrolled `measure_case`/`pool-run` resumption now recovers an already assigned
+arm/replicate. It validates the exact retained intent, completion and output
+hashes and rebuilds the row without another child or shared charge. An assigned
+outcome without complete output becomes an unusable attempt with
+`recovery_basis=assigned-output-unavailable`; that is not proof of native closure
+or a retry right. Completed captures use `recovery_basis=retained-completion`.
+Direct `invoke` still refuses replay unless the caller explicitly selects
+`recover_assigned=True`. An expired enrollment can recover existing assignments;
+new assignments must meet the original deadline. Instrument source/run-spec
+pins continue to reject changed administrations.
+
+New completion records retain optional integer `elapsed_milliseconds`,
+`timed_out` and `outputs_complete` fields. Historical v1 completions remain
+readable without rewriting; absent historical elapsed duration projects as
+null. Failure output is not promoted into a complete scored response. Cleanup
+uncertainty is retained separately in `cleanup_errors`, while the original
+exception reaches the caller with secondary failure notes.
+
+Controlled startup refusal uses an owned process-group SIGKILL before monitor
+reap, plus positively observed PID1 death when available. No-witness accounting
+remains held. Arbitrary supervisor SIGKILL in the held window still can produce
+EOF and release the application: this opt-in feature is not crash-qualified or
+permission to administer an unenrolled live benchmark.

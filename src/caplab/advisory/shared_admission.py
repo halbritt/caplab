@@ -21,7 +21,8 @@ from caplab.revbench.custody import (
     LiveExecutionCustodyError, _ensure_owned_directory, _require_secure_parent_directory,
     _write_exclusive, _read_canonical_document,
 )
-from caplab.revbench.process_tree import SandboxReadiness
+from caplab.revbench.process_tree import SandboxReadiness, preserve_launch_error
+from caplab.revbench.codex import _terminate_process_group
 from caplab.revbench.shared_admission import (
     SharedAdmissionEnrollment, _AssignedLaunchAdmission, _retain, _read, _now,
 )
@@ -86,7 +87,9 @@ class _PoolLaunchRight:
             _write_exclusive(root, 'intent.json', canonical_json(intent))
 
     def complete(self, *, attempted_at: str | None, invoked: bool,
-                 exit_code: int | None, stdout: bytes, stderr: bytes, error: str | None):
+                 exit_code: int | None, stdout: bytes, stderr: bytes, error: str | None,
+                 cleanup_errors: list[str] | None = None, timed_out: bool = False,
+                 elapsed_milliseconds: int | None = None):
         # Publishing completion consumes this one right. Recovery cannot launch.
         self._closed = True
         _write_exclusive(self.custody_root, 'stdout', stdout)
@@ -99,7 +102,11 @@ class _PoolLaunchRight:
             'exit_code': exit_code, 'completion_recorded_at': _now(),
             'stdout_sha256': sha256_hex(stdout), 'stderr_sha256': sha256_hex(stderr),
             'error': error,
+            'timed_out': timed_out, 'elapsed_milliseconds': elapsed_milliseconds,
+            'outputs_complete': error is None,
         }
+        if cleanup_errors:
+            self.completion['cleanup_errors'] = list(cleanup_errors)
         _write_exclusive(self.custody_root, 'completion.json', canonical_json(self.completion))
         return self.completion
 
@@ -205,8 +212,35 @@ class PoolAdmission:
             raise LiveExecutionCustodyError('pool_deadline_expired')
         return remaining
 
+    def describe(self) -> dict:
+        """Expose the enforced declared-domain join, not physical authentication."""
+        self._validate_declaration()
+        self.enrollment.check_pins()
+        selected = self.enrollment.selection
+        account = next(a for a in self.enrollment.projection.release['catalog']['accounts']
+                       if a['id'] == selected.entry['account_id'])
+        return {
+            'schema_version': 'caplab-pool-declared-domain/1',
+            'enrollment_sha256': sha256_hex(canonical_json(self.receipt)),
+            'custody_domain_id': self.domain_id,
+            'home_id': self.enrollment.document['home_id'],
+            'caller_id': self.enrollment.document['caller_id'],
+            'catalog_entry': selected.entry['key'],
+            'declared_account_id': account['id'], 'pool_ids': account['quota_pool_ids'],
+            'profile': {k: selected.profile[k] for k in ('id', 'host', 'config_home')},
+            'identity_basis': self.receipt['identity_basis'],
+            'authenticated_provider_identity': False,
+            'policy_sha256': self.enrollment.document['policy_sha256'],
+            'release_sha256': self.enrollment.document['release_sha256'],
+            'overlay_sha256': self.enrollment.document['overlay_sha256'],
+            'covered_launch_paths': ['enrolled advisory pool-run/measure_case arm/replicate',
+                                     'explicitly enrolled advisory invoke assignment'],
+            'residual_scope': 'Other producers and uninstrumented clients are not enrolled by this mapping.',
+        }
+
     def run(self, adapter: dict, argv: list[str], *, launch_key: str,
-            timeout: float, cwd: str | None, stdin: bytes | None) -> dict:
+            timeout: float, cwd: str | None, stdin: bytes | None,
+            recover_assigned: bool = False) -> dict:
         self._validate_declaration()
         if initialize_pool_domain(self.root.parent) != self.domain_id:
             raise LiveExecutionCustodyError('pool_custody_domain_changed')
@@ -222,7 +256,7 @@ class PoolAdmission:
         extras = 1 if adapter.get('prompt_mode', 'stdin') == 'arg' else 0
         if logical[:len(expected)] != expected or len(logical) != len(expected) + extras:
             raise LiveExecutionCustodyError('pool_native_command_drift')
-        deadline = time.monotonic() + min(timeout, self._remaining())
+        started = time.monotonic()
         with SandboxReadiness() as readiness:
             workspace = Path(cwd).resolve() if cwd is not None else None
             if workspace is not None and (workspace == self.root.resolve() or workspace in self.root.resolve().parents):
@@ -249,7 +283,15 @@ class PoolAdmission:
             # The directory key is assignment-based, independent of changed prompt
             # or plan bytes. Drift cannot create a second right for the same slot.
             key = sha256_hex(canonical_json({'domain': self.domain_id, 'assignment': launch_key}))
-            right = _PoolLaunchRight(self.root / key, intent)
+            if recover_assigned and (self.root / key).exists():
+                return self._recover_assignment(self.root / key, intent)
+            deadline = min(started + timeout, time.monotonic() + self._remaining())
+            try:
+                right = _PoolLaunchRight(self.root / key, intent)
+            except LiveExecutionCustodyError as error:
+                if recover_assigned and str(error) == 'pool_assigned_launch_exists':
+                    return self._recover_assignment(self.root / key, intent)
+                raise
             control = _PoolProcessAdmission(self.enrollment, right)
             proc = None
             attempted = None
@@ -268,12 +310,14 @@ class PoolAdmission:
                     try:
                         proc = subprocess.Popen(actual, stdin=subprocess.PIPE if stdin is not None else subprocess.DEVNULL,
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                                cwd=cwd, pass_fds=readiness.pass_fds)
-                    except BaseException:
-                        control.creation(before, None, pid=None)
+                                                cwd=cwd, pass_fds=readiness.pass_fds,
+                                                start_new_session=True)
+                    except BaseException as error:
+                        with preserve_launch_error(error, 'pool_possible_creation_record'):
+                            control.creation(before, None, pid=None)
                         raise
-                    after = control.sample_clock()
                     readiness.child_started()
+                    after = control.sample_clock()
                     control.creation(before, after, pid=proc.pid)
                     control.adopt_namespace(readiness.observe(proc.pid, deadline=deadline), post_monitor_timeout_ms=1000)
                     control.observe_liveness()
@@ -288,27 +332,37 @@ class PoolAdmission:
                         stdout, stderr = proc.communicate(timeout=1)
             except BaseException as error:
                 failure = type(error).__name__ + ':' + str(error)
-                # Closing a block writer releases bwrap. Reap monitor first; no
-                # swallowed kill/wait error can become positive tree completion.
+                # Signal the owned group before reaping its leader. A blocked
+                # PID1 must not outlive refusal merely because no pidfd exists.
                 if proc is not None:
-                    if proc.poll() is None:
-                        proc.kill()
-                    proc.wait(timeout=1)
+                    with preserve_launch_error(error, 'pool_group_abort'):
+                        _terminate_process_group(proc, force=True)
+                with preserve_launch_error(error, 'pool_readiness_abort'):
+                    readiness.abort()
+                if proc is not None:
+                    with preserve_launch_error(error, 'pool_monitor_reap'):
+                        proc.wait(timeout=1)
                     # A blocked PID1 may still own the pipe until context closure.
                     # Do not wait on its EOF or manufacture complete output.
                     for stream in (proc.stdin, proc.stdout, proc.stderr):
                         if stream is not None:
-                            stream.close()
-                right.complete(attempted_at=attempted, invoked=proc is not None,
-                               exit_code=None if proc is None else proc.returncode,
-                               stdout=stdout, stderr=stderr, error=failure)
-                control.reconcile(right.completion)
-                readiness.abort()
-                control.close_namespace_observation(deadline=deadline)
+                            with preserve_launch_error(error, 'pool_stream_close'):
+                                stream.close()
+                with preserve_launch_error(error, 'pool_namespace_observation_close'):
+                    control.close_namespace_observation(deadline=deadline)
+                with preserve_launch_error(error, 'pool_completion_publish'):
+                    right.complete(attempted_at=attempted, invoked=proc is not None,
+                                   exit_code=None if proc is None else proc.returncode,
+                                   stdout=stdout, stderr=stderr, error=failure,
+                                   cleanup_errors=getattr(error, '__notes__', []),
+                                   timed_out=timed_out, elapsed_milliseconds=int((time.monotonic() - started) * 1000))
+                with preserve_launch_error(error, 'pool_reconcile'):
+                    control.reconcile(right.completion)
                 raise
             completion = right.complete(attempted_at=attempted, invoked=proc is not None,
                                         exit_code=None if proc is None else proc.returncode,
-                                        stdout=stdout, stderr=stderr, error=failure)
+                                        stdout=stdout, stderr=stderr, error=failure,
+                                        timed_out=timed_out, elapsed_milliseconds=int((time.monotonic() - started) * 1000))
             control.close_namespace_observation(deadline=deadline)
             shared = ({'status': 'refuse', 'code': 'not_admitted'} if control.record is None
                       else control.retire_before_launch(completion) if attempted is None
@@ -316,6 +370,65 @@ class PoolAdmission:
             return {'stdout': stdout, 'exit_code': completion['exit_code'],
                     'timed_out': timed_out, 'error': failure, 'shared_admission': shared,
                     'custody_path': str(right.custody_root)}
+
+    def _retained_right(self, root: Path, *, expected_intent: dict | None = None):
+        intent = _read_canonical_document(root / 'intent.json')
+        if (intent['schema_version'] != 'caplab-pool-assigned-launch/1'
+                or intent['custody_domain_id'] != self.domain_id
+                or intent['enrollment_sha256'] != sha256_hex(canonical_json(self.receipt))):
+            raise LiveExecutionCustodyError('pool_retained_identity_mismatch')
+        body = {k: v for k, v in intent.items() if k not in {'effect_id', 'process_id'}}
+        expected_id = 'pool-process-' + sha256_hex(canonical_json(body))
+        expected_root = sha256_hex(canonical_json({'domain': self.domain_id, 'assignment': intent['assignment']}))
+        if (intent['process_id'] != expected_id or intent['effect_id'] != expected_id or root.name != expected_root
+                or (expected_intent is not None and intent != expected_intent)):
+            raise LiveExecutionCustodyError('pool_retained_intent_changed')
+        right = _PoolLaunchRight(root, intent, recovered=True)
+        if right.completion is not None:
+            completion = right.completion
+            if (completion['schema_version'] != 'caplab-pool-process-completion/1'
+                    or completion['process_id'] != expected_id
+                    or completion['stdout_sha256'] != _stream_digest(root / 'stdout')
+                    or completion['stderr_sha256'] != _stream_digest(root / 'stderr')):
+                raise LiveExecutionCustodyError('pool_retained_completion_changed')
+        return right
+
+    def _recover_assignment(self, root: Path, intent: dict) -> dict:
+        """Read a consumed assignment, never prepare/reserve/launch it again.
+
+        Incomplete custody may belong to a still-running supervisor or a crash.
+        It supplies an unusable attempt, not proof of closure or a new right.
+        """
+        if root.is_symlink():
+            raise LiveExecutionCustodyError('pool_custody_symlink')
+        try:
+            right = self._retained_right(root, expected_intent=intent)
+        except FileNotFoundError:
+            # Directory claim may have committed just before intent/completion.
+            # No new allocation or completion is fabricated for this gap.
+            return {'stdout': b'', 'exit_code': None, 'timed_out': False,
+                    'error': 'assigned launch custody incomplete; outcome unresolved',
+                    'shared_admission': {'status': 'hold', 'code': 'native_custody_incomplete'},
+                    'custody_path': str(root), 'recovery_basis': 'assigned-output-unavailable',
+                    'seconds': None}
+        shared = _PoolProcessAdmission(self.enrollment, right).reconcile(right.completion)
+        if right.completion is None:
+            return {'stdout': b'', 'exit_code': None, 'timed_out': False,
+                    'error': 'assigned launch has no completion; outcome unresolved',
+                    'shared_admission': shared, 'custody_path': str(root),
+                    'recovery_basis': 'assigned-output-unavailable', 'seconds': None}
+        c = right.completion
+        # Old positive communicate completions predate the explicit flag. A
+        # failure never supplies a complete scored response from partial bytes.
+        complete = c.get('outputs_complete', c['error'] is None) and c['exit_code'] is not None
+        stdout = _stream_bytes(root / 'stdout') if complete else b''
+        if complete and sha256_hex(stdout) != c['stdout_sha256']:
+            raise LiveExecutionCustodyError('pool_retained_completion_changed')
+        return {'stdout': stdout, 'exit_code': c['exit_code'],
+                'timed_out': c.get('timed_out', False),
+                'error': c['error'] if complete else c['error'] or 'assigned launch output incomplete',
+                'shared_admission': shared, 'custody_path': str(root),
+                'recovery_basis': 'retained-completion', 'seconds': (c['elapsed_milliseconds'] / 1000 if c.get('elapsed_milliseconds') is not None else None)}
 
     def reconcile(self) -> list[dict | None]:
         """No launch, reserve, prepare or numeric PID inspection during restart."""
@@ -325,24 +438,7 @@ class PoolAdmission:
                 raise LiveExecutionCustodyError('pool_custody_symlink')
             if not root.is_dir():
                 continue
-            intent = _read_canonical_document(root / 'intent.json')
-            if (intent['schema_version'] != 'caplab-pool-assigned-launch/1'
-                    or intent['custody_domain_id'] != self.domain_id
-                    or intent['enrollment_sha256'] != sha256_hex(canonical_json(self.receipt))):
-                raise LiveExecutionCustodyError('pool_retained_identity_mismatch')
-            body = {k: v for k, v in intent.items() if k not in {'effect_id', 'process_id'}}
-            expected_id = 'pool-process-' + sha256_hex(canonical_json(body))
-            expected_root = sha256_hex(canonical_json({'domain': self.domain_id, 'assignment': intent['assignment']}))
-            if intent['process_id'] != expected_id or intent['effect_id'] != expected_id or root.name != expected_root:
-                raise LiveExecutionCustodyError('pool_retained_intent_changed')
-            right = _PoolLaunchRight(root, intent, recovered=True)
-            if right.completion is not None:
-                completion = right.completion
-                if (completion['schema_version'] != 'caplab-pool-process-completion/1'
-                        or completion['process_id'] != expected_id
-                        or completion['stdout_sha256'] != _stream_digest(root / 'stdout')
-                        or completion['stderr_sha256'] != _stream_digest(root / 'stderr')):
-                    raise LiveExecutionCustodyError('pool_retained_completion_changed')
+            right = self._retained_right(root)
             results.append(_PoolProcessAdmission(self.enrollment, right).reconcile(right.completion))
         return results
 
@@ -353,3 +449,9 @@ def _stream_digest(path: Path) -> str:
     descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
     with os.fdopen(descriptor, 'rb') as stream:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def _stream_bytes(path: Path) -> bytes:
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    with os.fdopen(descriptor, 'rb') as stream:
+        return stream.read()

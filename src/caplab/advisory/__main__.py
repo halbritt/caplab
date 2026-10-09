@@ -167,6 +167,16 @@ def cmd_admission_reconcile(args):
     return 2 if any(r and r.get('status') == 'hold' for r in results) else 0
 
 
+def cmd_admission_describe(args):
+    from pathlib import Path
+    from .shared_admission import PoolAdmission
+    from .pool_runner import load_declaration
+    controller = PoolAdmission.read(Path(args.shared_admission),
+        load_declaration(args.backends_root, args.backend), Path(args.out), recovery=True)
+    print(json.dumps(controller.describe(), sort_keys=True))
+    return 0
+
+
 def cmd_compare(args):
     """Matched contrast between two runs, annotated for the promotion gate."""
     from .compare import annotate_from_summaries, paired_comparison
@@ -332,6 +342,12 @@ def main(argv=None):
     p.add_argument('--backends-root', default=DEFAULT_BACKENDS)
     p.add_argument('--shared-admission', required=True)
     p.set_defaults(fn=cmd_admission_reconcile)
+    p = sub.add_parser('admission-describe', help='show pinned declared-domain join; no launch rights')
+    p.add_argument('--out', required=True)
+    p.add_argument('--backend', required=True)
+    p.add_argument('--backends-root', default=DEFAULT_BACKENDS)
+    p.add_argument('--shared-admission', required=True)
+    p.set_defaults(fn=cmd_admission_describe)
 
     p = sub.add_parser("pool-run",
                        help="measure a binding over Tier 3 pool cases "
