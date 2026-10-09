@@ -4,7 +4,8 @@ This is a prospective administration under ADR0068. Existing unenrolled calls
 keep their previous subprocess path. New pool runs can reserve a shared account
 pool's concurrency and finite guarded outer-launch budget through the deployed
 Quartermaster SDK. Provider percentages remain separate veto observations.
-ADR0069 corrects refusal containment and adds interrupted case recovery.
+ADR0069 adds interrupted case recovery. ADR0072 adds the explicit-byte release
+gate for future administrations; the block-writer barrier alone is insufficient.
 
 Use an owner-controlled, durable, nonrollback output directory, disjoint from
 the model-visible case workspaces. Do not copy it to restart an assignment in a
@@ -72,7 +73,8 @@ tree settlement. Output preimage drift refuses reconciliation. Missing closure
 keeps concurrency held even when the outer monitor exited.
 
 The pool namespace additionally masks its custody directory. Its environment
-stamp is `tree-v1-held-pid1-v1` (or `iso-v1-held-pid1-v1`), preserving the base
+stamp is `tree-v1-held-pid1-explicit-gate-v1` (or
+`iso-v1-held-pid1-explicit-gate-v1`), preserving the base
 materialization rules while separating this administration from old cohorts.
 
 The pool output includes shared accounting status and custody path separately
@@ -125,6 +127,26 @@ exception reaches the caller with secondary failure notes.
 
 Controlled startup refusal uses an owned process-group SIGKILL before monitor
 reap, plus positively observed PID1 death when available. No-witness accounting
-remains held. Arbitrary supervisor SIGKILL in the held window still can produce
-EOF and release the application: this opt-in feature is not crash-qualified or
-permission to administer an unenrolled live benchmark.
+remains held. The pinned existing retrieval exec gate is mounted read-only at `/dev/caplab-launch-gate.py`
+in the sandbox's existing private `/dev` mount
+and invoked with the pinned system interpreter. Only after all readiness and
+deadline checks does the supervisor send one release byte followed by the
+original stdin payload. Arg-mode applications keep their original argv and
+receive EOF after the gate byte. EOF before that byte exits the gate instead of
+execing the native command, including after supervisor SIGTERM/SIGKILL. This
+changes startup administration, not the native command/model/effort. Gate EOF
+is not namespace closure evidence; missing completion/witness still holds.
+
+Future enrollment receipts identify `pool-held-pid1-explicit-gate-v1`. Assigned
+intent pins exact gate/interpreter bytes. Original `pool-held-pid1-v1` receipts
+remain loadable with `recovery=True` for describe/reconciliation only; `run`
+refuses those legacy administrations even when their expiry is still valid.
+Opening the same custody under the new administration refuses receipt conflict.
+Use a separately declared prospective administration, never delete or relabel
+old custody. Existing completed-arm replay and source/run-spec pins remain.
+This feature does not itself authorize an unenrolled benchmark or claim native
+model qualification.
+
+Startup refusal attempts bounded raw-stream capture after abort/reap without a
+release byte. Preserved stderr/exit facts remain unscored incomplete output and
+never establish namespace closure. Secondary errors annotate the primary one.

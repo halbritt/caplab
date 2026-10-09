@@ -521,7 +521,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
            "anchor_matching": ANCHOR_MATCHING_VERSION,
            "pair_validation": PAIR_VALIDATION_VERSION}
     if admission is not None:
-        row['environment'] = ENVIRONMENT_VERSION + '-held-pid1-v1'
+        row['environment'] = ENVIRONMENT_VERSION + '-held-pid1-explicit-gate-v1'
         row['shared_admission_enrollment_sha256'] = run_spec.digest(admission.receipt)
     row.setdefault("calibration_profile", MEASUREMENT_PROFILE)
     tree = tree_mode()
@@ -530,7 +530,7 @@ def measure_case(case: dict, body: str, adapter: dict, timeout: int,
         if base_record is None:
             return {**row, "usable": False,
                     "error": "no base registry record for this substrate"}
-        row.update({"environment": ENVIRONMENT_VERSION + ("-held-pid1-v1" if admission is not None else ""), "base_source": base_source,
+        row.update({"environment": ENVIRONMENT_VERSION + ("-held-pid1-explicit-gate-v1" if admission is not None else ""), "base_source": base_source,
                     "base_materializer": base_record.get("materializer"),
                     "operator_version": "v3"})
         if base_source == "lost" and case["operator"] in BASE_DEPENDENT_OPERATORS:
@@ -873,7 +873,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "timeout": timeout, "abort_after_empty": abort_after_empty,
         "replicates": replicates, "mutant_replicates": mutant_replicates,
         "requested_workers": workers, "declared_lanes": declared_lanes(declaration),
-        "environment": ENVIRONMENT_VERSION + ("-held-pid1-v1" if admission is not None else ""), "sandbox_available": sandbox_available(),
+        "environment": ENVIRONMENT_VERSION + ("-held-pid1-explicit-gate-v1" if admission is not None else ""), "sandbox_available": sandbox_available(),
         "base_registry_sha256": base_registry_sha,
         "response_validation": VALIDATION_VERSION, "anchor_matching": ANCHOR_MATCHING_VERSION,
         "pair_validation": PAIR_VALIDATION_VERSION,
@@ -975,7 +975,7 @@ def run_pool(*, backend: str, backends_root: str, registry_path: str,
         "sweep_seed": sweep_seed,
         "partition": partition,
         "case_selection": case_selection,
-        "environment": ENVIRONMENT_VERSION + ("-held-pid1-v1" if admission is not None else ""),
+        "environment": ENVIRONMENT_VERSION + ("-held-pid1-explicit-gate-v1" if admission is not None else ""),
         "response_validation": VALIDATION_VERSION,
         "anchor_matching": ANCHOR_MATCHING_VERSION,
         "pair_validation": PAIR_VALIDATION_VERSION,

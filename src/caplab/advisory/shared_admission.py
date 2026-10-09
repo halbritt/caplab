@@ -31,6 +31,7 @@ from caplab.catalog.discovery import load_native_policy
 from .run_spec import declaration_digest
 
 SCHEMA = 'caplab-pool-shared-admission/1'
+CONTAINMENT = 'pool-held-pid1-explicit-gate-v1'
 
 
 def initialize_pool_domain(out_dir: Path) -> str:
@@ -148,10 +149,20 @@ class PoolAdmission:
             'declaration_sha256': declaration_digest(declaration),
             'native_policy_sha256': sha256_hex(canonical_json(self.native_policy)),
             'valid_until': valid_until,
-            'containment': 'pool-held-pid1-v1',
+            'containment': CONTAINMENT,
             'identity_basis': 'configured-profile-and-native-command',
             'authenticated_provider_identity': False,
         }
+        # Retained original administration is readable only for reconciliation.
+        # Never silently upgrade its receipt, assignment, measurement or rights.
+        if recovery:
+            try:
+                retained = _read_canonical_document(self.root / 'pool-enrollment.json')
+            except FileNotFoundError:
+                pass
+            else:
+                if retained == {**self.receipt, 'containment': 'pool-held-pid1-v1'}:
+                    self.receipt = retained
         _retain(self.root, 'pool-enrollment.json', self.receipt)
 
     @classmethod
@@ -242,6 +253,8 @@ class PoolAdmission:
             timeout: float, cwd: str | None, stdin: bytes | None,
             recover_assigned: bool = False) -> dict:
         started = time.monotonic()
+        if self.receipt['containment'] != CONTAINMENT:
+            raise LiveExecutionCustodyError('pool_legacy_administration_reconciliation_only')
         self._validate_declaration()
         if initialize_pool_domain(self.root.parent) != self.domain_id:
             raise LiveExecutionCustodyError('pool_custody_domain_changed')
@@ -258,13 +271,17 @@ class PoolAdmission:
         if logical[:len(expected)] != expected or len(logical) != len(expected) + extras:
             raise LiveExecutionCustodyError('pool_native_command_drift')
         with SandboxReadiness() as readiness:
+            from caplab.retrieval import exec_gate
+            gate = Path(exec_gate.__file__)
             workspace = Path(cwd).resolve() if cwd is not None else None
             if workspace is not None and (workspace == self.root.resolve() or workspace in self.root.resolve().parents):
                 raise LiveExecutionCustodyError('pool_custody_in_model_workspace')
             boundary = argv.index('--')
             normalized = ['/usr/bin/bwrap', '--unshare-all', '--share-net', '--new-session',
                           '--block-fd', '{block_fd}', '--info-fd', '{info_fd}',
-                          *argv[1:boundary], '--tmpfs', str(self.root), *argv[boundary:]]
+                          *argv[1:boundary], '--tmpfs', str(self.root),
+                          '--ro-bind', str(gate), '/dev/caplab-launch-gate.py', '--',
+                          '/usr/bin/python3', '-I', '-S', '/dev/caplab-launch-gate.py', *logical]
             actual = list(normalized)
             actual[actual.index('{block_fd}')] = str(readiness.block_reader)
             actual[actual.index('{info_fd}')] = str(readiness.info_writer)
@@ -277,6 +294,8 @@ class PoolAdmission:
                     'adapter_sha256': sha256_hex(canonical_json(adapter)),
                     'stdin_sha256': None if stdin is None else sha256_hex(stdin),
                     'bwrap_sha256': sha256_hex(Path('/usr/bin/bwrap').read_bytes()),
+                    'exec_gate_sha256': sha256_hex(gate.read_bytes()),
+                    'gate_interpreter_sha256': sha256_hex(Path('/usr/bin/python3').read_bytes()),
                     'launch_plan': plan}
             process_id = 'pool-process-' + sha256_hex(canonical_json(body))
             intent = {**body, 'process_id': process_id, 'effect_id': process_id}
@@ -308,7 +327,7 @@ class PoolAdmission:
                     attempted = before['utc']
                     _write_exclusive(right.custody_root, 'possible-creation.json', canonical_json(before))
                     try:
-                        proc = subprocess.Popen(actual, stdin=subprocess.PIPE if stdin is not None else subprocess.DEVNULL,
+                        proc = subprocess.Popen(actual, stdin=subprocess.PIPE,
                                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                                 cwd=cwd, pass_fds=readiness.pass_fds,
                                                 start_new_session=True)
@@ -325,7 +344,10 @@ class PoolAdmission:
                         raise LiveExecutionCustodyError('pool_deadline_expired_before_release')
                     readiness.release()
                     try:
-                        stdout, stderr = proc.communicate(stdin, timeout=max(0, deadline - time.monotonic()))
+                        # Barrier EOF may start bwrap's init; only this explicit
+                        # byte after all checks lets the pinned gate exec argv.
+                        stdout, stderr = proc.communicate(b'\x01' + (stdin if stdin is not None else b''),
+                                                         timeout=max(0, deadline - time.monotonic()))
                     except subprocess.TimeoutExpired:
                         timed_out = True
                         proc.kill()
@@ -342,6 +364,10 @@ class PoolAdmission:
                 if proc is not None:
                     with preserve_launch_error(error, 'pool_monitor_reap'):
                         proc.wait(timeout=1)
+                    # EOF cannot pass the explicit startup gate. Attempt bounded
+                    # raw-output recovery after abort; this is not closure proof.
+                    with preserve_launch_error(error, 'pool_refusal_output'):
+                        stdout, stderr = proc.communicate(timeout=1)
                     # A blocked PID1 may still own the pipe until context closure.
                     # Do not wait on its EOF or manufacture complete output.
                     for stream in (proc.stdin, proc.stdout, proc.stderr):

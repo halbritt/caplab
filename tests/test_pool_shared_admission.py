@@ -209,7 +209,7 @@ class PoolAdmissionTests(unittest.TestCase):
                 mock.patch.object(pool_runner, 'ENVIRONMENT_VERSION', 'iso-v1'):
             row = pool_runner.measure_case(CASE, BODY, self.adapter, 20,
                     workspace=str(self.workspace), admission=controller, assignment_prefix='fixture-frozen-spec')
-        self.assertEqual(row['environment'], 'iso-v1-held-pid1-v1')
+        self.assertEqual(row['environment'], 'iso-v1-held-pid1-explicit-gate-v1')
         self.assertEqual(row['control_attempts'][0]['exit_code'], 0)
         self.assertEqual(row['mutant_attempts'][0]['exit_code'], 0)
         self.assert_accounting(2)
