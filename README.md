@@ -77,3 +77,5 @@ Start with the
 [`provider-free Revbench local fixture`](examples/revbench-local-fixture/README.md)
 to create a persistent workspace and run the public preparation, contained
 execution, and offline scoring path without credentials or network access.
+
+The installed `caplab-artifact-rater` preserves the checkout script’s select/run/evaluate operations. Future opt-in helper and scoring launch enrollment is documented in [Artifact-rater shared admission](docs/product/contracts/artifact-rater-shared-admission.md).

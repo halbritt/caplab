@@ -29,6 +29,8 @@ from caplab.artifact_rater import (
     validate_judgment,
 )
 from caplab.codex_events import CodexEventError, parse_native_json
+from caplab.revbench.custody import LiveExecutionCustodyError
+from caplab.runtime.canonical import canonical_json, sha256_hex
 
 
 def _json_bytes(value: object) -> bytes:
@@ -93,14 +95,19 @@ def _find_rollout(thread_id: str, timeout_seconds: float = 10.0) -> Path:
     return find_rollout(Path.home() / ".codex" / "sessions", thread_id, timeout_seconds)
 
 
-def _rater_metadata(output_root: Path, model: str, effort: str) -> dict[str, Any]:
-    version = subprocess.run(
-        ["codex", "--version"],
-        check=True,
-        capture_output=True,
-        text=True,
-        timeout=30,
-    ).stdout.strip()
+def _rater_metadata(output_root: Path, model: str, effort: str, *, shared_admission=None) -> dict[str, Any]:
+    if shared_admission is None and (output_root / 'artifact-admission.json').exists():
+        raise CalibrationError('retained enrollment required for this output')
+    if shared_admission is None:
+        version = subprocess.run(["codex", "--version"], check=True,
+            capture_output=True, text=True, timeout=30).stdout.strip()
+    else:
+        workspace = output_root / 'version-workspace'
+        workspace.mkdir(mode=0o700, exist_ok=True)
+        done = shared_admission.run_native(['codex', '--version'], cwd=workspace,
+            assignment='helper:codex-version', timeout=30)
+        done.check_returncode()
+        version = done.stdout.decode('utf-8').strip()
     path = output_root / "rater.json"
     stable = {
         "schema_version": "caplab-artifact-rater/1",
@@ -113,6 +120,8 @@ def _rater_metadata(output_root: Path, model: str, effort: str) -> dict[str, Any
         "ignore_rules": True,
         "output_schema": "exact-boolean-object",
     }
+    if shared_admission is not None:
+        stable['shared_admission'] = shared_admission.describe()
     if path.exists():
         existing = _load_json(path)
         for key, value in stable.items():
@@ -391,15 +400,24 @@ def _score_entry(
     model: str,
     effort: str,
     timeout_seconds: int,
+    *, shared_admission=None,
 ) -> tuple[str, bool, str]:
+    if shared_admission is None and (output_root / 'artifact-admission.json').exists():
+        raise CalibrationError('retained enrollment required for this output')
     slot = entry["slot"]
+    if shared_admission is not None and (not isinstance(slot,str) or not slot or Path(slot).name != slot or slot in {".",".."}):
+        raise PublicationError("invalid enrolled slot locator")
     slot_root = output_root / "scores" / slot
     accepted_path = slot_root / "accepted.json"
     if accepted_path.exists():
         _read_published_judgment(accepted_path, entry, model, effort)
         return slot, True, "already accepted"
 
+    pending = None
     for prior_attempt in sorted(slot_root.glob("attempt-[0-9][0-9][0-9]"), reverse=True):
+        if shared_admission is not None and not (prior_attempt / 'record.json').exists():
+            pending = prior_attempt
+            break
         try:
             if _recover_completed_attempt(
                 prior_attempt, accepted_path, entry, model, effort
@@ -410,8 +428,9 @@ def _score_entry(
         except (CalibrationError, json.JSONDecodeError):
             continue
 
-    attempt_root = slot_root / f"attempt-{_attempt_number(slot_root):03d}"
-    attempt_root.mkdir(parents=True, exist_ok=False)
+    attempt_root = pending or slot_root / f"attempt-{_attempt_number(slot_root):03d}"
+    if pending is None:
+        attempt_root.mkdir(parents=True, exist_ok=False)
     campaign_root = Path(manifest["campaign_root"])
     scenario_root = Path(manifest["scenario_root"])
     diff_path = campaign_root / "attempts" / slot / "diff.patch"
@@ -427,10 +446,25 @@ def _score_entry(
     events_path = attempt_root / "events.jsonl"
     stderr_path = attempt_root / "stderr.txt"
     last_message_path = attempt_root / "last-message.txt"
-    _write_new(prompt_path, prompt.encode("utf-8"))
-    _write_new_json(schema_path, schema)
+    if shared_admission is None:
+        _write_new(prompt_path, prompt.encode("utf-8"))
+        _write_new_json(schema_path, schema)
+    else:
+        for path,data in ((prompt_path,prompt.encode('utf-8')), (schema_path,_json_bytes(schema))):
+            if path.exists():
+                if path.read_bytes() != data:
+                    raise PublicationError('enrolled prepared input changed')
+            else:
+                _write_new(path,data)
 
-    with tempfile.TemporaryDirectory(prefix="caplab-rater-") as empty_directory:
+    import contextlib
+    if shared_admission is None:
+        workspace = tempfile.TemporaryDirectory(prefix="caplab-rater-")
+    else:
+        persistent = attempt_root / 'workspace'
+        persistent.mkdir(mode=0o700,exist_ok=True)
+        workspace = contextlib.nullcontext(str(persistent))
+    with workspace as empty_directory:
         command = [
             "codex",
             "exec",
@@ -456,12 +490,13 @@ def _score_entry(
         started_at = datetime.now(UTC).isoformat()
         timed_out = False
         try:
-            completed = subprocess.run(
-                command,
-                input=prompt.encode("utf-8"),
-                capture_output=True,
-                timeout=timeout_seconds,
-            )
+            if shared_admission is None:
+                completed = subprocess.run(command,input=prompt.encode('utf-8'),
+                    capture_output=True,timeout=timeout_seconds)
+            else:
+                completed = shared_admission.run_native(command,cwd=Path(empty_directory),
+                    assignment=f'trial:{slot}:{attempt_root.name}',timeout=timeout_seconds,
+                    input=prompt.encode('utf-8'))
             return_code = completed.returncode
             events = completed.stdout
             stderr = completed.stderr
@@ -470,8 +505,18 @@ def _score_entry(
             timed_out = True
             events = error.stdout or b""
             stderr = error.stderr or b""
-    _write_new(events_path, events)
-    _write_new(stderr_path, stderr)
+    native_completion = None
+    if shared_admission is not None:
+        native_completion = shared_admission.completion_for('rater',f'trial:{slot}:{attempt_root.name}')
+        if native_completion is None or not native_completion['outputs_complete']:
+            raise PublicationError('enrolled native completion unavailable')
+        started_at = native_completion['started_at']
+    for path,data in ((events_path,events),(stderr_path,stderr)):
+        if shared_admission is not None and path.exists():
+            if path.read_bytes() != data:
+                raise PublicationError('enrolled capture publication changed')
+        else:
+            _write_new(path,data)
 
     record: dict[str, Any] = {
         "schema_version": "caplab-artifact-rater-attempt/2",
@@ -479,7 +524,7 @@ def _score_entry(
         "model": model,
         "effort": effort,
         "started_at": started_at,
-        "finished_at": datetime.now(UTC).isoformat(),
+        "finished_at": datetime.now(UTC).isoformat() if native_completion is None else native_completion["finished_at"],
         "return_code": return_code,
         "timed_out": timed_out,
         "timeout_seconds": timeout_seconds,
@@ -491,6 +536,11 @@ def _score_entry(
         "diff_sha256": entry["diff_sha256"],
         "validated": False,
     }
+    if native_completion is not None:
+        record['shared_admission'] = {'enrollment_sha256':shared_admission.receipt_sha,
+            'assignment':f'trial:{slot}:{attempt_root.name}',
+            'process_id':native_completion['process_id'],
+            'completion_sha256':sha256_hex(canonical_json(native_completion))}
     try:
         if timed_out:
             raise CalibrationError(f"Codex timed out after {timeout_seconds}s")
@@ -563,7 +613,12 @@ def command_select(arguments: argparse.Namespace) -> int:
 def command_run(arguments: argparse.Namespace) -> int:
     manifest = _load_json(arguments.manifest)
     arguments.output_root.mkdir(parents=True, exist_ok=True)
-    _rater_metadata(arguments.output_root, arguments.model, arguments.effort)
+    shared = None
+    if getattr(arguments,'shared_admission',None) is not None:
+        from caplab.runtime.artifact_admission import ArtifactRaterAdmission
+        shared = ArtifactRaterAdmission.read(arguments.shared_admission,arguments.manifest,
+            arguments.output_root,arguments.model,arguments.effort)
+    _rater_metadata(arguments.output_root, arguments.model, arguments.effort,shared_admission=shared)
     _save_idempotent(arguments.output_root / "manifest.json", manifest)
     results: list[tuple[str, bool, str]] = []
     with concurrent.futures.ThreadPoolExecutor(
@@ -578,6 +633,7 @@ def command_run(arguments: argparse.Namespace) -> int:
                 arguments.model,
                 arguments.effort,
                 arguments.timeout,
+                shared_admission=shared,
             )
             for entry in manifest["entries"]
         ]
@@ -588,6 +644,14 @@ def command_run(arguments: argparse.Namespace) -> int:
     failures = [result for result in results if not result[1]]
     print(f"accepted {len(results) - len(failures)}/{len(results)}")
     return 1 if failures else 0
+
+
+def command_admission(arguments):
+    from caplab.runtime.artifact_admission import ArtifactRaterAdmission
+    shared = ArtifactRaterAdmission.read(arguments.shared_admission,arguments.manifest,
+        arguments.output_root,arguments.model,arguments.effort)
+    print(json.dumps(shared.describe() if arguments.command=='admission-describe' else shared.reconcile(),sort_keys=True))
+    return 0
 
 
 def command_select_all(arguments: argparse.Namespace) -> int:
@@ -650,7 +714,17 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--effort", required=True)
     run.add_argument("--workers", type=int, default=4)
     run.add_argument("--timeout", type=int, default=900)
+    run.add_argument('--shared-admission',type=Path)
     run.set_defaults(function=command_run)
+
+    for name in ('admission-describe','admission-reconcile'):
+        command = subparsers.add_parser(name)
+        command.add_argument('--manifest',type=Path,required=True)
+        command.add_argument('--output-root',type=Path,required=True)
+        command.add_argument('--model',required=True)
+        command.add_argument('--effort',required=True)
+        command.add_argument('--shared-admission',type=Path,required=True)
+        command.set_defaults(function=command_admission)
 
     evaluate = subparsers.add_parser("evaluate")
     evaluate.add_argument("--manifest", type=Path, required=True)
@@ -665,7 +739,7 @@ def main(argv=None) -> int:
     arguments = parser().parse_args(argv)
     try:
         return arguments.function(arguments)
-    except (CalibrationError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
+    except (CalibrationError, LiveExecutionCustodyError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 1
 

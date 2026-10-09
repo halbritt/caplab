@@ -201,16 +201,19 @@ class NativeCalibrationAdmission:
             or '--block-fd' in command or '--info-fd' in command):
             raise LiveExecutionCustodyError('native_containment_not_supported')
         cut = command.index('--')
+        destination = getattr(self, 'gate_destination', '/caplab-launch-gate.py')
         argv = command[:cut] + ['--block-fd', '{block_fd}', '--info-fd', '{info_fd}',
-            '--ro-bind', str(gate), '/caplab-launch-gate.py', '--',
-            '/usr/bin/python3', '-I', '-S', '/caplab-launch-gate.py'] + command[cut+1:]
+            '--ro-bind', str(gate), destination, '--',
+            '/usr/bin/python3', '-I', '-S', destination] + command[cut+1:]
         return argv, [part.replace(str(cwd), '{workspace}') for part in argv], gate
 
-    def run(self, command, *, cwd, subject, assignment, timeout, env=None, native_launch_sha256=None):
+    def run(self, command, *, cwd, subject, assignment, timeout, env=None, native_launch_sha256=None, input=None):
         if subject not in self.enrollments or not isinstance(assignment, str) or not assignment:
             raise LiveExecutionCustodyError('native_assignment_invalid')
         if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
             raise LiveExecutionCustodyError('native_timeout_invalid')
+        if input is not None and not isinstance(input, bytes):
+            raise LiveExecutionCustodyError('native_input_must_be_bytes')
         env = {'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'} if env is None else dict(env)
         if set(env) != {'PATH', 'LANG'} or any(not isinstance(v, str) for v in env.values()):
             raise LiveExecutionCustodyError('native_launcher_environment_invalid')
@@ -227,6 +230,8 @@ class NativeCalibrationAdmission:
             'bwrap_sha256': sha256_hex(Path('/usr/bin/bwrap').read_bytes()),
             'exec_gate_sha256': sha256_hex(gate.read_bytes()),
             'gate_interpreter_sha256': sha256_hex(Path('/usr/bin/python3').read_bytes())}
+        if input is not None:
+            body['stdin_sha256'] = sha256_hex(input)
         path = self.root / self._key(subject, assignment)
         if path.exists():
             return self._recover(path, body, command, timeout)
@@ -277,7 +282,7 @@ class NativeCalibrationAdmission:
                     raise LiveExecutionCustodyError('native_deadline_expired_before_release')
                 readiness.release()
                 try:
-                    stdout, stderr = process.communicate(b'\x01', timeout=max(0, deadline-time.monotonic()))
+                    stdout, stderr = process.communicate(b'\x01' + (input or b''), timeout=max(0, deadline-time.monotonic()))
                 except subprocess.TimeoutExpired:
                     timed_out = True
                     _terminate_process_group(process, force=True)
