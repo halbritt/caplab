@@ -1786,12 +1786,13 @@ def _run_owned_process(
         with preserve_launch_error(error, 'native_process_group_abort'):
             _terminate_process_group(process, force=(
                 sandbox_readiness is not None and not sandbox_readiness.released))
-        with preserve_launch_error(error, 'native_monitor_reap'):
-            try:
-                process.wait(timeout=1)
-            except subprocess.TimeoutExpired:
-                _terminate_process_group(process, force=True)
-                process.wait()
+        if type(process.pid) is int and process.pid > 1:
+            with preserve_launch_error(error, 'native_monitor_reap'):
+                try:
+                    process.wait(timeout=1)
+                except subprocess.TimeoutExpired:
+                    _terminate_process_group(process, force=True)
+                    process.wait()
         if sandbox_readiness is not None:
             with preserve_launch_error(error, 'native_readiness_abort'):
                 sandbox_readiness.abort()

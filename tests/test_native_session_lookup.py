@@ -10,6 +10,7 @@ from unittest.mock import patch
 from caplab.artifact_rater import CalibrationError
 from caplab.ladder_subject import NativeSubjectError
 import caplab.artifact_rater as rater
+import caplab.artifact_rater_cli as RATER
 
 
 def load_script(name):
@@ -20,7 +21,6 @@ def load_script(name):
     return module
 
 
-RATER = load_script('caplab-artifact-rater')
 LADDER = load_script('caplab-ladder-subject')
 
 

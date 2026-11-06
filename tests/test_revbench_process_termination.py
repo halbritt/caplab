@@ -290,8 +290,8 @@ class OwnedProcessFailureCleanupTests(SignalGuardCase):
                 error, primary = self.run_failing(process)
                 self.assertEqual(self.signals, [])
                 self.assertEqual(process.waits, [])  # neither a signal nor any wait on an unowned identity
-                self.assertIn(primary, chain(error))
-                self.assertEqual(str(error), IDENTITY_CODE)
+                self.assertIs(error, primary)  # ADR-0069: the original failure stays primary
+                self.assertTrue(any(IDENTITY_CODE in note for note in error.__notes__))
 
     def test_bypassing_the_pre_launch_check_fails_at_the_launch_primitive_without_any_signal(self):
         """A mutant that skips the closure check reaches ``Popen``; here that is an immediate failure."""
